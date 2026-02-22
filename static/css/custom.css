@@ -147,20 +147,28 @@
   margin: 0 0.15em;
 }
 
-/* Tags and reading time below byline on post page */
+/* Tags, reading time, and audience below byline on post page */
 .article-meta {
   font-size: 0.9em;
   margin-top: 0.4em;
   color: var(--card-text-color-secondary, #666);
 }
-.article-meta__tags {
+.article-meta__label {
+  font-weight: 600;
+  margin-right: 0.35em;
+  color: var(--card-text-color-secondary, #555);
+}
+.article-meta__tags,
+.article-meta__audience {
   display: inline;
 }
-.article-meta__tag {
+.article-meta__tag,
+.article-meta__audience-link {
   color: inherit;
   text-decoration: none;
 }
-.article-meta__tag:hover {
+.article-meta__tag:hover,
+.article-meta__audience-link:hover {
   text-decoration: underline;
 }
 .article-meta__sep {
@@ -169,6 +177,12 @@
 }
 .article-meta__reading {
   font-variant-numeric: tabular-nums;
+}
+.article-meta__row {
+  margin-top: 0.25em;
+}
+.article-meta__row .article-meta__label {
+  margin-right: 0.35em;
 }
 
 /* Header featured image: clickable, no extra spacing from figure */
