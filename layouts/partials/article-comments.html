@@ -5,12 +5,12 @@
 {{- $hasGiscus := and $useGiscus $giscus.repo $giscus.repoID $giscus.category $giscus.categoryID -}}
 {{- $discussURL := "https://github.com/genomicsxai/genomicsxai.github.io/discussions/categories/post-discussions" -}}
 
-<section class="article-comments" id="comments">
+<section class="article-comments" id="comments" {{ if $hasGiscus }}data-repo="{{ $giscus.repo }}" data-category-id="{{ $giscus.categoryID }}" data-path="{{ .RelPermalink }}"{{ end }}>
   <h2 class="article-comments__title">Comments</h2>
   <div class="article-comments__actions">
-    <a href="#comments" class="article-comments__like js-scroll-to-comments" aria-label="Like this post (add a reaction in comments)">
+    <a href="#comments" class="article-comments__like js-scroll-to-comments" aria-label="Scroll to comments to add a like or reaction">
       <span class="article-comments__like-icon" aria-hidden="true">👍</span>
-      <span>Like</span>
+      <span>Like</span><span class="article-comments__like-count js-like-count"></span>
     </a>
     {{ if not $hasGiscus }}
     <span class="article-comments__sep">·</span>
@@ -19,6 +19,7 @@
     <span class="article-comments__sep">·</span>
     <a href="/submission-guidelines/#getting-notified-of-comments-and-likes" class="article-comments__author-notify link">Authors: get notified</a>
   </div>
+  <p class="article-comments__hint">Scroll down to add your reaction or comment.</p>
   {{ if $hasGiscus }}
   <div class="giscus article-comments__embed"></div>
   {{ partial "comments/include" . }}
@@ -28,14 +29,47 @@
 </section>
 <script>
 (function() {
+  function scrollToComments(e) {
+    var target = document.getElementById('comments');
+    if (target) {
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
   document.querySelectorAll('.js-scroll-to-comments').forEach(function(el) {
-    el.addEventListener('click', function(e) {
-      var target = document.getElementById('comments');
-      if (target) {
-        e.preventDefault();
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    });
+    el.addEventListener('click', scrollToComments);
   });
+
+  var section = document.querySelector('.article-comments[data-repo][data-category-id]');
+  if (section) {
+    var repo = section.getAttribute('data-repo');
+    var categoryId = section.getAttribute('data-category-id');
+    var path = section.getAttribute('data-path') || '';
+    var countEl = section.querySelector('.js-like-count');
+    if (repo && categoryId && countEl) {
+      var parts = repo.split('/');
+      var owner = parts[0];
+      var name = parts[1] || '';
+      if (owner && name) {
+        fetch('https://api.github.com/graphql', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            query: 'query($owner: String!, $name: String!, $categoryId: ID!) { repository(owner: $owner, name: $name) { discussions(first: 100, categoryId: $categoryId) { nodes { title reactions { totalCount } } } } }',
+            variables: { owner: owner, name: name, categoryId: categoryId }
+          })
+        }).then(function(r) { return r.json(); }).then(function(data) {
+          var nodes = data.data && data.data.repository && data.data.repository.discussions && data.data.repository.discussions.nodes ? data.data.repository.discussions.nodes : [];
+          for (var i = 0; i < nodes.length; i++) {
+            if (nodes[i].title && nodes[i].title.indexOf(path) !== -1) {
+              var n = nodes[i].reactions && nodes[i].reactions.totalCount != null ? nodes[i].reactions.totalCount : 0;
+              countEl.textContent = n > 0 ? n : '';
+              break;
+            }
+          }
+        }).catch(function() {});
+      }
+    }
+  }
 })();
 </script>

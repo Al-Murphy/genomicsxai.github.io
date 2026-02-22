@@ -217,6 +217,25 @@ article img {
   margin: 1.25em 0;
 }
 
+/* Tighter list spacing: less gap before first bullet and between items */
+.article-content ul,
+.article-content ol {
+  margin: 0.5em 0 0.75em 1.5em;
+  padding-left: 1.5em;
+}
+.article-content li {
+  margin: 0.2em 0;
+}
+.article-content li + li {
+  margin-top: 0.2em;
+}
+.article-content ul ul,
+.article-content ul ol,
+.article-content ol ul,
+.article-content ol ol {
+  margin: 0.25em 0 0.25em 1.25em;
+}
+
 .article-content h1,
 .article-content h2,
 .article-content h3,
@@ -300,6 +319,18 @@ article img {
 }
 .article-comments__like-icon {
   font-style: normal;
+}
+.article-comments__like-count {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+.article-comments__like-count:not(:empty) {
+  margin-left: 0.25em;
+}
+.article-comments__hint {
+  font-size: 0.9em;
+  color: var(--card-text-color-secondary, #888);
+  margin: -0.5em 0 1em 0;
 }
 .article-comments__sep {
   color: var(--card-text-color-secondary, #888);
