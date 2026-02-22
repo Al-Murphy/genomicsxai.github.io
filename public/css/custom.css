@@ -3,6 +3,86 @@
   display: flex !important;
 }
 
+/* Table of contents (right sidebar): readable but compact */
+.article-page .widget--toc .widget-title.section-title {
+  font-size: 1.05rem;
+  margin-bottom: 0.5em;
+}
+.article-page .widget--toc .toc-nav {
+  font-size: 0.95rem;
+}
+.article-page .widget--toc .toc-nav > ul {
+  padding: 0 0.5em;
+}
+.article-page .widget--toc .toc-nav li {
+  margin: 6px 0 6px 12px;
+  padding: 2px 0;
+}
+.article-page .widget--toc .toc-nav li > ul,
+.article-page .widget--toc .toc-nav li > ol {
+  margin-top: 4px;
+  padding-left: 8px;
+  margin-bottom: -2px;
+}
+
+/* Right sidebar: cite + share above TOC */
+.post-actions-widget {
+  margin-bottom: 1.25rem;
+}
+.post-actions-widget__cite {
+  margin: 0 0 0.75rem 0;
+  padding: 0;
+}
+.post-actions-widget__cite .citation-box__title,
+.post-actions-widget__cite .citation-box__text {
+  display: none;
+}
+.post-actions-widget__cite .citation-box__actions {
+  margin: 0;
+}
+.post-actions-widget__btn {
+  width: 100%;
+  justify-content: center;
+  font-size: 0.9rem;
+}
+.post-actions-widget__share {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.5rem;
+}
+.post-actions-widget__label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--card-text-color-secondary, #666);
+  margin-right: 0.25rem;
+}
+.post-actions-widget__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  padding: 0.3em 0.5em;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--accent-color, #34495e);
+  background: transparent;
+  border: 1px solid rgba(52, 73, 94, 0.25);
+  border-radius: 6px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+  font-family: inherit;
+}
+.post-actions-widget__link:hover {
+  color: var(--accent-color-darker, #2c3e50);
+  background: rgba(52, 73, 94, 0.06);
+  border-color: var(--accent-color, #34495e);
+}
+.post-actions-widget__copy-link {
+  width: auto;
+}
+
 /* Ensure blog article card and title are visible (theme uses these variables) */
 .article-page .main-article {
   background: var(--card-background);
@@ -164,4 +244,36 @@ article img {
   font-size: 0.9em;
   color: var(--card-text-color-secondary, #666);
   font-weight: normal;
+}
+
+/* PhotoSwipe lightbox: zoom in/out buttons in toolbar */
+.pswp__button--zoom-in,
+.pswp__button--zoom-out {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pswp__button--zoom-in .pswp__icn,
+.pswp__button--zoom-out .pswp__icn {
+  fill: currentColor;
+}
+
+/* PhotoSwipe lightbox: caption as a banner below the image */
+.pswp__custom-caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  font-size: 14px;
+  line-height: 1.45;
+  color: #fff;
+  text-align: center;
+  padding: 14px 20px;
+  box-sizing: border-box;
+  pointer-events: none;
+  background: rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(6px);
+  max-height: 30vh;
+  overflow-y: auto;
 }

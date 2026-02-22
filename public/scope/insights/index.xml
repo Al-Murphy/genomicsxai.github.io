@@ -1,9 +1,12 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Insights on Genomics X AI</title><link>https://genomicsxai.github.io/scope/insights/</link><description>Recent content in Insights on Genomics X AI</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Fri, 20 Feb 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://genomicsxai.github.io/scope/insights/index.xml" rel="self" type="application/rss+xml"/><item><title>Adapting AlphaGenome to MPRA data</title><link>https://genomicsxai.github.io/blogs/2026-002/</link><pubDate>Fri, 20 Feb 2026 00:00:00 +0000</pubDate><guid>https://genomicsxai.github.io/blogs/2026-002/</guid><description>&lt;img src="https://genomicsxai.github.io/" alt="Featured image of post Adapting AlphaGenome to MPRA data" /&gt;&lt;p&gt;Foundation-scale sequence-to-function models have rapidly advanced regulatory genomics. Architectures like &lt;a class="link" href="https://www.nature.com/articles/s41586-025-10014-0" target="_blank" rel="noopener"
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Insights on Genomics x AI</title><link>https://genomicsxai.github.io/scope/insights/</link><description>Recent content in Insights on Genomics x AI</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Fri, 20 Feb 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://genomicsxai.github.io/scope/insights/index.xml" rel="self" type="application/rss+xml"/><item><title>Adapting AlphaGenome to MPRA data</title><link>https://genomicsxai.github.io/blogs/2026-002/</link><pubDate>Fri, 20 Feb 2026 00:00:00 +0000</pubDate><guid>https://genomicsxai.github.io/blogs/2026-002/</guid><description>&lt;img src="https://genomicsxai.github.io/" alt="Featured image of post Adapting AlphaGenome to MPRA data" /&gt;&lt;p&gt;Foundation-scale sequence-to-function models have rapidly advanced regulatory genomics. Architectures like &lt;a class="link" href="https://www.nature.com/articles/s41586-025-10014-0" target="_blank" rel="noopener"
  &gt;AlphaGenome&lt;/a&gt; and &lt;a class="link" href="https://www.nature.com/articles/s41592-021-01252-x" target="_blank" rel="noopener"
  &gt;Enformer&lt;/a&gt; predict thousands of regulatory tracks across large genomic contexts and achieve impressive genome-wide accuracy (hence the term generalists).&lt;/p&gt;
-&lt;hr&gt;
-&lt;h2 id="side-note-sequence-to-function-seq2func-models-learn-a-direct-mapping-from-dna-sequence-to-one-or-more-experimentally-measured-molecular-readouts-from-assays-such-as-chromatin-accessibility-transcription-factor-binding-or-gene-expression"&gt;&lt;em&gt;Side note&lt;/em&gt;: sequence-to-function (seq2func) models learn a direct mapping from DNA sequence to one or more experimentally measured molecular readouts from assays such as chromatin accessibility, transcription factor binding, or gene expression.
-&lt;/h2&gt;&lt;p&gt;These models also just continue to increase in their number of parameters, receptive fields and number of tasks they predict - if you&amp;rsquo;re skeptical just look at a selection of these recent models:&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;&lt;em&gt;Side note:&lt;/em&gt; sequence-to-function (seq2func) models learn a direct mapping from DNA sequence to one or more experimentally measured molecular readouts from assays such as chromatin accessibility, transcription factor binding, or gene expression.&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;These models also just continue to increase in their number of parameters, receptive fields and number of tasks they predict - if you&amp;rsquo;re skeptical just look at a selection of these recent models:&lt;/p&gt;
 &lt;figure&gt;&lt;a href="https://genomicsxai.github.io/blogs/2026-002/generalists_genomic_ai_recep_field_tasks_params_bp_res_tasks.png" class="image-link" data-pswp-width="8067" data-pswp-height="5031"&gt;
 		&lt;img src="https://genomicsxai.github.io/blogs/2026-002/generalists_genomic_ai_recep_field_tasks_params_bp_res_tasks.png" width="600px" height="5031"loading="lazy"
 			alt="The Landscape of seq2func models by genomic receptive field and task breadth"
@@ -102,9 +105,12 @@
 &lt;p&gt;AlphaGenome required minimal adaptation as pretrained encoder already captures transferable signal&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;hr&gt;
-&lt;h2 id="side-note-probing-means-the-alphagenome-encoder-is-frozen-and-only-the-added-head-is-updated-whereas-fine-tuning-means-everything-is-updated-encoder-and-head"&gt;&lt;em&gt;Side note&lt;/em&gt;: probing means the AlphaGenome encoder is frozen and only the added head is updated whereas fine-tuning means everything is updated (encoder and head).
-&lt;/h2&gt;&lt;p&gt;This supports the idea that genome-scale training learns reusable regulatory structure. The performance results:&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;&lt;em&gt;Side note:&lt;/em&gt; probing means the AlphaGenome encoder is frozen and only the added head is updated whereas fine-tuning means everything is updated (encoder and head).&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;This supports the idea that genome-scale training learns reusable regulatory structure. The performance results:&lt;/p&gt;
 &lt;figure&gt;&lt;a href="https://genomicsxai.github.io/blogs/2026-002/lenti_starr_res.png" class="image-link" data-pswp-width="1890" data-pswp-height="827"&gt;
 		&lt;img src="https://genomicsxai.github.io/blogs/2026-002/lenti_starr_res.png" width="900px" height="827"loading="lazy"
 			alt="Benchmark on lentiMPRA and STARR-seq"
@@ -282,8 +288,10 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; state,
 &lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; batch_sequences,
 &lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; jnp&lt;span style="color:#f92672"&gt;.&lt;/span&gt;zeros((batch_sequences&lt;span style="color:#f92672"&gt;.&lt;/span&gt;shape[&lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;],), dtype&lt;span style="color:#f92672"&gt;=&lt;/span&gt;jnp&lt;span style="color:#f92672"&gt;.&lt;/span&gt;int32), &lt;span style="color:#75715e"&gt;# organism_index&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; negative_strand_mask&lt;span style="color:#f92672"&gt;=&lt;/span&gt;jnp&lt;span style="color:#f92672"&gt;.&lt;/span&gt;zeros((batch_sequences&lt;span style="color:#f92672"&gt;.&lt;/span&gt;shape[&lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;],), dtype&lt;span style="color:#f92672"&gt;=&lt;/span&gt;bool),
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; strand_reindexing&lt;span style="color:#f92672"&gt;=&lt;/span&gt;model&lt;span style="color:#f92672"&gt;.&lt;/span&gt;_metadata[next(iter(model&lt;span style="color:#f92672"&gt;.&lt;/span&gt;_metadata))]&lt;span style="color:#f92672"&gt;.&lt;/span&gt;strand_reindexing,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; negative_strand_mask&lt;span style="color:#f92672"&gt;=&lt;/span&gt;jnp&lt;span style="color:#f92672"&gt;.&lt;/span&gt;zeros((batch_sequences&lt;span style="color:#f92672"&gt;.&lt;/span&gt;shape[&lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;],), 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; dtype&lt;span style="color:#f92672"&gt;=&lt;/span&gt;bool),
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; strand_reindexing&lt;span style="color:#f92672"&gt;=&lt;/span&gt;model&lt;span style="color:#f92672"&gt;.&lt;/span&gt;_metadata[
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; next(iter(model&lt;span style="color:#f92672"&gt;.&lt;/span&gt;_metadata))]&lt;span style="color:#f92672"&gt;.&lt;/span&gt;strand_reindexing,
 &lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; )
 &lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; preds &lt;span style="color:#f92672"&gt;=&lt;/span&gt; preds_dict[&lt;span style="color:#e6db74"&gt;&amp;#34;mpra_head&amp;#34;&lt;/span&gt;]
 &lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; loss_dict &lt;span style="color:#f92672"&gt;=&lt;/span&gt; loss_fn(

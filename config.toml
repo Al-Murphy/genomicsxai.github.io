@@ -36,7 +36,10 @@ enableRobotsTXT = true
     { type = "taxonomy", params = { taxonomy = "authors", title = "Author", limit = 15, showLink = true, icon = "user" } },
     { type = "archives", params = { limit = 10 } },
   ]
-  page = [{ type = "toc" }]
+  page = [
+    { type = "post-actions" },
+    { type = "toc" },
+  ]
 
 [taxonomies]
   tag = "tags"                # scientific tags

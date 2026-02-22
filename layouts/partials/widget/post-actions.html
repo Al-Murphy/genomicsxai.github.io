@@ -1,0 +1,47 @@
+{{- $page := .Context -}}
+{{- if not $page.Title }}{{ return }}{{ end -}}
+{{- $authList := $page.Params.authors_display | default $page.Params.authors -}}
+{{- $authorNames := slice -}}
+{{- with $authList -}}
+  {{- range . -}}
+    {{- $authorNames = $authorNames | append (cond (reflect.IsMap .) .name .) -}}
+  {{- end -}}
+{{- end -}}
+{{- $authorStr := delimit $authorNames ", " -}}
+{{- $blogName := $page.Params.blog_name | default (site.Data.blog.blog_name | default "Genomics × AI Blog") -}}
+{{- $year := $page.Date | dateFormat "2006" -}}
+{{- $citationPlain := printf "%s. \"%s.\" %s, %s." $authorStr $page.Title $blogName $year -}}
+{{- $citationData := dict "citation" $citationPlain "title" $page.Title "authors" $authorNames "year" $year "doi" ($page.Params.doi | default "") "postId" ($page.Params.post_id | default "") "url" $page.Permalink "blogName" $blogName -}}
+{{- $shareUrl := $page.Permalink | absURL -}}
+{{- $shareText := $page.Title -}}
+{{- $linkedInUrl := printf "https://www.linkedin.com/sharing/share-offsite/?url=%s" $shareUrl -}}
+
+<section class="widget post-actions-widget">
+  <div class="post-actions-widget__cite citation-box">
+    <button type="button" class="citation-btn citation-copy-btn post-actions-widget__btn" data-citation-data="{{ $citationData | jsonify | safeHTMLAttr }}">Cite</button>
+    <span class="citation-copy-feedback" aria-live="polite"></span>
+  </div>
+  <div class="post-actions-widget__share">
+    <span class="post-actions-widget__label">Share</span>
+    <a href="#" target="_blank" rel="noopener noreferrer" class="post-actions-widget__link post-actions-widget__twitter" data-url="{{ $shareUrl }}" data-text="{{ $shareText }}" title="Share on X (Twitter)" aria-label="Share on X (Twitter)">X</a>
+    <a href="{{ $linkedInUrl }}" target="_blank" rel="noopener noreferrer" class="post-actions-widget__link" title="Share on LinkedIn" aria-label="Share on LinkedIn">in</a>
+    <button type="button" class="post-actions-widget__link post-actions-widget__copy-link" data-url="{{ $shareUrl }}" title="Copy link" aria-label="Copy link">Link</button>
+  </div>
+</section>
+<script>
+(function() {
+  document.querySelectorAll('.post-actions-widget__twitter').forEach(function(a) {
+    var url = a.getAttribute('data-url'), text = a.getAttribute('data-text') || '';
+    a.href = 'https://twitter.com/intent/tweet?url=' + encodeURIComponent(url || '') + '&text=' + encodeURIComponent(text);
+  });
+  document.querySelectorAll('.post-actions-widget__copy-link').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var url = btn.getAttribute('data-url');
+      if (!url) return;
+      navigator.clipboard.writeText(url).then(function() {
+        var t = btn.textContent; btn.textContent = 'Copied!'; setTimeout(function() { btn.textContent = t; }, 1500);
+      });
+    });
+  });
+})();
+</script>
