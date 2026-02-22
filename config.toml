@@ -1,5 +1,5 @@
 baseURL = "https://genomicsxai.github.io/"
-title = "Genomics X AI"
+title = "Genomics x AI"
 theme = "Stack"
 enableRobotsTXT = true
 
