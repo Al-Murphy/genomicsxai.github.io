@@ -13,12 +13,12 @@ authors_display:
 
 editor: "Genomics X AI Editors"
 
-tags: ["genomics", "ai", "community"]
+tags: ["genomics", "AI", "community"]
 categories: ["Blog Post"]
 
 scope: ["insights"]
 audience: ["within-field", "general"]
-labs: ["Genomics X AI"]
+labs: ["Genomics x AI"]
 
 status: "submitted"
 revision: 1

@@ -3,6 +3,8 @@ post_id: "2026-002"
 title: "Adapting AlphaGenome to MPRA data"
 # Featured image (homepage thumbnail and optional top of post)
 image: "modular_generalists_manuscript.png"
+# Enable KaTeX so inline math (e.g. $10^{-K}$) renders correctly
+math: true
 
 # Author(s): list of names (used for /authors/<slug>/)
 authors: ["Alan Murphy"]
@@ -40,15 +42,15 @@ revision_history:
 
 Foundation-scale sequence-to-function models have rapidly advanced regulatory genomics. Architectures like [AlphaGenome](https://www.nature.com/articles/s41586-025-10014-0) and [Enformer](https://www.nature.com/articles/s41592-021-01252-x) predict thousands of regulatory tracks across large genomic contexts and achieve impressive genome-wide accuracy (hence the term generalists).
 
+---
 _Side note_: sequence-to-function (seq2func) models learn a direct mapping from DNA sequence to one or more experimentally measured molecular readouts from assays such as chromatin accessibility, transcription factor binding, or gene expression.
+---
 
 These models also just continue to increase in their number of parameters, receptive fields and number of tasks they predict - if you're skeptical just look at a selection of these recent models:
 
 ![The Landscape of seq2func models by genomic receptive field and task breadth](generalists_genomic_ai_recep_field_tasks_params_bp_res_tasks.png "width=600 The Landscape of seq2func models by genomic receptive field and task breadth. Shown is the number of prediction tasks versus the input receptive field for representative generalist seq2func models. Marker size is proportional to the reported parameter count. A red marker edge indicates models that produce base-pair–aligned predictions.")
 
-But many real experimental workflows don’t look like the genome.
-
-Perturbation assays — including MPRAs, enhancer design screens, and synthetic element optimisation — evaluate short (~100–300 bp) sequences outside their native context. Applying these now megabase-scale predictors to such data introduces unnecessary padding, compute overhead, and arbitrary flanking sequence assumptions which are just unsatisfactory!
+But many real experimental workflows don’t look like the genome. Perturbation assays — including MPRAs, enhancer design screens, and synthetic element optimisation — evaluate short (~100–300 bp) sequences outside their native context. Applying these now megabase-scale predictors to such data introduces unnecessary padding, compute overhead, and arbitrary flanking sequence assumptions which are just unsatisfactory!
 
 We asked a simple question:
 
@@ -68,7 +70,7 @@ Modern seq2func models like AlphaGenome can be decomposed into three functional 
 
 For short perturbation sequences, long-range context is often irrelevant. The encoder, however, contains rich regulatory representations learned from genome-scale supervision.
 
-We extract and reuse this encoder see the image below:
+We extract and reuse this encoder - see the image below:
 
 ![Generalist seq2func models as modular regulatory encoders](modular_generalists_manuscript.png "width=1000 Generalist seq2func models as modular regulatory encoders. Left, AlphaGenome's U-Net architecture with encoder, long-range context integration (transformer), and decoder modules. Right, proposed modular view in which the pretrained encoder is extracted as a reusable cis-regulatory representation module and fine-tuned on short, variable-length perturbation sequences such as MPRA constructs, while the transformer and decoder remain in the full stack for tasks requiring long-range context.").
 
@@ -99,7 +101,7 @@ This allows direct training on short sequences while preserving pretrained regul
 
 * standardises comparisons across architectures
 
-* dramatically reduces inference cost - in our testing it was 500 fold quicker to run the encoder model than full Alphagenome
+* dramatically reduces inference cost — in our testing it was 500 fold quicker to run the encoder model than full AlphaGenome
 
 ### Conceptual advantage:
 
@@ -109,7 +111,7 @@ This allows direct training on short sequences while preserving pretrained regul
 
 ## Performance on MPRA and STARR-seq
 
-Before I get into the how for doing this, let me convince you that it's worthwhile - We evaluated modular encoders on:
+Before I get into the how of doing this, let me convince you that it's worthwhile — we evaluated modular encoders on:
 
 * lentiMPRA constructs (HepG2, K562, WTC11)
 
@@ -121,11 +123,13 @@ Results:
 
 * AlphaGenome encoder probing remained strong across species
 
-* Enformer benefited more from fine-tuning - perhaps its encoder learned less cis-regulatory logic
+* Enformer benefited more from fine-tuning — perhaps its encoder learned less cis-regulatory logic
 
-* AlphaGenome required minimal adaptation → pretrained encoder already captures transferable signal
+* AlphaGenome required minimal adaptation as pretrained encoder already captures transferable signal
 
+---
 _Side note_: probing means the AlphaGenome encoder is frozen and only the added head is updated whereas fine-tuning means everything is updated (encoder and head).
+---
 
 This supports the idea that genome-scale training learns reusable regulatory structure. The performance results:
 
@@ -135,15 +139,15 @@ This supports the idea that genome-scale training learns reusable regulatory str
 
 ## What matters when adapting encoders?
 
-So in an attempt to push performance as much as possible we did a hyperparameter sweep which revealed:
+So in an attempt to push performance as much as possible, we did a hyperparameter sweep which revealed the:
 
-### Most important
+### Most important choices
 
 * deeper MLP heads
 
 * flattening encoder embeddings
 
-### Less important
+### Less important choices
 
 * optimiser choice
 
@@ -151,13 +155,13 @@ So in an attempt to push performance as much as possible we did a hyperparameter
 
 * learning rate schedule
 
-Progressive unfreezing provided modest gains, with slight benefit from delaying encoder updates. The results of this sweep is at the end of the post (apologies if it's quite dense!).
+Progressive unfreezing provided modest gains, with a slight benefit from delaying encoder updates. The results of this sweep is at the end of the post.
 
 ---
 
 ## Transfer to regulatory variant prediction (CAGI5)
 
-We next evaluated all models on the CAGI5 benchmark - we wanted to know if we also seen performance advantages for downstream applications.
+We next evaluated all models on the CAGI5 benchmark — we wanted to know if we also seen performance advantages for downstream applications.
 
 Key findings
 
@@ -165,9 +169,9 @@ Key findings
 
 * frozen encoder probing generalised better out-of-distribution
 
-* task-specific fine-tuning can introduce assay bias - full fine-tuning rather than probing led to the models overfitting on the lentiMPRA data and thus worse performance on the CAGI5 data.
+* task-specific fine-tuning can introduce assay bias — full fine-tuning rather than probing led to the models overfitting on the lentiMPRA data and thus worse performance on the CAGI5 data.
 
-This may highlight a trade-off of specialisation vs generalisation or with better regularisation maybe this could be controlled even with the larger number of free parameters. The results:
+This may highlight a trade-off of specialisation vs generalisation, or with better regularisation maybe this could be controlled even with the larger number of free parameters. The results:
 
 ![Zero-shot CAGI5 performance for HepG2 and K562 variants](cagi5_augmentation_comparison.png "width=900 Zero-shot CAGI5 performance for HepG2 and K562 variants; right, high-confidence SNP subset. Dark blue denotes a single prediction per variant whereas light blue is random shift and reverse complement augmentation. We compare against MPRALegNet and AlphaGenome (AG). We applied encoder extraction and fine-tuning to Enformer (Enf. MPRA) and AlphaGenome (AG MPRA), evaluated with probing (head-only) or encoder fine-tuning.")
 
@@ -177,15 +181,15 @@ This may highlight a trade-off of specialisation vs generalisation or with bette
 
 So we should probably now take a step back, what are our results showing? 
 
-This highlights that encoder representations learned under genome-scale multitask supervision retain regulatory signal that transfers across:
+They highlight that encoder representations learned under genome-scale multitask supervision retain regulatory signal that transfers across:
 
 * assays
 
 * perturbation regimes
 
-* species (STARR-seq data was in fly, Alphagenome was trained on human and mouse - this is pretty cool!)
+* species (STARR-seq data was in fly, AlphaGenome was trained on human and mouse — this is pretty cool!)
 
-This transfer was observed across distinct architectures (AlphaGenome and Enformer), suggesting __the modular encoder perspective is broadly applicable__.
+This transfer was observed across distinct architectures (AlphaGenome and Enformer), suggesting that __the modular encoder perspective is broadly applicable__.
 
 ---
 
@@ -199,13 +203,13 @@ Now to the so what? Well, encoder-only predictors have numerous advantages over 
 
 * compute-efficient large-scale screening
 
-Seq2func foundation models can therefore function as reusable regulatory representation engines inside perturbation pipelines - think for synthetic biology applications of DNA design, accelerating synthetic enhancer, promoter design workflows (see [this work](https://pubmed.ncbi.nlm.nih.gov/39322281/) for example).
+Seq2func foundation models can therefore function as reusable regulatory representation engines inside perturbation pipelines — think of synthetic biology DNA design, where these models could help accelerate synthetic enhancer and promoter development (see [this work](https://pubmed.ncbi.nlm.nih.gov/39322281/) for example).
 
 ---
 
 ## Open questions
 
-So what didn't we explore enough here:
+So what didn't we explore here:
 
 * Which encoder layers contribute most to transfer?
 
@@ -213,17 +217,17 @@ So what didn't we explore enough here:
 
 * Can modular encoders accelerate generative regulatory design?
 
-All of this would be really interesting future directions.
+All of these would be really interesting future directions.
 
 ---
 
-## Takeaway - the TLDR
+## Takeaway — the TLDR
 
 Foundation seq2func models are typically used as monolithic predictors.
 
 A modular view reveals something more useful:
 
-> their encoders are transferable regulatory representation modules.
+> Their encoders are transferable regulatory representation modules.
 
 Extracting and adapting these representations enables efficient perturbation modeling, fair cross-model comparison, and scalable regulatory design workflows.
 
@@ -231,7 +235,7 @@ Extracting and adapting these representations enables efficient perturbation mod
 
 Finally, how can you use this approach:
 
-This analysis uses the native jax/haiku alphagenome wrapper package  which is available from the [Genomics x AI community github](https://github.com/genomicsxai/alphagenome_ft) (more on this in a future post) and all code to run the analysis is [here](https://github.com/Al-Murphy/alphagenome_FT_MPRA).
+This analysis uses the native jax/haiku AlphaGenome wrapper package  which is available from the [Genomics x AI community github](https://github.com/genomicsxai/alphagenome_ft) (more on this in a future post) and all code to run the analysis is [here](https://github.com/Al-Murphy/alphagenome_FT_MPRA).
 
 But here is a minimum script or if you would prefer to run it yourself on lentiMPRA data, see our [colab notebook](https://colab.research.google.com/github/genomicsxai/alphagenome_ft/blob/main/notebooks/colab_encoder_only_mpra_finetune.ipynb):
 
@@ -271,8 +275,8 @@ model.freeze_except_head("mpra_head")
 
 ```
 Key points:
-- `use_encoder_output=True` bypasses the transformer/decoder stack and exposes encoder features at ~128 bp resolution.
-- `templates.EncoderOnlyHead` applies a simple MLP on top of these embeddings.
+- `use_encoder_output=True` bypasses the transformer/decoder stack and exposes encoder features at ~128 bp resolution
+- `templates.EncoderOnlyHead` applies a simple MLP on top of these embeddings
 
 ### 2. Training Loop
 
@@ -305,8 +309,10 @@ def train_step(params, state, opt_state, batch_sequences, batch_targets):
             state,
             batch_sequences,
             jnp.zeros((batch_sequences.shape[0],), dtype=jnp.int32),  # organism_index
-            negative_strand_mask=jnp.zeros((batch_sequences.shape[0],), dtype=bool),
-            strand_reindexing=model._metadata[next(iter(model._metadata))].strand_reindexing,
+            negative_strand_mask=jnp.zeros((batch_sequences.shape[0],), 
+                                           dtype=bool),
+            strand_reindexing=model._metadata[
+                next(iter(model._metadata))].strand_reindexing,
         )
         preds = preds_dict["mpra_head"]
         loss_dict = loss_fn(
@@ -319,6 +325,7 @@ def train_step(params, state, opt_state, batch_sequences, batch_targets):
     updates, new_opt_state = optimizer.update(grads, opt_state)
     new_params = optax.apply_updates(params, updates)
     return new_params, new_opt_state, loss
+
 ```
 
 
@@ -347,7 +354,7 @@ We varied the prediction head architecture and training hyperparameters while ke
 | wd-1e5         | 0.8530     | 0.8166     | 0.7742 | 0.8146     | 15   |
 | lr-plateau     | 0.8526     | 0.8170     | 0.7733 | 0.8143     | 16   |
 | -------------- | ---------- | ---------- | ------ | ---------- | ---- |
-| baseline       | 0.8526     | 0.8170     | 0.7733 | 0.8143     | 16   |
+| baseline       | 0.8526     | 0.8170     | 0.7733 | 0.8143     | 17   |
 | -------------- | ---------- | ---------- | ------ | ---------- | ---- |
 | opt-adamw      | 0.8526     | 0.8161     | 0.7738 | 0.8142     | 18   |
 | wd-1e4         | 0.8522     | 0.8167     | 0.7732 | 0.8141     | 19   |

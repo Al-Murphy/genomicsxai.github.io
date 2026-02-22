@@ -21,6 +21,10 @@ enableRobotsTXT = true
   # Include blogs section in main sections for homepage
   mainSections = ["blogs", "post"]
 
+[params.article]
+  # Enable KaTeX math on all blog posts (inline $...$ and block $$...$$)
+  math = true
+
 # Homepage right sidebar: filter by tags, scope, audience, lab, author, and archives by year
 # Page (blog post) right sidebar: table of contents by default
 [params.widgets]

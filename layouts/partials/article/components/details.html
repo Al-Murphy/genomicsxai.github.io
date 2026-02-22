@@ -19,7 +19,10 @@
             </a>
         </h2>
 
-        {{ partial "article-authors.html" . }}
+        <div class="article-byline">
+          {{ partial "article-authors.html" . }}
+          {{ partial "article-labs.html" . }}
+        </div>
     
         {{ with .Params.description }}
         <h3 class="article-subtitle">

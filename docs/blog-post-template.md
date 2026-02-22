@@ -8,6 +8,8 @@ post_id: "YYYY-NNN"
 title: "Your Post Title"
 # Optional: image filename in the same folder
 # image: "your-image.png"
+# Enable KaTeX for inline/block math (e.g. $10^{-K}$)
+math: true
 
 # Author(s): list of names (used for /authors/<slug>/)
 authors: ["Author One", "Author Two"]

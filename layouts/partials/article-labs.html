@@ -1,0 +1,24 @@
+{{- $labTerms := .GetTerms "labs" -}}
+{{- $hasLabs := or $labTerms .Params.labs -}}
+{{- $hasAuthors := or (.GetTerms "authors") .Params.authors -}}
+{{- if $hasLabs -}}
+{{- if $hasAuthors }}<span class="article-byline-sep"> · </span>{{ end -}}
+<span class="article-labs">
+  {{- if $labTerms -}}
+    {{- range $i, $term := $labTerms -}}
+      {{- if $i -}}, {{ end -}}
+      <a href="{{ $term.RelPermalink }}" class="article-lab link">{{ $term.LinkTitle }}</a>
+    {{- end -}}
+  {{- else -}}
+    {{- $list := .Params.labs -}}
+    {{- if reflect.IsSlice $list -}}
+      {{- range $i, $name := $list -}}
+        {{- if $i -}}, {{ end -}}
+        <span class="article-lab">{{ $name }}</span>
+      {{- end -}}
+    {{- else -}}
+      <span class="article-lab">{{ $list }}</span>
+    {{- end -}}
+  {{- end -}}
+</span>
+{{- end -}}

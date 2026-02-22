@@ -22,7 +22,10 @@
     {{ end }}
     <div class="article-details">
       <h1 class="article-title">{{ .Title }}</h1>
-      {{ partial "article-authors.html" . }}
+      <div class="article-byline">
+        {{ partial "article-authors.html" . }}
+        {{ partial "article-labs.html" . }}
+      </div>
     </div>
   </header>
 
@@ -37,6 +40,7 @@
   </div>
 </article>
 
+{{ if or .Params.math .Site.Params.article.math }}{{ partial "article/components/math.html" . }}{{ end }}
 {{ partial "article/components/photoswipe" . }}
 {{ partial "jsonld.html" . }}
 {{ end }}

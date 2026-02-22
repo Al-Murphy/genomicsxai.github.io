@@ -1,0 +1,67 @@
+{{- $opts := dict "minify" hugo.IsProduction "format" "esm" -}}
+{{- $galleryScript := resources.Get "ts/gallery.ts" | js.Build $opts -}}
+
+{{ $style := .Site.Data.external.PhotoSwipe.Style }}
+{{ $core := .Site.Data.external.PhotoSwipe.Core }}
+{{ $lightbox := .Site.Data.external.PhotoSwipe.Lightbox }}
+
+<script type="module">
+    import gallery from '{{ $galleryScript.RelPermalink }}';
+
+    const articleContent = document.querySelector('.article-content');
+    const shouldLoad = articleContent && (articleContent.querySelectorAll('figure').length > 0 || articleContent.querySelectorAll('img.gallery-image').length > 0);
+
+    if (shouldLoad) {
+        gallery(articleContent);
+
+        const PhotoSwipeLightbox = (await import("{{ $lightbox | safeJS }}")).default;
+        const styleHref = "{{ $style | safeJS }}";
+
+        const styleTag = document.createElement('link');
+        styleTag.rel = 'stylesheet';
+        styleTag.href = styleHref;
+        document.head.appendChild(styleTag);
+
+        const lightbox = new PhotoSwipeLightbox({
+            gallerySelector: '.article-content',
+            childSelector: 'figure a.image-link',
+            pswpModule: () => import("{{ $core | safeJS }}")
+        });
+
+        lightbox.on('uiRegister', function () {
+            lightbox.pswp.ui.registerElement({
+                name: 'custom-caption',
+                order: 9,
+                isButton: false,
+                appendTo: 'root',
+                html: '',
+                onInit: (el, pswp) => {
+                    el.classList.add('pswp__custom-caption');
+                    const unescape = (html) => {
+                        if (!html) return '';
+                        const div = document.createElement('div');
+                        div.innerHTML = html.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
+                        return div.textContent || div.innerText || '';
+                    };
+                    const updateCaption = () => {
+                        const slide = pswp.currSlide;
+                        let caption = '';
+                        if (slide && slide.data && slide.data.element) {
+                            const img = slide.data.element.querySelector('img');
+                            if (img) {
+                                const raw = img.getAttribute('data-title-escaped') || img.getAttribute('title') || img.getAttribute('alt') || '';
+                                caption = raw ? unescape(raw) : '';
+                            }
+                        }
+                        el.textContent = caption;
+                        el.style.display = caption ? 'block' : 'none';
+                    };
+                    pswp.on('change', updateCaption);
+                    pswp.on('contentLoad', updateCaption);
+                }
+            });
+        });
+
+        lightbox.init();
+    }
+</script>
