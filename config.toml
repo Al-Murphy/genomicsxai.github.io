@@ -10,6 +10,11 @@ enableRobotsTXT = true
 [markup.goldmark.parser.attribute]
   block = true
 
+# TOC: only ## and ### (exclude #### and deeper)
+[markup.tableOfContents]
+  endLevel = 3
+  startLevel = 2
+
 [permalinks]
   # Page section: /forum/, /policies/, etc. (Stack theme convention)
   page = "/:slug/"

@@ -327,7 +327,9 @@ def train_step(params, state, opt_state, batch_sequences, batch_targets):
 
 ## Hyperparameter sweep results
 
-### Stage 1 hyperparameter sweep for lentiMPRA with a frozen encoder (probing regime). 
+### Stage 1
+
+Stage 1 was a hyperparameter sweep for lentiMPRA with a frozen encoder (probing regime). 
 
 We varied the prediction head architecture and training hyperparameters while keeping encoder weights fixed. Note no reverse complement or random shift augementations were used for this benchmark. mlp-X-Y denotes a two-layer multilayer perceptron head with hidden dimensions X and Y; mlp-X denotes a single hidden layer of size X; pool-flatten uses global pooling followed by flattening; pool-center extracts the central token representation; do-p indicates dropout rate p applied to the head; wd-1eK indicates weight decay of $10^{-K}$; lr-plateau and lr-cosine denote ReduceLROnPlateau and cosine annealing learning rate schedules, respectively; opt-adamw indicates the AdamW optimiser; act-gelu replaces the default activation with GELU. Baseline used a single multilayer perceptron head of size 1024 with sum pooling, Adam optimiser and RELU activation, and no dropout, weight decay or learning rate plateau. Performance is reported as Pearson correlation on the held-out test fold for HepG2, K562, and WTC11, with average performance and rank across cell types.
 
@@ -358,7 +360,9 @@ We varied the prediction head architecture and training hyperparameters while ke
 | lr-cosine      | 0.8399     | 0.8007     | 0.7605 | 0.8004     | 21   |
 
 
-### Stage 2 hyperparameter sweep for lentiMPRA with encoder unfreezing (fine-tuning regime). 
+### Stage 2
+
+Stage 2 was a hyperparameter sweep for lentiMPRA with encoder unfreezing (fine-tuning regime). 
 
 Starting from the best Stage 1 configuration, we varied the unfreezing schedule. s2-s1epN denotes unfreezing the encoder after N epochs of head-only training; s2-baseline denotes the default unfreezing schedule used in the main experiments (unfreezing triggered by validation loss plateau). Baseline used a single multilayer perceptron head of size 1024 with sum pooling, Adam optimiser and RELU activation, and no dropout, weight decay or learning rate plateau. All models used reverse complement and random shift augmentations. Performance is reported as Pearson correlation on the held-out test fold for HepG2, K562, and WTC11, with average performance and rank across cell types.
 
