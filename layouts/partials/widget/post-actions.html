@@ -23,9 +23,12 @@
 {{- $hasGiscus := and $commentsEnabled (eq $provider "giscus") $giscus.repo $giscus.repoID $giscus.category $giscus.categoryID -}}
 
 <section class="widget post-actions-widget" {{ if $hasGiscus }}data-repo="{{ $giscus.repo }}" data-category-id="{{ $giscus.categoryID }}" data-path="{{ $page.RelPermalink }}"{{ end }}>
-  <div class="post-actions-widget__like">
-    <a href="#comments" class="post-actions-widget__like-btn js-scroll-to-comments" aria-label="Scroll to comments to like or react">
-      <span aria-hidden="true">👍</span> Like<span class="js-like-count post-actions-widget__like-count"></span>
+  <div class="post-actions-widget__reactions">
+    <a href="#comments" class="post-actions-widget__reaction-btn js-scroll-to-comments" aria-label="Scroll to comments to like or react">
+      <span aria-hidden="true">👍</span><span class="js-like-count post-actions-widget__count"></span>
+    </a>
+    <a href="#comments" class="post-actions-widget__reaction-btn js-scroll-to-comments" aria-label="Scroll to comments">
+      <span class="post-actions-widget__comment-icon">{{ partial "helper/icon" "messages" }}</span><span class="js-comment-count post-actions-widget__count"></span>
     </a>
   </div>
   <div class="post-actions-widget__cite citation-box">
