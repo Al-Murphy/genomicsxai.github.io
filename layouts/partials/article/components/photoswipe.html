@@ -25,7 +25,43 @@
         const lightbox = new PhotoSwipeLightbox({
             gallerySelector: '.article-content',
             childSelector: 'figure a.image-link',
-            pswpModule: () => import("{{ $core | safeJS }}")
+            pswpModule: () => import("{{ $core | safeJS }}"),
+            initialZoomLevel: 'fit',
+            secondaryZoomLevel: 2.5,
+            maxZoomLevel: 8
+        });
+
+        lightbox.on('uiRegister', function () {
+            const zoomStep = 1.4;
+            const minZoom = 0.5;
+            lightbox.pswp.ui.registerElement({
+                name: 'zoom-in',
+                order: 9,
+                isButton: true,
+                ariaLabel: 'Zoom in',
+                html: '<svg aria-hidden="true" class="pswp__icn" viewBox="0 0 32 32" width="32" height="32"><path d="M18 14h-4v-4h-2v4H8v2h4v4h2v-4h4v-2z"/></svg>',
+                onClick: (e, el) => {
+                    const pswp = lightbox.pswp;
+                    if (!pswp.currSlide) return;
+                    const curr = pswp.currSlide.currZoomLevel;
+                    const next = Math.min(8, curr * zoomStep);
+                    if (next > curr) pswp.currSlide.zoomTo(next, { x: 0, y: 0 }, 200, false);
+                }
+            });
+            lightbox.pswp.ui.registerElement({
+                name: 'zoom-out',
+                order: 9,
+                isButton: true,
+                ariaLabel: 'Zoom out',
+                html: '<svg aria-hidden="true" class="pswp__icn" viewBox="0 0 32 32" width="32" height="32"><path d="M8 14h16v2H8z"/></svg>',
+                onClick: (e, el) => {
+                    const pswp = lightbox.pswp;
+                    if (!pswp.currSlide) return;
+                    const curr = pswp.currSlide.currZoomLevel;
+                    const next = Math.max(minZoom, curr / zoomStep);
+                    if (next < curr) pswp.currSlide.zoomTo(next, { x: 0, y: 0 }, 200, false);
+                }
+            });
         });
 
         lightbox.on('uiRegister', function () {

@@ -3,6 +3,28 @@
   display: flex !important;
 }
 
+/* Table of contents (right sidebar): smaller font and tighter spacing */
+.article-page .widget--toc .widget-title.section-title {
+  font-size: 1rem;
+  margin-bottom: 0.5em;
+}
+.article-page .widget--toc .toc-nav {
+  font-size: 0.85rem;
+}
+.article-page .widget--toc .toc-nav > ul {
+  padding: 0 0.5em;
+}
+.article-page .widget--toc .toc-nav li {
+  margin: 6px 0 6px 12px;
+  padding: 2px 0;
+}
+.article-page .widget--toc .toc-nav li > ul,
+.article-page .widget--toc .toc-nav li > ol {
+  margin-top: 4px;
+  padding-left: 8px;
+  margin-bottom: -2px;
+}
+
 /* Ensure blog article card and title are visible (theme uses these variables) */
 .article-page .main-article {
   background: var(--card-background);
@@ -164,6 +186,18 @@ article img {
   font-size: 0.9em;
   color: var(--card-text-color-secondary, #666);
   font-weight: normal;
+}
+
+/* PhotoSwipe lightbox: zoom in/out buttons in toolbar */
+.pswp__button--zoom-in,
+.pswp__button--zoom-out {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pswp__button--zoom-in .pswp__icn,
+.pswp__button--zoom-out .pswp__icn {
+  fill: currentColor;
 }
 
 /* PhotoSwipe lightbox: caption as a banner below the image */
