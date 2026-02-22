@@ -266,27 +266,33 @@ article img {
   margin: 1.25em 0;
 }
 
-/* Tighter list spacing: minimal gap before first bullet and between items */
+/* Minimal list spacing: no gap before first bullet, minimal between items */
 .main-article .article-content ul,
 .main-article .article-content ol {
-  margin: 0.35em 0 0.5em 1.5em !important;
+  margin: 0 0 0.25em 1.5em !important;
   padding-left: 1.5em;
 }
 .main-article .article-content li {
-  margin: 0.08em 0 !important;
-  padding: 0;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 .main-article .article-content ul ul,
 .main-article .article-content ul ol,
 .main-article .article-content ol ul,
 .main-article .article-content ol ol {
-  margin: 0.2em 0 0.2em 1.25em !important;
+  margin: 0 0 0.15em 1.25em !important;
 }
 .main-article .article-content ul ul li,
 .main-article .article-content ul ol li,
 .main-article .article-content ol ul li,
 .main-article .article-content ol ol li {
-  margin: 0.08em 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+/* Remove any gap between paragraph and following list */
+.main-article .article-content p + ul,
+.main-article .article-content p + ol {
+  margin-top: 0 !important;
 }
 
 .article-content h1,

@@ -12,6 +12,7 @@ jobs:
       contents: write
       pages: write
       id-token: write
+      discussions: write
     environment:
       name: github-pages
 
@@ -26,6 +27,14 @@ jobs:
       - uses: peaceiris/actions-hugo@v3
         with:
           extended: true
+
+      # 2.4. Ensure a GitHub Discussion exists for each blog post (for Giscus likes/comments)
+      - name: Ensure blog discussions
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          chmod +x .github/scripts/ensure-blog-discussions.sh
+          ./.github/scripts/ensure-blog-discussions.sh
 
       # 2.5. Fetch editorial board from GitHub team (optional: set GH_EDITORS_TOKEN with read:org)
       - name: Fetch editors from GitHub team
