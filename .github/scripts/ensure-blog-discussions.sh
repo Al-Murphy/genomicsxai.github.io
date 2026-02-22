@@ -8,7 +8,9 @@ set -e
 OWNER="${OWNER:-genomicsxai}"
 REPO="${REPO:-genomicsxai.github.io}"
 BLOGS_DIR="${BLOGS_DIR:-content/blogs}"
-API="${GITHUB_API_URL:-https://api.github.com/graphql}"
+# GraphQL endpoint: GITHUB_API_URL in Actions is https://api.github.com (no /graphql)
+BASE="${GITHUB_API_URL:-https://api.github.com}"
+API="${BASE%/}/graphql"
 TOKEN="${GH_TOKEN:-$GITHUB_TOKEN}"
 
 if [ -z "$TOKEN" ]; then
