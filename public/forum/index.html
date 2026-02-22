@@ -14,11 +14,11 @@
 2026 Genomics x AI</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=4.0.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a></section></footer><script type=module>
     import gallery from '\/ts\/gallery.js';
 
-    const articleContent = document.querySelector('.article-content');
-    const shouldLoad = articleContent && (articleContent.querySelectorAll('figure').length > 0 || articleContent.querySelectorAll('img.gallery-image').length > 0);
+    const mainArticle = document.querySelector('.main-article');
+    const hasImageLinks = mainArticle && mainArticle.querySelectorAll('figure a.image-link').length > 0;
 
-    if (shouldLoad) {
-        gallery(articleContent);
+    if (hasImageLinks) {
+        gallery(mainArticle);
 
         const PhotoSwipeLightbox = (await import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe-lightbox.esm.min.js")).default;
         const styleHref = "https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.css";
@@ -29,7 +29,7 @@
         document.head.appendChild(styleTag);
 
         const lightbox = new PhotoSwipeLightbox({
-            gallerySelector: '.article-content',
+            gallerySelector: '.main-article',
             childSelector: 'figure a.image-link',
             pswpModule: () => import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.esm.min.js"),
             initialZoomLevel: 'fit',

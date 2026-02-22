@@ -136,6 +136,17 @@
   color: var(--card-text-color-secondary, #555);
 }
 
+/* Posted and last updated dates below byline, above tags */
+.article-dates {
+  font-size: 0.9em;
+  margin-top: 0.35em;
+  color: var(--card-text-color-secondary, #666);
+}
+.article-dates__sep {
+  color: var(--card-text-color-secondary, #888);
+  margin: 0 0.15em;
+}
+
 /* Tags and reading time below byline on post page */
 .article-meta {
   font-size: 0.9em;
@@ -158,6 +169,14 @@
 }
 .article-meta__reading {
   font-variant-numeric: tabular-nums;
+}
+
+/* Header featured image: clickable, no extra spacing from figure */
+.article-page .article-header .article-image figure {
+  margin: 0;
+}
+.article-page .article-header .article-image figure a.image-link {
+  display: block;
 }
 
 /* Keep article images from overflowing; width= from markdown attributes is respected */

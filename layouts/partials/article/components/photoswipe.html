@@ -8,11 +8,11 @@
 <script type="module">
     import gallery from '{{ $galleryScript.RelPermalink }}';
 
-    const articleContent = document.querySelector('.article-content');
-    const shouldLoad = articleContent && (articleContent.querySelectorAll('figure').length > 0 || articleContent.querySelectorAll('img.gallery-image').length > 0);
+    const mainArticle = document.querySelector('.main-article');
+    const hasImageLinks = mainArticle && mainArticle.querySelectorAll('figure a.image-link').length > 0;
 
-    if (shouldLoad) {
-        gallery(articleContent);
+    if (hasImageLinks) {
+        gallery(mainArticle);
 
         const PhotoSwipeLightbox = (await import("{{ $lightbox | safeJS }}")).default;
         const styleHref = "{{ $style | safeJS }}";
@@ -23,7 +23,7 @@
         document.head.appendChild(styleTag);
 
         const lightbox = new PhotoSwipeLightbox({
-            gallerySelector: '.article-content',
+            gallerySelector: '.main-article',
             childSelector: 'figure a.image-link',
             pswpModule: () => import("{{ $core | safeJS }}"),
             initialZoomLevel: 'fit',
