@@ -37,6 +37,36 @@
 .post-actions-widget__cite .citation-box__text {
   display: none;
 }
+.post-actions-widget__like {
+  margin-bottom: 0.75rem;
+}
+.post-actions-widget__like-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  padding: 0.4em 0.7em;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--accent-color, #34495e);
+  background: transparent;
+  border: 1px solid rgba(52, 73, 94, 0.25);
+  border-radius: 6px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+.post-actions-widget__like-btn:hover {
+  color: var(--accent-color-darker, #2c3e50);
+  background: rgba(52, 73, 94, 0.06);
+  border-color: var(--accent-color, #34495e);
+}
+.post-actions-widget__like-count {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+.post-actions-widget__like-count:not(:empty) {
+  margin-left: 0.2em;
+}
 .post-actions-widget__cite .citation-box__actions {
   margin: 0;
 }
@@ -217,23 +247,27 @@ article img {
   margin: 1.25em 0;
 }
 
-/* Tighter list spacing: less gap before first bullet and between items */
-.article-content ul,
-.article-content ol {
-  margin: 0.5em 0 0.75em 1.5em;
+/* Tighter list spacing: minimal gap before first bullet and between items */
+.main-article .article-content ul,
+.main-article .article-content ol {
+  margin: 0.35em 0 0.5em 1.5em !important;
   padding-left: 1.5em;
 }
-.article-content li {
-  margin: 0.2em 0;
+.main-article .article-content li {
+  margin: 0.08em 0 !important;
+  padding: 0;
 }
-.article-content li + li {
-  margin-top: 0.2em;
+.main-article .article-content ul ul,
+.main-article .article-content ul ol,
+.main-article .article-content ol ul,
+.main-article .article-content ol ol {
+  margin: 0.2em 0 0.2em 1.25em !important;
 }
-.article-content ul ul,
-.article-content ul ol,
-.article-content ol ul,
-.article-content ol ol {
-  margin: 0.25em 0 0.25em 1.25em;
+.main-article .article-content ul ul li,
+.main-article .article-content ul ol li,
+.main-article .article-content ol ul li,
+.main-article .article-content ol ol li {
+  margin: 0.08em 0 !important;
 }
 
 .article-content h1,

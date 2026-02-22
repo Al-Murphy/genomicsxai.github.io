@@ -17,8 +17,17 @@
 {{- $shareUrl := $page.Permalink | absURL -}}
 {{- $shareText := $page.Title -}}
 {{- $linkedInUrl := printf "https://www.linkedin.com/sharing/share-offsite/?url=%s" $shareUrl -}}
+{{- $commentsEnabled := $page.Site.Params.comments.enabled -}}
+{{- $provider := $page.Site.Params.comments.provider | default "" -}}
+{{- $giscus := $page.Site.Params.comments.giscus -}}
+{{- $hasGiscus := and $commentsEnabled (eq $provider "giscus") $giscus.repo $giscus.repoID $giscus.category $giscus.categoryID -}}
 
-<section class="widget post-actions-widget">
+<section class="widget post-actions-widget" {{ if $hasGiscus }}data-repo="{{ $giscus.repo }}" data-category-id="{{ $giscus.categoryID }}" data-path="{{ $page.RelPermalink }}"{{ end }}>
+  <div class="post-actions-widget__like">
+    <a href="#comments" class="post-actions-widget__like-btn js-scroll-to-comments" aria-label="Scroll to comments to like or react">
+      <span aria-hidden="true">👍</span> Like<span class="js-like-count post-actions-widget__like-count"></span>
+    </a>
+  </div>
   <div class="post-actions-widget__cite citation-box">
     <div class="post-actions-widget__cite-actions">
       <button type="button" class="citation-btn citation-copy-btn post-actions-widget__btn" data-citation-data="{{ $citationData | jsonify | safeHTMLAttr }}">Cite</button>
