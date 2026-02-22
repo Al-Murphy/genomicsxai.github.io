@@ -23,7 +23,7 @@ categories: ["Blog Post"]
 # One or more: protocols, tutorials, negative-results, discussions, insights, ideas
 scope: ["insights"]
 # One or more: within-field, general, intro-to-field
-audience: ["within-field"]
+audience: ["general"]
 labs: ["Koo lab"]
 
 status: "submitted"

@@ -30,6 +30,25 @@ enableRobotsTXT = true
   # Enable KaTeX math on all blog posts (inline $...$ and block $$...$$)
   math = true
 
+# Comments: set enabled = true and add Giscus IDs from https://giscus.app (use repo genomicsxai/genomicsxai.github.io)
+[params.comments]
+  enabled = false
+  provider = "giscus"
+  [params.comments.giscus]
+    repo = "genomicsxai/genomicsxai.github.io"
+    repoID = ""           # from giscus.app
+    category = "Post Discussions"
+    categoryID = ""       # from giscus.app
+    mapping = "pathname"
+    strict = 0
+    reactionsEnabled = 1
+    emitMetadata = 0
+    inputPosition = "bottom"
+    lightTheme = "light"
+    darkTheme = "dark_dimmed"
+    lang = "en"
+    loading = "lazy"
+
 # Homepage right sidebar: filter by tags, scope, audience, lab, author, and archives by year
 # Page (blog post) right sidebar: table of contents by default
 [params.widgets]

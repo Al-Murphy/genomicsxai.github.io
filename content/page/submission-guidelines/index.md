@@ -32,6 +32,18 @@ The Genomics × AI blog uses a Git-native, PR-based submission workflow. All sub
    - The post will be automatically deployed via GitHub Actions  
    - Your post will appear on the blog  
 
+### Getting notified of comments and likes
+
+Comments and likes on the blog use **GitHub Discussions**. To get notified when someone comments or reacts to your post:
+
+1. **Watch the repository**  
+   On the [repo page](https://github.com/genomicsxai/genomicsxai.github.io), click **Watch** → **Custom** → enable **Discussions**. You’ll get GitHub notifications (and email if your GitHub settings allow it) for new discussions and comments.
+
+2. **Subscribe to your post’s discussion**  
+   Once your post has at least one comment or reaction, a discussion is created under [Post Discussions](https://github.com/genomicsxai/genomicsxai.github.io/discussions/categories/post-discussions). Open your post’s discussion and click **Subscribe** (top right) to get notified only for that thread.
+
+Editors and maintainers can use the same options to follow all post activity.
+
 ### Writing Note
 
 There is no strict criteria on the style that your blog post should follow but aim to make it clear and engaging!

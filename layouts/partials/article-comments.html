@@ -1,0 +1,41 @@
+{{- $commentsEnabled := .Site.Params.comments.enabled -}}
+{{- $provider := .Site.Params.comments.provider | default "" -}}
+{{- $useGiscus := and $commentsEnabled (eq $provider "giscus") -}}
+{{- $giscus := .Site.Params.comments.giscus -}}
+{{- $hasGiscus := and $useGiscus $giscus.repo $giscus.repoID $giscus.category $giscus.categoryID -}}
+{{- $discussURL := "https://github.com/genomicsxai/genomicsxai.github.io/discussions/categories/post-discussions" -}}
+
+<section class="article-comments" id="comments">
+  <h2 class="article-comments__title">Comments</h2>
+  <div class="article-comments__actions">
+    <a href="#comments" class="article-comments__like js-scroll-to-comments" aria-label="Like this post (add a reaction in comments)">
+      <span class="article-comments__like-icon" aria-hidden="true">👍</span>
+      <span>Like</span>
+    </a>
+    {{ if not $hasGiscus }}
+    <span class="article-comments__sep">·</span>
+    <a href="{{ $discussURL }}" target="_blank" rel="noopener" class="article-comments__discuss link">Discuss this post on GitHub</a>
+    {{ end }}
+    <span class="article-comments__sep">·</span>
+    <a href="/submission-guidelines/#getting-notified-of-comments-and-likes" class="article-comments__author-notify link">Authors: get notified</a>
+  </div>
+  {{ if $hasGiscus }}
+  <div class="giscus article-comments__embed"></div>
+  {{ partial "comments/include" . }}
+  {{ else if $commentsEnabled }}
+  {{ partial "comments/include" . }}
+  {{ end }}
+</section>
+<script>
+(function() {
+  document.querySelectorAll('.js-scroll-to-comments').forEach(function(el) {
+    el.addEventListener('click', function(e) {
+      var target = document.getElementById('comments');
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+})();
+</script>
