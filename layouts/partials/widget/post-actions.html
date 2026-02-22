@@ -10,7 +10,9 @@
 {{- $authorStr := delimit $authorNames ", " -}}
 {{- $blogName := $page.Params.blog_name | default (site.Data.blog.blog_name | default "Genomics × AI Blog") -}}
 {{- $year := $page.Date | dateFormat "2006" -}}
-{{- $citationPlain := printf "%s. \"%s.\" %s, %s." $authorStr $page.Title $blogName $year -}}
+{{- $fullDate := $page.Date | dateFormat "2 January 2006" -}}
+{{- $citeUrl := $page.Permalink | absURL -}}
+{{- $citationPlain := printf "%s. \"%s.\" %s, %s. %s" $authorStr $page.Title $blogName $fullDate $citeUrl -}}
 {{- $citationData := dict "citation" $citationPlain "title" $page.Title "authors" $authorNames "year" $year "doi" ($page.Params.doi | default "") "postId" ($page.Params.post_id | default "") "url" $page.Permalink "blogName" $blogName -}}
 {{- $shareUrl := $page.Permalink | absURL -}}
 {{- $shareText := $page.Title -}}
@@ -18,8 +20,12 @@
 
 <section class="widget post-actions-widget">
   <div class="post-actions-widget__cite citation-box">
-    <button type="button" class="citation-btn citation-copy-btn post-actions-widget__btn" data-citation-data="{{ $citationData | jsonify | safeHTMLAttr }}">Cite</button>
-    <span class="citation-copy-feedback" aria-live="polite"></span>
+    <div class="post-actions-widget__cite-actions">
+      <button type="button" class="citation-btn citation-copy-btn post-actions-widget__btn" data-citation-data="{{ $citationData | jsonify | safeHTMLAttr }}">Cite</button>
+      <span class="citation-copy-feedback" aria-live="polite"></span>
+      <button type="button" class="citation-btn citation-download-btn post-actions-widget__btn" data-download="bib" data-citation-data="{{ $citationData | jsonify | safeHTMLAttr }}">BibTeX</button>
+      <button type="button" class="citation-btn citation-download-btn post-actions-widget__btn" data-download="ris" data-citation-data="{{ $citationData | jsonify | safeHTMLAttr }}">RIS</button>
+    </div>
   </div>
   <div class="post-actions-widget__share">
     <span class="post-actions-widget__label">Share</span>

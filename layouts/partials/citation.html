@@ -8,7 +8,9 @@
 {{- $authorStr := delimit $authorNames ", " -}}
 {{- $blogName := .Params.blog_name | default (site.Data.blog.blog_name | default "Genomics × AI Blog") -}}
 {{- $year := .Date | dateFormat "2006" -}}
-{{- $citationPlain := printf "%s. \"%s.\" %s, %s." $authorStr .Title $blogName $year -}}
+{{- $fullDate := .Date | dateFormat "2 January 2006" -}}
+{{- $url := .Permalink | absURL -}}
+{{- $citationPlain := printf "%s. \"%s.\" %s, %s. %s" $authorStr .Title $blogName $fullDate $url -}}
 {{- $citationData := dict "citation" $citationPlain "title" .Title "authors" $authorNames "year" $year "doi" (.Params.doi | default "") "postId" (.Params.post_id | default "") "url" .Permalink "blogName" $blogName -}}
 
 <div class="citation-box">
@@ -17,7 +19,8 @@
     {{ $authorStr }}.
     "{{ .Title }}."
     <em>{{ $blogName }}</em>,
-    {{ $year }}.
+    {{ $fullDate }}.
+    <a href="{{ $url }}">{{ $url }}</a>.
     {{ with .Params.doi }} <a href="https://doi.org/{{ . }}">DOI: {{ . }}</a>{{ end }}
   </p>
   <div class="citation-box__actions">
