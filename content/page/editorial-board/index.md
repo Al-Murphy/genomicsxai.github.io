@@ -17,8 +17,8 @@ The Steering Committee sets the strategic vision and scope of the platform. Resp
 
 ### Current Steering Committee
 
-* Peter K Koo (Affiliation)
-* Anshul Kundaje (Affiliation)
+* Peter K Koo (Cold Spring Harbor Laboratory)
+* Anshul Kundaje (Stanford University)
 
 ## Editorial Team
 
