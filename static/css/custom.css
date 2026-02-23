@@ -266,39 +266,40 @@ article img {
   margin: 1.25em 0;
 }
 
-/* Minimal list spacing: no gap before first bullet, minimal between items */
-.main-article .article-content ul,
-.main-article .article-content ol {
+/* Minimal list spacing: no gap before first bullet, minimal between items.
+   Use .article-page .main-article so we match/beat theme specificity. */
+.article-page .main-article .article-content ul,
+.article-page .main-article .article-content ol {
   margin: 0 0 0.25em 1.5em !important;
   padding-left: 1.5em;
 }
-.main-article .article-content li {
+.article-page .main-article .article-content li {
   margin: 0 !important;
   padding: 0 !important;
 }
 /* Paragraphs inside list items: remove large block margin so bullets stay tight */
-.main-article .article-content li p {
+.article-page .main-article .article-content li p {
   margin: 0 !important;
 }
-.main-article .article-content li p + p {
+.article-page .main-article .article-content li p + p {
   margin-top: 0.35em !important;
 }
-.main-article .article-content ul ul,
-.main-article .article-content ul ol,
-.main-article .article-content ol ul,
-.main-article .article-content ol ol {
+.article-page .main-article .article-content ul ul,
+.article-page .main-article .article-content ul ol,
+.article-page .main-article .article-content ol ul,
+.article-page .main-article .article-content ol ol {
   margin: 0 0 0.15em 1.25em !important;
 }
-.main-article .article-content ul ul li,
-.main-article .article-content ul ol li,
-.main-article .article-content ol ul li,
-.main-article .article-content ol ol li {
+.article-page .main-article .article-content ul ul li,
+.article-page .main-article .article-content ul ol li,
+.article-page .main-article .article-content ol ul li,
+.article-page .main-article .article-content ol ol li {
   margin: 0 !important;
   padding: 0 !important;
 }
 /* Remove any gap between paragraph and following list */
-.main-article .article-content p + ul,
-.main-article .article-content p + ol {
+.article-page .main-article .article-content p + ul,
+.article-page .main-article .article-content p + ol {
   margin-top: 0 !important;
 }
 

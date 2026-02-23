@@ -233,7 +233,7 @@ Finally, how can you use this approach:
 
 This analysis uses the native jax/haiku AlphaGenome wrapper package  which is available from the [Genomics x AI community github](https://github.com/genomicsxai/alphagenome_ft) (more on this in a future post) and all code to run the analysis is [here](https://github.com/Al-Murphy/alphagenome_FT_MPRA).
 
-But here is a minimum script or if you would prefer to run it yourself on lentiMPRA data, see our [colab notebook](https://colab.research.google.com/github/genomicsxai/alphagenome_ft/blob/main/notebooks/colab_encoder_only_mpra_finetune.ipynb):
+But here is a minimum script or if you would prefer to run it yourself on lentiMPRA data, see our [colab notebook](https://colab.research.google.com/github/genomicsxai/alphagenome_ft/blob/main/notebooks/finetune_encoder_only_mpra.ipynb):
 
 ### Tutorial
 
