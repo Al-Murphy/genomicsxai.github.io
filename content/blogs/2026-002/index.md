@@ -7,7 +7,7 @@ image: "modular_generalists_manuscript.png"
 math: true
 
 # Author(s): list of names (used for /authors/<slug>/)
-authors: ["Alan Murphy"]
+authors: ["Alan Murphy", "Peter Koo"]
 
 # Optional: full details for citation and JSON-LD
 authors_display:

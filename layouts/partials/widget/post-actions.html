@@ -30,11 +30,8 @@
 
 <section class="widget post-actions-widget" {{ if $hasGiscus }}data-repo="{{ $giscus.repo }}" data-category-id="{{ $giscus.categoryID }}" data-path="{{ $page.RelPermalink }}"{{ end }}>
   <div class="post-actions-widget__reactions">
-    {{- if $hasGiscus -}}
-    <a href="#comments" class="post-actions-widget__reaction-btn js-scroll-to-comments" aria-label="Scroll to comments to like or react">
-    {{- else -}}
-    <a href="{{ $discussURL }}" target="_blank" rel="noopener" class="post-actions-widget__reaction-btn" aria-label="Like or react on GitHub">
-    {{- end -}}
+    {{- /* Like = react to the post (the discussion) on GitHub */ -}}
+    <a href="{{ $discussURL }}" target="_blank" rel="noopener" class="post-actions-widget__reaction-btn" aria-label="Like or react to this post on GitHub">
       <span aria-hidden="true">👍</span><span class="js-like-count post-actions-widget__count"></span>
     </a>
     {{- if $hasGiscus -}}
