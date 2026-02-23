@@ -13,16 +13,9 @@
 <section class="article-comments" id="comments" {{ if $hasGiscus }}data-repo="{{ $giscus.repo }}" data-category-id="{{ $giscus.categoryID }}" data-path="{{ .RelPermalink }}"{{ end }}>
   <h2 class="article-comments__title">Comments</h2>
   <div class="article-comments__actions">
-    {{- /* Like = react to the post (the discussion). Open discussion on GitHub so users can add a reaction. */ -}}
-    <a href="{{ $discussURL }}" target="_blank" rel="noopener" class="article-comments__like" aria-label="Like or react to this post on GitHub">
-      <span class="article-comments__like-icon" aria-hidden="true">👍</span>
-      <span>Like</span><span class="article-comments__like-count js-like-count"></span>
-    </a>
     {{- if $hasGiscus -}}
-    <span class="article-comments__sep">·</span>
     <a href="#comments" class="article-comments__discuss link js-scroll-to-comments">Comment below</a>
     {{- else -}}
-    <span class="article-comments__sep">·</span>
     <a href="{{ $discussURL }}" target="_blank" rel="noopener" class="article-comments__discuss link">Discuss this post on GitHub</a>
     {{- end -}}
     <span class="article-comments__sep">·</span>

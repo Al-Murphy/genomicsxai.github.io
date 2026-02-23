@@ -30,16 +30,16 @@
 
 <section class="widget post-actions-widget" {{ if $hasGiscus }}data-repo="{{ $giscus.repo }}" data-category-id="{{ $giscus.categoryID }}" data-path="{{ $page.RelPermalink }}"{{ end }}>
   <div class="post-actions-widget__reactions">
-    {{- /* Like = react to the post (the discussion) on GitHub */ -}}
-    <a href="{{ $discussURL }}" target="_blank" rel="noopener" class="post-actions-widget__reaction-btn" aria-label="Like or react to this post on GitHub">
-      <span aria-hidden="true">👍</span><span class="js-like-count post-actions-widget__count"></span>
+    {{- /* Like: scroll to bottom where Giscus reaction button is */ -}}
+    <a href="#comments" class="post-actions-widget__reaction-btn js-scroll-to-comments" aria-label="Scroll to comments to like or react">
+      <span aria-hidden="true">👍</span><span class="post-actions-widget__count js-like-count" aria-hidden="true"></span>
     </a>
     {{- if $hasGiscus -}}
     <a href="#comments" class="post-actions-widget__reaction-btn js-scroll-to-comments" aria-label="Scroll to comments">
     {{- else -}}
     <a href="{{ $discussURL }}" target="_blank" rel="noopener" class="post-actions-widget__reaction-btn" aria-label="Comment on GitHub">
     {{- end -}}
-      <span class="post-actions-widget__comment-icon">{{ partial "helper/icon" "messages" }}</span><span class="js-comment-count post-actions-widget__count"></span>
+      <span class="post-actions-widget__comment-icon">{{ partial "helper/icon" "messages" }}</span><span class="post-actions-widget__count js-comment-count" aria-hidden="true"></span>
     </a>
   </div>
   <div class="post-actions-widget__cite citation-box">

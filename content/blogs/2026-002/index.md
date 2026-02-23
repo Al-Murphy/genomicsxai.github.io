@@ -157,7 +157,7 @@ Progressive unfreezing provided modest gains, with a slight benefit from delayin
 
 ## Transfer to regulatory variant prediction (CAGI5)
 
-We next evaluated all models on the CAGI5 benchmark — we wanted to know if we also seen performance advantages for downstream applications.
+We next evaluated all models on the [CAGI5 benchmark](http://www.genomeinterpretation.org/cagi5-regulation-saturation.html) which provides experimentally measured effects of thousands of regulatory variants, making it a standard test for evaluating how well models predict functional impacts beyond the training assay.
 
 Key findings
 
