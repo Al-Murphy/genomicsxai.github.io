@@ -4,23 +4,42 @@ date: 2026-01-01
 url: "/editorial-board/"
 ---
 
+## Editorial Governance
+The Genomics × AI blog is guided by a Steering Committee and supported by an Editorial Board. Together they define scope, standards, and long term direction.
+
+## Steering Committee
+The Steering Committee sets the strategic vision and scope of the platform. Responsibilities include:
+
+* Defining the scientific mission and scope
+* Setting editorial policies and quality standards
+* Appointing members of the Editorial Board
+* Overseeing community growth and partnerships
+
+### Current Steering Committee
+
+* Peter K Koo (Affiliation)
+* Anshul Kundaje (Affiliation)
+
 ## Editorial Team
 
-The Genomics × AI blog is managed by a team of editors who review submissions and ensure quality standards.
+The Editorial Board oversees content review and maintains scientific and community standards. Board members:
 
-### Editors
+* Manage peer-style review via GitHub Pull Requests
+* Provide structured feedback to authors
+* Ensure scientific accuracy and clarity
+* Enforce submission and community guidelines
+* Editorial decisions are made collaboratively when needed.
 
-Editors review submissions via GitHub Pull Requests and provide feedback to authors. They ensure that:
-
-- Content meets quality and relevance standards  
-- Scientific accuracy is maintained  
-- Submission guidelines are followed  
-- Community standards are upheld  
-
-### Current Editors
+### Current Editorial Board
 
 {{< editors-list >}}
 
-### Becoming an Editor
+### Becoming Involved
 
-If you're interested in joining the editorial board, please contact us through [GitHub Discussions](https://github.com/genomicsxai/genomicsxai.github.io/discussions).
+If you are interested in:
+
+* Joining the Editorial Board
+* Serving as a reviewer
+* Contributing as an author
+
+Please contact us through [GitHub Discussions](https://github.com/genomicsxai/genomicsxai.github.io/discussions).
