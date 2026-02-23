@@ -23,8 +23,17 @@
 {{- $hasGiscus := and $commentsEnabled (eq $provider "giscus") $giscus.repo $giscus.repoID $giscus.category $giscus.categoryID -}}
 {{- $categoryURL := "https://github.com/genomicsxai/genomicsxai.github.io/discussions/categories/post-discussions" -}}
 {{- $postDiscussURL := "" -}}
+{{- $reactions := 0 -}}
+{{- $comments := 0 -}}
 {{- if $page.Site.Data.discussions -}}
-  {{- $postDiscussURL = index $page.Site.Data.discussions $page.RelPermalink | default "" -}}
+  {{- $d := index $page.Site.Data.discussions $page.RelPermalink -}}
+  {{- if reflect.IsMap $d -}}
+    {{- $postDiscussURL = $d.url | default "" -}}
+    {{- $reactions = $d.reactions | default 0 -}}
+    {{- $comments = $d.comments | default 0 -}}
+  {{- else -}}
+    {{- $postDiscussURL = $d | default "" -}}
+  {{- end -}}
 {{- end -}}
 {{- $discussURL := $postDiscussURL | default $categoryURL -}}
 
@@ -32,14 +41,14 @@
   <div class="post-actions-widget__reactions">
     {{- /* Like: scroll to bottom where Giscus reaction button is */ -}}
     <a href="#comments" class="post-actions-widget__reaction-btn js-scroll-to-comments" aria-label="Scroll to comments to like or react">
-      <span aria-hidden="true">👍</span><span class="post-actions-widget__count js-like-count" aria-hidden="true"></span>
+      <span aria-hidden="true">👍</span><span class="post-actions-widget__count js-like-count" aria-hidden="true">{{ $reactions }}</span>
     </a>
     {{- if $hasGiscus -}}
     <a href="#comments" class="post-actions-widget__reaction-btn js-scroll-to-comments" aria-label="Scroll to comments">
     {{- else -}}
     <a href="{{ $discussURL }}" target="_blank" rel="noopener" class="post-actions-widget__reaction-btn" aria-label="Comment on GitHub">
     {{- end -}}
-      <span class="post-actions-widget__comment-icon">{{ partial "helper/icon" "messages" }}</span><span class="post-actions-widget__count js-comment-count" aria-hidden="true"></span>
+      <span class="post-actions-widget__comment-icon">{{ partial "helper/icon" "messages" }}</span><span class="post-actions-widget__count js-comment-count" aria-hidden="true">{{ $comments }}</span>
     </a>
   </div>
   <div class="post-actions-widget__cite citation-box">

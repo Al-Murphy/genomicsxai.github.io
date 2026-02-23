@@ -208,15 +208,18 @@
   color: var(--card-text-color-secondary, #555);
 }
 .article-meta__tags,
+.article-meta__labs,
 .article-meta__audience {
   display: inline;
 }
 .article-meta__tag,
+.article-meta__lab,
 .article-meta__audience-link {
   color: inherit;
   text-decoration: none;
 }
 .article-meta__tag:hover,
+.article-meta__lab:hover,
 .article-meta__audience-link:hover {
   text-decoration: underline;
 }

@@ -6,7 +6,12 @@
 {{- $categoryURL := "https://github.com/genomicsxai/genomicsxai.github.io/discussions/categories/post-discussions" -}}
 {{- $postDiscussURL := "" -}}
 {{- if .Site.Data.discussions -}}
-  {{- $postDiscussURL = index .Site.Data.discussions .RelPermalink | default "" -}}
+  {{- $d := index .Site.Data.discussions .RelPermalink -}}
+  {{- if reflect.IsMap $d -}}
+    {{- $postDiscussURL = $d.url | default "" -}}
+  {{- else -}}
+    {{- $postDiscussURL = $d | default "" -}}
+  {{- end -}}
 {{- end -}}
 {{- $discussURL := $postDiscussURL | default $categoryURL -}}
 
@@ -50,47 +55,6 @@
         document.addEventListener('DOMContentLoaded', function() { setTimeout(doScroll, 100); });
       } else {
         setTimeout(doScroll, 100);
-      }
-    }
-  }
-
-  var containers = document.querySelectorAll('[data-repo][data-category-id][data-path]');
-  var first = containers[0];
-  if (first) {
-    var repo = first.getAttribute('data-repo');
-    var categoryId = first.getAttribute('data-category-id');
-    var path = first.getAttribute('data-path') || '';
-    var likeEls = document.querySelectorAll('.js-like-count');
-    var commentEls = document.querySelectorAll('.js-comment-count');
-    if (repo && categoryId && (likeEls.length || commentEls.length)) {
-      var parts = repo.split('/');
-      var owner = parts[0];
-      var name = parts[1] || '';
-      if (owner && name) {
-        fetch('https://api.github.com/graphql', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            query: 'query($owner: String!, $name: String!, $categoryId: ID!) { repository(owner: $owner, name: $name) { discussions(first: 100, categoryId: $categoryId) { nodes { title reactions { totalCount } comments(first: 0) { totalCount } } } } }',
-            variables: { owner: owner, name: name, categoryId: categoryId }
-          })
-        }).then(function(r) { return r.json(); }).then(function(data) {
-          var nodes = data.data && data.data.repository && data.data.repository.discussions && data.data.repository.discussions.nodes ? data.data.repository.discussions.nodes : [];
-          var likeN = 0, commentN = 0;
-          for (var i = 0; i < nodes.length; i++) {
-            if (nodes[i].title && nodes[i].title.indexOf(path) !== -1) {
-              likeN = nodes[i].reactions && nodes[i].reactions.totalCount != null ? nodes[i].reactions.totalCount : 0;
-              commentN = nodes[i].comments && nodes[i].comments.totalCount != null ? nodes[i].comments.totalCount : 0;
-              break;
-            }
-          }
-          for (var j = 0; j < likeEls.length; j++) {
-            if (likeEls[j]) likeEls[j].textContent = String(likeN);
-          }
-          for (var k = 0; k < commentEls.length; k++) {
-            if (commentEls[k]) commentEls[k].textContent = String(commentN);
-          }
-        }).catch(function() {});
       }
     }
   }

@@ -40,6 +40,28 @@ revision_history:
     notes: "Initial submission"
 ---
 
+## Summary
+
+Foundation sequence-to-function models like AlphaGenome and Enformer are trained on ~1 Mb genomic windows to predict thousands of regulatory tracks. We show that their most transferable component is the convolutional encoder that learns local cis-regulatory grammar.
+
+By extracting this encoder from the long-range transformer and decoder modules, we:
+
+* achieve state-of-the-art performance on MPRA, STARR-seq, and CAGI5 benchmarks
+
+* reduce inference cost by ~500×
+
+* generalise across assays, species, and architectures
+
+This reframes foundation genomics models as modular regulatory representation engines, reusable for short perturbation sequences (100–300 bp) and regulatory design workflows.
+
+Code:
+
+AlphaGenome fine-tuning utilities: https://github.com/genomicsxai/alphagenome_ft
+
+Full analysis and experiments: https://github.com/Al-Murphy/alphagenome_FT_MPRA
+
+---
+
 Foundation-scale sequence-to-function models have rapidly advanced regulatory genomics. Architectures like [AlphaGenome](https://www.nature.com/articles/s41586-025-10014-0) and [Enformer](https://www.nature.com/articles/s41592-021-01252-x) predict thousands of regulatory tracks across large genomic contexts and achieve impressive genome-wide accuracy (hence the term generalists).
 
 > _Side note:_ sequence-to-function (seq2func) models learn a direct mapping from DNA sequence to one or more experimentally measured molecular readouts from assays such as chromatin accessibility, transcription factor binding, or gene expression.
@@ -218,7 +240,7 @@ All of these would be really interesting future directions.
 
 ---
 
-## Takeaway — the TLDR
+## Takeaway — the TL;DR
 
 Foundation seq2func models are typically used as monolithic predictors.
 
@@ -227,6 +249,8 @@ A modular view reveals something more useful:
 > Their encoders are transferable regulatory representation modules.
 
 Extracting and adapting these representations enables efficient perturbation modeling, fair cross-model comparison, and scalable regulatory design workflows.
+
+---
 
 ## Code
 
@@ -325,6 +349,37 @@ def train_step(params, state, opt_state, batch_sequences, batch_targets):
 
 ```
 
+---
+
+## Conclusion — bridging genome-scale models and perturbation assays
+
+Foundation sequence-to-function models are built for megabase context and genome-wide prediction. We show that their most transferable asset is much smaller: the convolutional encoder that learns _cis_-regulatory grammar.
+
+By isolating this module, we:
+
+* repurpose genome-scale pretrained representations for 100–300 bp perturbation sequences
+
+* eliminate unnecessary long-range context machinery in assays that isolate regulatory elements
+
+* achieve state-of-the-art MPRA, STARR-seq and CAGI5 benchmark performance
+
+* reduce inference cost by orders of magnitude
+
+* generalise the approach across architectures
+
+Despite being trained on ~1 Mb inputs, the AlphaGenome encoder adapts cleanly to >=128 bp sequences — matching the scale at which _cis_-regulatory logic operates in perturbation assays.
+
+> This reframes foundation genomics models not as monolithic predictors, but as modular regulatory representation engines that can be embedded directly into perturbation, design, and variant-effect workflows.
+
+### Code
+
+Implementation and reproducible experiments:
+https://github.com/Al-Murphy/alphagenome_FT_MPRA
+
+AlphaGenome encoder fine-tuning utilities:
+https://github.com/genomicsxai/alphagenome_ft
+
+---
 
 ## Hyperparameter sweep results
 
