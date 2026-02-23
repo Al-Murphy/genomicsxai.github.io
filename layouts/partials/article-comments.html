@@ -84,8 +84,12 @@
               break;
             }
           }
-          for (var j = 0; j < likeEls.length; j++) { likeEls[j].textContent = likeN > 0 ? likeN : ''; }
-          for (var k = 0; k < commentEls.length; k++) { commentEls[k].textContent = commentN > 0 ? commentN : ''; }
+          for (var j = 0; j < likeEls.length; j++) {
+            if (likeEls[j]) likeEls[j].textContent = String(likeN);
+          }
+          for (var k = 0; k < commentEls.length; k++) {
+            if (commentEls[k]) commentEls[k].textContent = String(commentN);
+          }
         }).catch(function() {});
       }
     }
