@@ -276,6 +276,13 @@ article img {
   margin: 0 !important;
   padding: 0 !important;
 }
+/* Paragraphs inside list items: remove large block margin so bullets stay tight */
+.main-article .article-content li p {
+  margin: 0 !important;
+}
+.main-article .article-content li p + p {
+  margin-top: 0.35em !important;
+}
 .main-article .article-content ul ul,
 .main-article .article-content ul ol,
 .main-article .article-content ol ul,
