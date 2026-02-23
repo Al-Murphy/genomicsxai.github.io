@@ -13,32 +13,33 @@
     {{ end }}
   </span>
   {{ end }}
-  {{ if $hasLabs }}
-  {{ if $hasTags }}<span class="article-meta__sep"> · </span>{{ end }}
-  <span class="article-meta__label">Lab</span>
-  <span class="article-meta__labs">
-    {{- $labTerms := .GetTerms "labs" -}}
-    {{- if $labTerms -}}
-      {{- range $i, $term := $labTerms -}}
-        {{- if $i }}, {{ end -}}
-        <a href="{{ $term.RelPermalink }}" class="article-meta__lab link">{{ $term.LinkTitle }}</a>
-      {{- end -}}
-    {{- else -}}
-      {{- $list := .Params.labs -}}
-      {{- if reflect.IsSlice $list -}}
-        {{- range $i, $name := $list -}}
-          {{- if $i }}, {{ end -}}
-          <span class="article-meta__lab">{{ $name }}</span>
-        {{- end -}}
-      {{- else -}}
-        <span class="article-meta__lab">{{ $list }}</span>
-      {{- end -}}
-    {{- end -}}
-  </span>
-  {{ end }}
-  {{ if and (or $hasTags $hasLabs) $showReadingTime }}<span class="article-meta__sep"> · </span>{{ end }}
+  {{ if and $hasTags $showReadingTime }}<span class="article-meta__sep"> · </span>{{ end }}
   {{ if $showReadingTime }}
   <time class="article-meta__reading" datetime="PT{{ .ReadingTime }}M">{{ T "article.readingTime" .ReadingTime }}</time>
+  {{ end }}
+  {{ if $hasLabs }}
+  <div class="article-meta__row">
+    <span class="article-meta__label">Lab</span>
+    <span class="article-meta__labs">
+      {{- $labTerms := .GetTerms "labs" -}}
+      {{- if $labTerms -}}
+        {{- range $i, $term := $labTerms -}}
+          {{- if $i }}, {{ end -}}
+          <a href="{{ $term.RelPermalink }}" class="article-meta__lab link">{{ $term.LinkTitle }}</a>
+        {{- end -}}
+      {{- else -}}
+        {{- $list := .Params.labs -}}
+        {{- if reflect.IsSlice $list -}}
+          {{- range $i, $name := $list -}}
+            {{- if $i }}, {{ end -}}
+            <span class="article-meta__lab">{{ $name }}</span>
+          {{- end -}}
+        {{- else -}}
+          <span class="article-meta__lab">{{ $list }}</span>
+        {{- end -}}
+      {{- end -}}
+    </span>
+  </div>
   {{ end }}
   {{ if $hasAudience }}
   <div class="article-meta__row">

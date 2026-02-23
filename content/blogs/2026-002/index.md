@@ -42,11 +42,13 @@ revision_history:
 
 ## Summary
 
+This post provides a high-level overview of how to use the [AlphaGenome](https://www.nature.com/articles/s41586-025-10014-0) and [Enformer](https://www.nature.com/articles/s41592-021-01252-x) repositories to extract modular convolutional encoders for short sequences — including links to the GitHub repositories — and summarises the results we achieved on perturbation assays.
+
 Foundation sequence-to-function models like AlphaGenome and Enformer are trained on ~1 Mb genomic windows to predict thousands of regulatory tracks. We show that their most transferable component is the convolutional encoder that learns local cis-regulatory grammar.
 
 By extracting this encoder from the long-range transformer and decoder modules, we:
 
-* achieve state-of-the-art performance on MPRA, STARR-seq, and CAGI5 benchmarks
+* achieve state-of-the-art performance on [MPRA](https://www.nature.com/articles/s41586-024-08430-9), [STARR-seq](https://www.nature.com/articles/s41588-022-01048-5), and [CAGI5](http://www.genomeinterpretation.org/cagi5-regulation-saturation.html) benchmarks
 
 * reduce inference cost by ~500×
 
@@ -88,7 +90,7 @@ Modern seq2func models like AlphaGenome can be decomposed into three functional 
 
 3. Task decoder - predicts assay-specific outputs
 
-For short perturbation sequences assayed in isolation — such as MPRA constructs that test cis-regulatory activity outside their native chromosomal context — long-range genomic interactions are largely absent, so distal context modeling is often unnecessary. The encoder, however, contains rich regulatory representations learned from genome-scale supervision. We extract and reuse this encoder - see the image below:
+For short perturbation sequences assayed in isolation — such as MPRA constructs that test _cis_-regulatory activity outside their native chromosomal context — long-range genomic interactions are largely absent, so distal context modeling is often unnecessary. The encoder, however, contains rich regulatory representations learned from genome-scale supervision. We extract and reuse this encoder - see the image below:
 
 ![Generalist seq2func models as modular regulatory encoders](modular_generalists_manuscript.png "width=1000 Generalist seq2func models as modular regulatory encoders. Left, AlphaGenome's U-Net architecture with encoder, long-range context integration (transformer), and decoder modules. Right, proposed modular view in which the pretrained encoder is extracted as a reusable cis-regulatory representation module and fine-tuned on short, variable-length perturbation sequences such as MPRA constructs, while the transformer and decoder remain in the full stack for tasks requiring long-range context.").
 

@@ -41,14 +41,14 @@ if [ -z "$CATEGORY_ID" ] || [ "$CATEGORY_ID" = "null" ]; then
   exit 0
 fi
 
-# Fetch discussions with url, reaction count, and comment count (auth required for counts)
+# Fetch discussions with url, reaction count (via reactionGroups sum), and comment count (auth required)
 Q2='query($rid: ID!, $cid: ID!) {
   repository(id: $rid) {
     discussions(first: 100, categoryId: $cid) {
       nodes {
         title
         url
-        reactions(first: 1) { totalCount }
+        reactionGroups { reactors(first: 0) { totalCount } }
         comments(first: 0) { totalCount }
       }
     }
@@ -56,9 +56,23 @@ Q2='query($rid: ID!, $cid: ID!) {
 }'
 RES2=$(curl -s -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
   -d "{\"query\": $(echo "$Q2" | jq -Rs .), \"variables\": {\"rid\": \"$REPO_ID\", \"cid\": \"$CATEGORY_ID\"}}" "$API")
+if echo "$RES2" | jq -e '.errors' >/dev/null 2>&1; then
+  echo "GraphQL discussions query errors: $(echo "$RES2" | jq -c '.errors')"
+fi
 NODES=$(echo "$RES2" | jq -c '.data.repository.discussions.nodes // []')
-# Build JSON: path -> { url, reactions, comments } for Hugo
-MAP=$(echo "$NODES" | jq '[.[] | {"key": .title, "value": {"url": .url, "reactions": (.reactions.totalCount // 0), "comments": (.comments.totalCount // 0)}}] | from_entries')
+# reactionGroups: sum reactors.totalCount per group; comments: use totalCount
+MAP=$(echo "$NODES" | jq '[.[] | {
+  key: .title,
+  value: {
+    url: .url,
+    reactions: ([(.reactionGroups // [])[] | (.reactors.totalCount // 0)] | add // 0),
+    comments: (.comments.totalCount // 0)
+  }
+}] | from_entries')
 mkdir -p "$(dirname "$OUT")"
 echo "$MAP" > "$OUT"
-echo "Wrote $(echo "$NODES" | jq 'length') discussion(s) (with counts) to $OUT"
+COUNT=$(echo "$NODES" | jq 'length')
+echo "Wrote $COUNT discussion(s) (with counts) to $OUT"
+if [ "$COUNT" -gt 0 ]; then
+  echo "Sample entry (first discussion): $(echo "$MAP" | jq -c 'to_entries | .[0]')"
+fi
