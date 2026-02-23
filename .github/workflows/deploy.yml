@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
+    # Run manually to e.g. create discussions for existing posts, then deploy
 
 jobs:
   deploy:
@@ -35,6 +37,14 @@ jobs:
         run: |
           chmod +x .github/scripts/ensure-blog-discussions.sh
           ./.github/scripts/ensure-blog-discussions.sh
+
+      # 2.4b. Export discussion URLs so "Discuss this post" and like/comment link to the right thread
+      - name: Export blog discussion URLs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          chmod +x .github/scripts/export-blog-discussion-urls.sh
+          ./.github/scripts/export-blog-discussion-urls.sh
 
       # 2.5. Fetch editorial board from GitHub team (optional: set GH_EDITORS_TOKEN with read:org)
       - name: Fetch editors from GitHub team

@@ -3,12 +3,21 @@
 {{- $useGiscus := and $commentsEnabled (eq $provider "giscus") -}}
 {{- $giscus := .Site.Params.comments.giscus -}}
 {{- $hasGiscus := and $useGiscus $giscus.repo $giscus.repoID $giscus.category $giscus.categoryID -}}
-{{- $discussURL := "https://github.com/genomicsxai/genomicsxai.github.io/discussions/categories/post-discussions" -}}
+{{- $categoryURL := "https://github.com/genomicsxai/genomicsxai.github.io/discussions/categories/post-discussions" -}}
+{{- $postDiscussURL := "" -}}
+{{- if .Site.Data.discussions -}}
+  {{- $postDiscussURL = index .Site.Data.discussions .RelPermalink | default "" -}}
+{{- end -}}
+{{- $discussURL := $postDiscussURL | default $categoryURL -}}
 
 <section class="article-comments" id="comments" {{ if $hasGiscus }}data-repo="{{ $giscus.repo }}" data-category-id="{{ $giscus.categoryID }}" data-path="{{ .RelPermalink }}"{{ end }}>
   <h2 class="article-comments__title">Comments</h2>
   <div class="article-comments__actions">
+    {{- if $hasGiscus -}}
     <a href="#comments" class="article-comments__like js-scroll-to-comments" aria-label="Scroll to comments to add a like or reaction">
+    {{- else -}}
+    <a href="{{ $discussURL }}" target="_blank" rel="noopener" class="article-comments__like" aria-label="Like or react on GitHub">
+    {{- end -}}
       <span class="article-comments__like-icon" aria-hidden="true">👍</span>
       <span>Like</span><span class="article-comments__like-count js-like-count"></span>
     </a>
