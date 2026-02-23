@@ -66,12 +66,13 @@ Modern seq2func models like AlphaGenome can be decomposed into three functional 
 
 3. Task decoder - predicts assay-specific outputs
 
-For short perturbation sequences, long-range context is often irrelevant. The encoder, however, contains rich regulatory representations learned from genome-scale supervision.
-
-We extract and reuse this encoder - see the image below:
+For short perturbation sequences assayed in isolation — such as MPRA constructs that test cis-regulatory activity outside their native chromosomal context — long-range genomic interactions are largely absent, so distal context modeling is often unnecessary. The encoder, however, contains rich regulatory representations learned from genome-scale supervision. We extract and reuse this encoder - see the image below:
 
 ![Generalist seq2func models as modular regulatory encoders](modular_generalists_manuscript.png "width=1000 Generalist seq2func models as modular regulatory encoders. Left, AlphaGenome's U-Net architecture with encoder, long-range context integration (transformer), and decoder modules. Right, proposed modular view in which the pretrained encoder is extracted as a reusable cis-regulatory representation module and fine-tuned on short, variable-length perturbation sequences such as MPRA constructs, while the transformer and decoder remain in the full stack for tasks requiring long-range context.").
 
+> **Encoder intuition** - In these models, the encoder progressively downsamples the input sequence through convolution and pooling operations, similar to how image CNNs compress spatial resolution while increasing feature richness. As a result, the encoder outputs a sequence of embeddings where each position summarizes regulatory features over a window of roughly ~128 bp rather than single nucleotides. This resolution is sufficient to capture motif combinations and local regulatory syntax while keeping representations compact and computationally efficient.
+
+Although AlphaGenome was trained on ~1 megabase genomic windows, we show that its convolutional encoder can be repurposed for much shorter sequences. This reflects a division of labor within the architecture: the encoder captures local regulatory grammar, while the transformer and decoder handle long-range integration and base-resolution track prediction. By isolating the encoder, we retain the reusable representation module while discarding machinery designed for distal genomic context — precisely the setting of MPRA assays and other tasks centered on local regulatory activity, such as chromatin accessibility prediction.
 
 ### What we do:
 
