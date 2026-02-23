@@ -42,8 +42,8 @@ if [ -z "$CATEGORY_ID" ] || [ "$CATEGORY_ID" = "null" ]; then
 fi
 
 # Fetch discussions with url, reaction count (via reactionGroups sum), and comment count (auth required)
-Q2='query($rid: ID!, $cid: ID!) {
-  repository(id: $rid) {
+Q2='query($owner: String!, $name: String!, $cid: ID!) {
+  repository(owner: $owner, name: $name) {
     discussions(first: 100, categoryId: $cid) {
       nodes {
         title
@@ -55,7 +55,7 @@ Q2='query($rid: ID!, $cid: ID!) {
   }
 }'
 RES2=$(curl -s -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
-  -d "{\"query\": $(echo "$Q2" | jq -Rs .), \"variables\": {\"rid\": \"$REPO_ID\", \"cid\": \"$CATEGORY_ID\"}}" "$API")
+  -d "{\"query\": $(echo "$Q2" | jq -Rs .), \"variables\": {\"owner\": \"$OWNER\", \"name\": \"$REPO\", \"cid\": \"$CATEGORY_ID\"}}" "$API")
 if echo "$RES2" | jq -e '.errors' >/dev/null 2>&1; then
   echo "GraphQL discussions query errors: $(echo "$RES2" | jq -c '.errors')"
 fi
