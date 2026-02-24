@@ -188,9 +188,23 @@ Key findings
 
 * task-specific fine-tuning can introduce assay bias — full fine-tuning rather than probing led to the models overfitting on the lentiMPRA data and thus worse performance on the CAGI5 data.
 
+* A smaller aggregation window improved pretrained AlphaGenome's performance (more on this below).
+
 This may highlight a trade-off of specialisation vs generalisation, or with better regularisation maybe this could be controlled even with the larger number of free parameters. The results:
 
 ![Zero-shot CAGI5 performance for HepG2 and K562 variants](cagi5_augmentation_comparison.png "width=900 Zero-shot CAGI5 performance for HepG2 and K562 variants; right, high-confidence SNP subset. Dark blue denotes a single prediction per variant whereas light blue is random shift and reverse complement augmentation. We compare against MPRALegNet and AlphaGenome (AG). We applied encoder extraction and fine-tuning to Enformer (Enf. MPRA) and AlphaGenome (AG MPRA), evaluated with probing (head-only) or encoder fine-tuning.")
+
+---
+
+### A Technical Note: Improving Base AlphaGenome's Performance on CAGI5
+
+When we tested against the AlphaGenome model before any fine-tuning on MPRA data, we noticed something interesting. 
+
+Aligning the aggregated window size to the same size of the MPRA bins (central 384 base-pairs) improved zero-shot prediction relative to AlphaGenome’s original protocol (central 501bp) by 25%!
+
+![Central aggregation approach AlphaGenome](cagi5_central_mask_comparison.png "width=700 Differing AlphaGenome's mask size for CAGI5 benchmark on HepG2 and K562 variants; right, high-confidence SNP subset. Pretrained AlphaGenome performance when using our approach of aggregating the central 384 base-pairs versus the protocol outlined in AlphaGenome's original publication (central 501 base-pairs). The smaller window led to much improved performance but still below that after fine-tuning on MPRA data (our approach). Performance is measured as Pearson correlation between predicted and observed activity.")
+
+So I would advise testing differing aggregation windows if you are using AlphaGenome in this manner. Or, just use our extracted encoder approach which boosted performance by another 10%!
 
 ---
 
