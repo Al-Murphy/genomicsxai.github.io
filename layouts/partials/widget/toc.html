@@ -1,11 +1,65 @@
 {{ if (.Context.Scratch.Get "TOCEnabled") }}
-    <section class="widget archives">
-        <h2 class="widget-title section-title">{{ T "article.tableOfContents" }}</h2>
+<nav class="scroll-toc" aria-label="Table of Contents">
+    <div class="scroll-toc__header">
+        <span class="scroll-toc__header-label">Table of Contents</span>
+    </div>
+    <div class="scroll-toc__list" id="toc-list">
+        {{ partial "article/components/toc" .Context | safeHTML }}
+    </div>
+</nav>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var list = document.getElementById('toc-list');
+    if (!list) return;
 
-        <div class="widget--toc">
-            <nav class="toc-nav" id="TableOfContents">
-                {{ partial "article/components/toc" .Context | safeHTML }}
-            </nav>
-        </div>
-    </section>
+    var allItems = list.querySelectorAll('li');
+    if (!allItems.length) return;
+
+    var headingEls = [];
+    allItems.forEach(function(li) {
+        var a = li.querySelector(':scope > a');
+        if (!a) return;
+        var id = a.getAttribute('href');
+        if (id && id.charAt(0) === '#') {
+            var el = document.getElementById(id.substring(1));
+            if (el) headingEls.push({ el: el, li: li, a: a });
+        }
+    });
+    if (!headingEls.length) return;
+
+    function update() {
+        var current = null;
+        for (var i = headingEls.length - 1; i >= 0; i--) {
+            if (headingEls[i].el.getBoundingClientRect().top <= 120) {
+                current = headingEls[i];
+                break;
+            }
+        }
+        headingEls.forEach(function(h) {
+            h.li.classList.toggle('scroll-toc__item--active', h === current);
+        });
+        // Auto-scroll TOC list to keep active item visible (without touching page scroll)
+        if (current) {
+            var li = current.li;
+            var container = list;
+            var liTop = li.offsetTop - container.offsetTop;
+            var liBot = liTop + li.offsetHeight;
+            if (liTop < container.scrollTop) {
+                container.scrollTop = liTop;
+            } else if (liBot > container.scrollTop + container.clientHeight) {
+                container.scrollTop = liBot - container.clientHeight;
+            }
+        }
+    }
+
+    var ticking = false;
+    window.addEventListener('scroll', function() {
+        if (!ticking) {
+            requestAnimationFrame(function() { update(); ticking = false; });
+            ticking = true;
+        }
+    });
+    update();
+});
+</script>
 {{ end }}

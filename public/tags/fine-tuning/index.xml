@@ -1,4 +1,31 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Fine-Tuning on Genomics x AI</title><link>https://genomicsxai.github.io/tags/fine-tuning/</link><description>Recent content in Fine-Tuning on Genomics x AI</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Fri, 20 Feb 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://genomicsxai.github.io/tags/fine-tuning/index.xml" rel="self" type="application/rss+xml"/><item><title>Adapting AlphaGenome to MPRA data</title><link>https://genomicsxai.github.io/blogs/2026-002/</link><pubDate>Fri, 20 Feb 2026 00:00:00 +0000</pubDate><guid>https://genomicsxai.github.io/blogs/2026-002/</guid><description>&lt;img src="https://genomicsxai.github.io/" alt="Featured image of post Adapting AlphaGenome to MPRA data" /&gt;&lt;p&gt;Foundation-scale sequence-to-function models have rapidly advanced regulatory genomics. Architectures like &lt;a class="link" href="https://www.nature.com/articles/s41586-025-10014-0" target="_blank" rel="noopener"
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Fine-Tuning on Genomics x AI</title><link>https://genomicsxai.github.io/tags/fine-tuning/</link><description>Recent content in Fine-Tuning on Genomics x AI</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Fri, 20 Feb 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://genomicsxai.github.io/tags/fine-tuning/index.xml" rel="self" type="application/rss+xml"/><item><title>Adapting AlphaGenome to MPRA data</title><link>https://genomicsxai.github.io/blogs/2026-002/</link><pubDate>Fri, 20 Feb 2026 00:00:00 +0000</pubDate><guid>https://genomicsxai.github.io/blogs/2026-002/</guid><description>&lt;img src="https://genomicsxai.github.io/" alt="Featured image of post Adapting AlphaGenome to MPRA data" /&gt;&lt;h2 id="summary"&gt;Summary
+&lt;/h2&gt;&lt;p&gt;This post provides a high-level overview of how to use the &lt;a class="link" href="https://www.nature.com/articles/s41586-025-10014-0" target="_blank" rel="noopener"
+ &gt;AlphaGenome&lt;/a&gt; and &lt;a class="link" href="https://www.nature.com/articles/s41592-021-01252-x" target="_blank" rel="noopener"
+ &gt;Enformer&lt;/a&gt; repositories to extract modular convolutional encoders for short sequences — including links to the GitHub repositories — and summarises the results we achieved on perturbation assays.&lt;/p&gt;
+&lt;p&gt;Foundation sequence-to-function models like AlphaGenome and Enformer are trained on ~1 Mb genomic windows to predict thousands of regulatory tracks. We show that their most transferable component is the convolutional encoder that learns local cis-regulatory grammar.&lt;/p&gt;
+&lt;p&gt;By extracting this encoder from the long-range transformer and decoder modules, we:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;achieve state-of-the-art performance on &lt;a class="link" href="https://www.nature.com/articles/s41586-024-08430-9" target="_blank" rel="noopener"
+ &gt;MPRA&lt;/a&gt;, &lt;a class="link" href="https://www.nature.com/articles/s41588-022-01048-5" target="_blank" rel="noopener"
+ &gt;STARR-seq&lt;/a&gt;, and &lt;a class="link" href="http://www.genomeinterpretation.org/cagi5-regulation-saturation.html" target="_blank" rel="noopener"
+ &gt;CAGI5&lt;/a&gt; benchmarks&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;reduce inference cost by ~500×&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;generalise across assays, species, and architectures&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This reframes foundation genomics models as modular regulatory representation engines, reusable for short perturbation sequences (100–300 bp) and regulatory design workflows.&lt;/p&gt;
+&lt;p&gt;Code:&lt;/p&gt;
+&lt;p&gt;AlphaGenome fine-tuning utilities: &lt;a class="link" href="https://github.com/genomicsxai/alphagenome_ft" target="_blank" rel="noopener"
+ &gt;https://github.com/genomicsxai/alphagenome_ft&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Full analysis and experiments: &lt;a class="link" href="https://github.com/Al-Murphy/alphagenome_FT_MPRA" target="_blank" rel="noopener"
+ &gt;https://github.com/Al-Murphy/alphagenome_FT_MPRA&lt;/a&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;Foundation-scale sequence-to-function models have rapidly advanced regulatory genomics. Architectures like &lt;a class="link" href="https://www.nature.com/articles/s41586-025-10014-0" target="_blank" rel="noopener"
  &gt;AlphaGenome&lt;/a&gt; and &lt;a class="link" href="https://www.nature.com/articles/s41592-021-01252-x" target="_blank" rel="noopener"
  &gt;Enformer&lt;/a&gt; predict thousands of regulatory tracks across large genomic contexts and achieve impressive genome-wide accuracy (hence the term generalists).&lt;/p&gt;
 
@@ -32,13 +59,18 @@
 &lt;p&gt;Task decoder - predicts assay-specific outputs&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;For short perturbation sequences, long-range context is often irrelevant. The encoder, however, contains rich regulatory representations learned from genome-scale supervision.&lt;/p&gt;
-&lt;p&gt;We extract and reuse this encoder - see the image below:&lt;/p&gt;
+&lt;p&gt;For short perturbation sequences assayed in isolation — such as MPRA constructs that test &lt;em&gt;cis&lt;/em&gt;-regulatory activity outside their native chromosomal context — long-range genomic interactions are largely absent, so distal context modeling is often unnecessary. The encoder, however, contains rich regulatory representations learned from genome-scale supervision. We extract and reuse this encoder - see the image below:&lt;/p&gt;
 &lt;p&gt;&lt;figure&gt;&lt;a href="https://genomicsxai.github.io/blogs/2026-002/modular_generalists_manuscript.png" class="image-link" data-pswp-width="850" data-pswp-height="300"&gt;
 		&lt;img src="https://genomicsxai.github.io/blogs/2026-002/modular_generalists_manuscript.png" width="1000px" height="300"loading="lazy"
 			alt="Generalist seq2func models as modular regulatory encoders"
 			title="Generalist seq2func models as modular regulatory encoders. Left, AlphaGenome&amp;#39;s U-Net architecture with encoder, long-range context integration (transformer), and decoder modules. Right, proposed modular view in which the pretrained encoder is extracted as a reusable cis-regulatory representation module and fine-tuned on short, variable-length perturbation sequences such as MPRA constructs, while the transformer and decoder remain in the full stack for tasks requiring long-range context." data-title-escaped="Generalist seq2func models as modular regulatory encoders. Left, AlphaGenome&amp;amp;#39;s U-Net architecture with encoder, long-range context integration (transformer), and decoder modules. Right, proposed modular view in which the pretrained encoder is extracted as a reusable cis-regulatory representation module and fine-tuned on short, variable-length perturbation sequences such as MPRA constructs, while the transformer and decoder remain in the full stack for tasks requiring long-range context."&gt;
 		&lt;/a&gt;&lt;/figure&gt;.&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;&lt;strong&gt;Encoder intuition&lt;/strong&gt; - In these models, the encoder progressively downsamples the input sequence through convolution and pooling operations, similar to how image CNNs compress spatial resolution while increasing feature richness. As a result, the encoder outputs a sequence of embeddings where each position summarises regulatory features over a window of roughly ~128 bp rather than single nucleotides. This resolution is sufficient to capture motif combinations and local regulatory syntax while keeping representations compact and computationally efficient.&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;Although AlphaGenome was trained on ~1 megabase genomic windows, we show that its convolutional encoder can be repurposed for much shorter sequences. This reflects a division of labor within the architecture: the encoder captures local regulatory grammar, while the transformer and decoder handle long-range integration and base-resolution track prediction. By isolating the encoder, we retain the reusable representation module while discarding machinery designed for distal genomic context — precisely the setting of MPRA assays and other tasks centered on local regulatory activity, such as chromatin accessibility prediction.&lt;/p&gt;
 &lt;h3 id="what-we-do"&gt;What we do:
 &lt;/h3&gt;&lt;ul&gt;
 &lt;li&gt;
@@ -142,7 +174,8 @@
 &lt;p&gt;Progressive unfreezing provided modest gains, with a slight benefit from delaying encoder updates. The results of this sweep is at the end of the post.&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="transfer-to-regulatory-variant-prediction-cagi5"&gt;Transfer to regulatory variant prediction (CAGI5)
-&lt;/h2&gt;&lt;p&gt;We next evaluated all models on the CAGI5 benchmark — we wanted to know if we also seen performance advantages for downstream applications.&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;We next evaluated all models on the &lt;a class="link" href="http://www.genomeinterpretation.org/cagi5-regulation-saturation.html" target="_blank" rel="noopener"
+ &gt;CAGI5 benchmark&lt;/a&gt; which provides experimentally measured effects of thousands of regulatory variants, making it a standard test for evaluating how well models predict functional impacts beyond the training assay.&lt;/p&gt;
 &lt;p&gt;Key findings&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
@@ -208,7 +241,7 @@
 &lt;/ul&gt;
 &lt;p&gt;All of these would be really interesting future directions.&lt;/p&gt;
 &lt;hr&gt;
-&lt;h2 id="takeaway--the-tldr"&gt;Takeaway — the TLDR
+&lt;h2 id="takeaway--the-tldr"&gt;Takeaway — the TL;DR
 &lt;/h2&gt;&lt;p&gt;Foundation seq2func models are typically used as monolithic predictors.&lt;/p&gt;
 &lt;p&gt;A modular view reveals something more useful:&lt;/p&gt;
 
@@ -217,45 +250,48 @@
 
  &lt;/blockquote&gt;
 &lt;p&gt;Extracting and adapting these representations enables efficient perturbation modeling, fair cross-model comparison, and scalable regulatory design workflows.&lt;/p&gt;
+&lt;hr&gt;
 &lt;h2 id="code"&gt;Code
 &lt;/h2&gt;&lt;p&gt;Finally, how can you use this approach:&lt;/p&gt;
 &lt;p&gt;This analysis uses the native jax/haiku AlphaGenome wrapper package which is available from the &lt;a class="link" href="https://github.com/genomicsxai/alphagenome_ft" target="_blank" rel="noopener"
  &gt;Genomics x AI community github&lt;/a&gt; (more on this in a future post) and all code to run the analysis is &lt;a class="link" href="https://github.com/Al-Murphy/alphagenome_FT_MPRA" target="_blank" rel="noopener"
  &gt;here&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;But here is a minimum script or if you would prefer to run it yourself on lentiMPRA data, see our &lt;a class="link" href="https://colab.research.google.com/github/genomicsxai/alphagenome_ft/blob/main/notebooks/colab_encoder_only_mpra_finetune.ipynb" target="_blank" rel="noopener"
+&lt;p&gt;But here is a minimum script or if you would prefer to run it yourself on lentiMPRA data, see our &lt;a class="link" href="https://colab.research.google.com/github/genomicsxai/alphagenome_ft/blob/main/notebooks/finetune_encoder_only_mpra.ipynb" target="_blank" rel="noopener"
  &gt;colab notebook&lt;/a&gt;:&lt;/p&gt;
 &lt;h3 id="tutorial"&gt;Tutorial
 &lt;/h3&gt;&lt;h3 id="1-model-initialisation"&gt;1. Model initialisation
-&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;from&lt;/span&gt; alphagenome.models &lt;span style="color:#f92672"&gt;import&lt;/span&gt; dna_output
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;from&lt;/span&gt; alphagenome_ft &lt;span style="color:#f92672"&gt;import&lt;/span&gt; (
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; templates,
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; CustomHeadConfig,
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; CustomHeadType,
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; register_custom_head,
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; create_model_with_heads,
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 1. Register an encoder-only head&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;register_custom_head(
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;mpra_head&amp;#34;&lt;/span&gt;,
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; templates&lt;span style="color:#f92672"&gt;.&lt;/span&gt;EncoderOnlyHead,
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; CustomHeadConfig(
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; type&lt;span style="color:#f92672"&gt;=&lt;/span&gt;CustomHeadType&lt;span style="color:#f92672"&gt;.&lt;/span&gt;GENOME_TRACKS,
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; output_type&lt;span style="color:#f92672"&gt;=&lt;/span&gt;dna_output&lt;span style="color:#f92672"&gt;.&lt;/span&gt;OutputType&lt;span style="color:#f92672"&gt;.&lt;/span&gt;RNA_SEQ,
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; num_tracks&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;,
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; ),
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 2. Create a model that uses encoder output only&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;model &lt;span style="color:#f92672"&gt;=&lt;/span&gt; create_model_with_heads(
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;all_folds&amp;#34;&lt;/span&gt;,
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; heads&lt;span style="color:#f92672"&gt;=&lt;/span&gt;[&lt;span style="color:#e6db74"&gt;&amp;#34;mpra_head&amp;#34;&lt;/span&gt;],
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; use_encoder_output&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;True&lt;/span&gt;, &lt;span style="color:#75715e"&gt;# ← CRITICAL for encoder-only mode&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 3. Optionally freeze backbone to start with heads-only finetuning&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;model&lt;span style="color:#f92672"&gt;.&lt;/span&gt;freeze_except_head(&lt;span style="color:#e6db74"&gt;&amp;#34;mpra_head&amp;#34;&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Key points:&lt;/p&gt;
+&lt;/h3&gt;&lt;div class="code-block" data-lang="python"&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;alphagenome.models&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;dna_output&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;alphagenome_ft&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;templates&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;CustomHeadConfig&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;CustomHeadType&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;register_custom_head&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;create_model_with_heads&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 1. Register an encoder-only head&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;register_custom_head&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="s2"&gt;&amp;#34;mpra_head&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;templates&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;EncoderOnlyHead&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;CustomHeadConfig&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nb"&gt;type&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;CustomHeadType&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;GENOME_TRACKS&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;output_type&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;dna_output&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;OutputType&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;RNA_SEQ&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;num_tracks&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;),&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 2. Create a model that uses encoder output only&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;model&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;create_model_with_heads&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="s2"&gt;&amp;#34;all_folds&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;heads&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;mpra_head&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;use_encoder_output&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="c1"&gt;# ← CRITICAL for encoder-only mode&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 3. Optionally freeze backbone to start with heads-only finetuning&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;freeze_except_head&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;mpra_head&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Key points:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;use_encoder_output=True&lt;/code&gt; bypasses the transformer/decoder stack and exposes encoder features at ~128 bp resolution&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;templates.EncoderOnlyHead&lt;/code&gt; applies a simple MLP on top of these embeddings&lt;/li&gt;
@@ -268,43 +304,80 @@
 &lt;li&gt;Follow the more complete MPRA scripts in the external repository.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Minimal example with a custom loop:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;import&lt;/span&gt; jax
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;import&lt;/span&gt; jax.numpy &lt;span style="color:#66d9ef"&gt;as&lt;/span&gt; jnp
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;import&lt;/span&gt; optax
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;from&lt;/span&gt; alphagenome_ft &lt;span style="color:#f92672"&gt;import&lt;/span&gt; CustomHead
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Suppose you have: sequences_onehot: (B, L, 4), targets: (B, 1)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;loss_fn &lt;span style="color:#f92672"&gt;=&lt;/span&gt; model&lt;span style="color:#f92672"&gt;.&lt;/span&gt;create_loss_fn_for_head(&lt;span style="color:#e6db74"&gt;&amp;#34;mpra_head&amp;#34;&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;optimizer &lt;span style="color:#f92672"&gt;=&lt;/span&gt; optax&lt;span style="color:#f92672"&gt;.&lt;/span&gt;adamw(learning_rate&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1e-3&lt;/span&gt;, weight_decay&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1e-4&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;opt_state &lt;span style="color:#f92672"&gt;=&lt;/span&gt; optimizer&lt;span style="color:#f92672"&gt;.&lt;/span&gt;init(model&lt;span style="color:#f92672"&gt;.&lt;/span&gt;_params)
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;def&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;train_step&lt;/span&gt;(params, state, opt_state, batch_sequences, batch_targets):
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;def&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;loss_inner&lt;/span&gt;(current_params):
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; preds_dict &lt;span style="color:#f92672"&gt;=&lt;/span&gt; model&lt;span style="color:#f92672"&gt;.&lt;/span&gt;_predict(
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; current_params,
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; state,
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; batch_sequences,
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; jnp&lt;span style="color:#f92672"&gt;.&lt;/span&gt;zeros((batch_sequences&lt;span style="color:#f92672"&gt;.&lt;/span&gt;shape[&lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;],), dtype&lt;span style="color:#f92672"&gt;=&lt;/span&gt;jnp&lt;span style="color:#f92672"&gt;.&lt;/span&gt;int32), &lt;span style="color:#75715e"&gt;# organism_index&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; negative_strand_mask&lt;span style="color:#f92672"&gt;=&lt;/span&gt;jnp&lt;span style="color:#f92672"&gt;.&lt;/span&gt;zeros((batch_sequences&lt;span style="color:#f92672"&gt;.&lt;/span&gt;shape[&lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;],), 
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; dtype&lt;span style="color:#f92672"&gt;=&lt;/span&gt;bool),
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; strand_reindexing&lt;span style="color:#f92672"&gt;=&lt;/span&gt;model&lt;span style="color:#f92672"&gt;.&lt;/span&gt;_metadata[
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; next(iter(model&lt;span style="color:#f92672"&gt;.&lt;/span&gt;_metadata))]&lt;span style="color:#f92672"&gt;.&lt;/span&gt;strand_reindexing,
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; )
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; preds &lt;span style="color:#f92672"&gt;=&lt;/span&gt; preds_dict[&lt;span style="color:#e6db74"&gt;&amp;#34;mpra_head&amp;#34;&lt;/span&gt;]
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; loss_dict &lt;span style="color:#f92672"&gt;=&lt;/span&gt; loss_fn(
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; preds,
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {&lt;span style="color:#e6db74"&gt;&amp;#34;targets&amp;#34;&lt;/span&gt;: batch_targets, &lt;span style="color:#e6db74"&gt;&amp;#34;organism_index&amp;#34;&lt;/span&gt;: &lt;span style="color:#66d9ef"&gt;None&lt;/span&gt;},
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; )
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; loss_dict[&lt;span style="color:#e6db74"&gt;&amp;#34;loss&amp;#34;&lt;/span&gt;]
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; loss, grads &lt;span style="color:#f92672"&gt;=&lt;/span&gt; jax&lt;span style="color:#f92672"&gt;.&lt;/span&gt;value_and_grad(loss_inner)(params)
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; updates, new_opt_state &lt;span style="color:#f92672"&gt;=&lt;/span&gt; optimizer&lt;span style="color:#f92672"&gt;.&lt;/span&gt;update(grads, opt_state)
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; new_params &lt;span style="color:#f92672"&gt;=&lt;/span&gt; optax&lt;span style="color:#f92672"&gt;.&lt;/span&gt;apply_updates(params, updates)
-&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; new_params, new_opt_state, loss
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="hyperparameter-sweep-results"&gt;Hyperparameter sweep results
+&lt;div class="code-block" data-lang="python"&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;jax&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;jax.numpy&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;jnp&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;optax&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;alphagenome_ft&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;CustomHead&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# Suppose you have: sequences_onehot: (B, L, 4), targets: (B, 1)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;loss_fn&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;create_loss_fn_for_head&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;mpra_head&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;optimizer&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;optax&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;adamw&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;learning_rate&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mf"&gt;1e-3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;weight_decay&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mf"&gt;1e-4&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;opt_state&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;optimizer&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;init&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_params&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;train_step&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;params&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;state&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;opt_state&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;batch_sequences&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;batch_targets&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;loss_inner&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;current_params&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;preds_dict&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_predict&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;current_params&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;state&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;batch_sequences&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;jnp&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;zeros&lt;/span&gt;&lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="n"&gt;batch_sequences&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;shape&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;],),&lt;/span&gt; &lt;span class="n"&gt;dtype&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;jnp&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;int32&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="c1"&gt;# organism_index&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;negative_strand_mask&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;jnp&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;zeros&lt;/span&gt;&lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="n"&gt;batch_sequences&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;shape&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;],),&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;dtype&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;bool&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;strand_reindexing&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_metadata&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nb"&gt;next&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;iter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_metadata&lt;/span&gt;&lt;span class="p"&gt;))]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;strand_reindexing&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;preds&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;preds_dict&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;mpra_head&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;loss_dict&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;loss_fn&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;preds&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;targets&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;batch_targets&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;organism_index&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="kc"&gt;None&lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;loss_dict&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;loss&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;loss&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;grads&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;jax&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;value_and_grad&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;loss_inner&lt;/span&gt;&lt;span class="p"&gt;)(&lt;/span&gt;&lt;span class="n"&gt;params&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;updates&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;new_opt_state&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;optimizer&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;update&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;grads&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;opt_state&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;new_params&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;optax&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;apply_updates&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;params&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;updates&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;new_params&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;new_opt_state&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;loss&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2 id="conclusion--bridging-genome-scale-models-and-perturbation-assays"&gt;Conclusion — bridging genome-scale models and perturbation assays
+&lt;/h2&gt;&lt;p&gt;Foundation sequence-to-function models are built for megabase context and genome-wide prediction. We show that their most transferable asset is much smaller: the convolutional encoder that learns &lt;em&gt;cis&lt;/em&gt;-regulatory grammar.&lt;/p&gt;
+&lt;p&gt;By isolating this module, we:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;repurpose genome-scale pretrained representations for 100–300 bp perturbation sequences&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;eliminate unnecessary long-range context machinery in assays that isolate regulatory elements&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;achieve state-of-the-art MPRA, STARR-seq and CAGI5 benchmark performance&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;reduce inference cost by orders of magnitude&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;generalise the approach across architectures&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Despite being trained on ~1 Mb inputs, the AlphaGenome encoder adapts cleanly to &amp;gt;=128 bp sequences — matching the scale at which &lt;em&gt;cis&lt;/em&gt;-regulatory logic operates in perturbation assays.&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;This reframes foundation genomics models not as monolithic predictors, but as modular regulatory representation engines that can be embedded directly into perturbation, design, and variant-effect workflows.&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;h3 id="code-1"&gt;Code
+&lt;/h3&gt;&lt;p&gt;Implementation and reproducible experiments:
+&lt;a class="link" href="https://github.com/Al-Murphy/alphagenome_FT_MPRA" target="_blank" rel="noopener"
+ &gt;https://github.com/Al-Murphy/alphagenome_FT_MPRA&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;AlphaGenome encoder fine-tuning utilities:
+&lt;a class="link" href="https://github.com/genomicsxai/alphagenome_ft" target="_blank" rel="noopener"
+ &gt;https://github.com/genomicsxai/alphagenome_ft&lt;/a&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="hyperparameter-sweep-results"&gt;Hyperparameter sweep results
 &lt;/h2&gt;&lt;h3 id="stage-1"&gt;Stage 1
 &lt;/h3&gt;&lt;p&gt;Stage 1 was a hyperparameter sweep for lentiMPRA with a frozen encoder (probing regime).&lt;/p&gt;
 &lt;p&gt;We varied the prediction head architecture and training hyperparameters while keeping encoder weights fixed. Note no reverse complement or random shift augementations were used for this benchmark. mlp-X-Y denotes a two-layer multilayer perceptron head with hidden dimensions X and Y; mlp-X denotes a single hidden layer of size X; pool-flatten uses global pooling followed by flattening; pool-center extracts the central token representation; do-p indicates dropout rate p applied to the head; wd-1eK indicates weight decay of $10^{-K}$; lr-plateau and lr-cosine denote ReduceLROnPlateau and cosine annealing learning rate schedules, respectively; opt-adamw indicates the AdamW optimiser; act-gelu replaces the default activation with GELU. Baseline used a single multilayer perceptron head of size 1024 with sum pooling, Adam optimiser and RELU activation, and no dropout, weight decay or learning rate plateau. Performance is reported as Pearson correlation on the held-out test fold for HepG2, K562, and WTC11, with average performance and rank across cell types.&lt;/p&gt;

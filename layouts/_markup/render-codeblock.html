@@ -1,0 +1,3 @@
+{{ $lang := .Type | default "" }}{{ $opts := merge .Options (dict "noClasses" false) }}<div class="code-block" {{ with $lang }}data-lang="{{ . }}"{{ end }}>
+{{ transform.Highlight .Inner .Type $opts }}
+</div>
