@@ -32,6 +32,9 @@ The Genomics × AI blog uses a Git-native, PR-based submission workflow. All sub
    - The post will be automatically deployed via GitHub Actions  
    - Your post will appear on the blog  
 
+5. **Updates**
+   - Once merged, you can continue to submit updates to your post which will alter the updated date.
+
 ### Getting notified of comments and likes
 
 Comments and likes on the blog use **GitHub Discussions**. To get notified when someone comments or reacts to your post:

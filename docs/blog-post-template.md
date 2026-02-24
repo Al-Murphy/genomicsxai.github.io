@@ -25,6 +25,7 @@ authors_display:
 
 editor: "Editor Name"
 
+#Add any number of tags which are searchable on the blog homepage. See [there]() to get some inspiration
 tags: ["genomics", "causal-inference"]
 categories: ["Blog Post"]
 
@@ -46,6 +47,14 @@ revision_history:
   - version: 1
     date: 2026-02-19
     notes: "Initial submission"
+---
+
+{{< summary >}}
+
+Include a high-level summary of your post here. Alternatively editors can write a summary of the post if requested.
+
+{{< /summary >}}
+
 ---
 
 ## Introduction
