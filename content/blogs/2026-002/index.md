@@ -40,8 +40,7 @@ revision_history:
     notes: "Initial submission"
 ---
 
-## Summary
-
+{{< summary >}}
 This post provides a high-level overview of how to use the [AlphaGenome](https://www.nature.com/articles/s41586-025-10014-0) and [Enformer](https://www.nature.com/articles/s41592-021-01252-x) repositories to extract modular convolutional encoders for short sequences — including links to the GitHub repositories — and summarises the results we achieved on perturbation assays.
 
 Foundation sequence-to-function models like AlphaGenome and Enformer are trained on ~1 Mb genomic windows to predict thousands of regulatory tracks. We show that their most transferable component is the convolutional encoder that learns local cis-regulatory grammar.
@@ -49,18 +48,15 @@ Foundation sequence-to-function models like AlphaGenome and Enformer are trained
 By extracting this encoder from the long-range transformer and decoder modules, we:
 
 * achieve state-of-the-art performance on [MPRA](https://www.nature.com/articles/s41586-024-08430-9), [STARR-seq](https://www.nature.com/articles/s41588-022-01048-5), and [CAGI5](http://www.genomeinterpretation.org/cagi5-regulation-saturation.html) benchmarks
-
 * reduce inference cost by ~500×
-
 * generalise across assays, species, and architectures
 
 This reframes foundation genomics models as modular regulatory representation engines, reusable for short perturbation sequences (100–300 bp) and regulatory design workflows.
 
-Code:
-
-AlphaGenome fine-tuning utilities: https://github.com/genomicsxai/alphagenome_ft
-
-Full analysis and experiments: https://github.com/Al-Murphy/alphagenome_FT_MPRA
+**Code:**
+[AlphaGenome fine-tuning utilities](https://github.com/genomicsxai/alphagenome_ft) |
+[Full analysis and experiments](https://github.com/Al-Murphy/alphagenome_FT_MPRA)
+{{< /summary >}}
 
 ---
 

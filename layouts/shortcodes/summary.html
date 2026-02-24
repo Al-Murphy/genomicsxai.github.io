@@ -1,0 +1,6 @@
+<aside class="summary-box">
+  <h2 class="summary-box__title">{{ .Get "title" | default "Summary" }}</h2>
+  <div class="summary-box__body">
+    {{ .Inner | markdownify }}
+  </div>
+</aside>
