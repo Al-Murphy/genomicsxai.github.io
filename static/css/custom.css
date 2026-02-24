@@ -318,7 +318,8 @@ article img {
   background: rgba(255, 255, 255, 0.04);
   border-color: rgba(255, 255, 255, 0.1);
 }
-.summary-box__title {
+.summary-box__title,
+.article-content .summary-box .summary-box__title {
   font-size: 2rem;
   font-weight: 700;
   line-height: 1.3;
@@ -329,6 +330,16 @@ article img {
   margin-inline-start: 0;
   padding-inline-start: 0;
   padding: 0;
+}
+.article-content .summary-box h1,
+.article-content .summary-box h2,
+.article-content .summary-box h3,
+.article-content .summary-box h4,
+.article-content .summary-box h5,
+.article-content .summary-box h6 {
+  border-inline-start: none;
+  margin-inline-start: 0;
+  padding-inline-start: 0;
 }
 .summary-box__body {
   font-size: 1em;
