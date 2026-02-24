@@ -1,0 +1,26 @@
+{{- $scope := default "homepage" .Scope -}}
+{{- $context := .Context -}}
+{{- with (index .Context.Site.Params.widgets $scope) -}}
+    <aside class="sidebar right-sidebar sticky">
+        <div class="right-sidebar__layout">
+            {{/* TOC column (left, closer to content) */}}
+            <div class="right-sidebar__toc">
+                {{ range $widget := . }}
+                    {{ if eq .type "toc" }}
+                        {{- $params := default dict .params -}}
+                        {{ partial (printf "widget/%s" .type) (dict "Context" $context "Params" $params) }}
+                    {{ end }}
+                {{ end }}
+            </div>
+            {{/* Actions column (rightmost) */}}
+            <div class="right-sidebar__actions">
+                {{ range $widget := . }}
+                    {{ if eq .type "post-actions" }}
+                        {{- $params := default dict .params -}}
+                        {{ partial (printf "widget/%s" .type) (dict "Context" $context "Params" $params) }}
+                    {{ end }}
+                {{ end }}
+            </div>
+        </div>
+    </aside>
+{{ end }}

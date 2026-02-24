@@ -1,17 +1,37 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Pages on Genomics x AI</title><link>https://genomicsxai.github.io/page/</link><description>Recent content in Pages on Genomics x AI</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Thu, 01 Jan 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://genomicsxai.github.io/page/index.xml" rel="self" type="application/rss+xml"/><item><title>Editorial Board</title><link>https://genomicsxai.github.io/editorial-board/</link><pubDate>Thu, 01 Jan 2026 00:00:00 +0000</pubDate><guid>https://genomicsxai.github.io/editorial-board/</guid><description>&lt;h2 id="editorial-team"&gt;Editorial Team
-&lt;/h2&gt;&lt;p&gt;The Genomics × AI blog is managed by a team of editors who review submissions and ensure quality standards.&lt;/p&gt;
-&lt;h3 id="editors"&gt;Editors
-&lt;/h3&gt;&lt;p&gt;Editors review submissions via GitHub Pull Requests and provide feedback to authors. They ensure that:&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Pages on Genomics x AI</title><link>https://genomicsxai.github.io/page/</link><description>Recent content in Pages on Genomics x AI</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Thu, 01 Jan 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://genomicsxai.github.io/page/index.xml" rel="self" type="application/rss+xml"/><item><title>Editorial Board</title><link>https://genomicsxai.github.io/editorial-board/</link><pubDate>Thu, 01 Jan 2026 00:00:00 +0000</pubDate><guid>https://genomicsxai.github.io/editorial-board/</guid><description>&lt;h2 id="editorial-governance"&gt;Editorial Governance
+&lt;/h2&gt;&lt;p&gt;The Genomics × AI blog is guided by a Steering Committee and supported by an Editorial Board. Together they define scope, standards, and long term direction.&lt;/p&gt;
+&lt;h2 id="steering-committee"&gt;Steering Committee
+&lt;/h2&gt;&lt;p&gt;The Steering Committee sets the strategic vision and scope of the platform. Responsibilities include:&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;Content meets quality and relevance standards&lt;/li&gt;
-&lt;li&gt;Scientific accuracy is maintained&lt;/li&gt;
-&lt;li&gt;Submission guidelines are followed&lt;/li&gt;
-&lt;li&gt;Community standards are upheld&lt;/li&gt;
+&lt;li&gt;Defining the scientific mission and scope&lt;/li&gt;
+&lt;li&gt;Setting editorial policies and quality standards&lt;/li&gt;
+&lt;li&gt;Appointing members of the Editorial Board&lt;/li&gt;
+&lt;li&gt;Overseeing community growth and partnerships&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h3 id="current-editors"&gt;Current Editors
+&lt;h3 id="current-steering-committee"&gt;Current Steering Committee
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Peter K Koo (Cold Spring Harbor Laboratory)&lt;/li&gt;
+&lt;li&gt;Anshul Kundaje (Stanford University)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="editorial-team"&gt;Editorial Team
+&lt;/h2&gt;&lt;p&gt;The Editorial Board oversees content review and maintains scientific and community standards. Board members:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Manage peer-style review via GitHub Pull Requests&lt;/li&gt;
+&lt;li&gt;Provide structured feedback to authors&lt;/li&gt;
+&lt;li&gt;Ensure scientific accuracy and clarity&lt;/li&gt;
+&lt;li&gt;Enforce submission and community guidelines&lt;/li&gt;
+&lt;li&gt;Editorial decisions are made collaboratively when needed.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="current-editorial-board"&gt;Current Editorial Board
 &lt;/h3&gt;&lt;p&gt;Editor list is populated automatically when the site is built with access to the GitHub team. See the &lt;a href="https://github.com/orgs/genomicsxai/teams/editors" target="_blank" rel="noopener" class="link"&gt;@genomicsxai/editors&lt;/a&gt; team on GitHub.&lt;/p&gt;
-&lt;h3 id="becoming-an-editor"&gt;Becoming an Editor
-&lt;/h3&gt;&lt;p&gt;If you&amp;rsquo;re interested in joining the editorial board, please contact us through &lt;a class="link" href="https://github.com/genomicsxai/genomicsxai.github.io/discussions" target="_blank" rel="noopener"
+&lt;h3 id="becoming-involved"&gt;Becoming Involved
+&lt;/h3&gt;&lt;p&gt;If you are interested in:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Joining the Editorial Board&lt;/li&gt;
+&lt;li&gt;Serving as a reviewer&lt;/li&gt;
+&lt;li&gt;Contributing as an author&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Please contact us through &lt;a class="link" href="https://github.com/genomicsxai/genomicsxai.github.io/discussions" target="_blank" rel="noopener"
  &gt;GitHub Discussions&lt;/a&gt;.&lt;/p&gt;</description></item><item><title>Forum</title><link>https://genomicsxai.github.io/forum/</link><pubDate>Thu, 01 Jan 2026 00:00:00 +0000</pubDate><guid>https://genomicsxai.github.io/forum/</guid><description>&lt;h2 id="community-discussion"&gt;Community Discussion
 &lt;/h2&gt;&lt;p&gt;Join the conversation on GitHub Discussions:&lt;/p&gt;
 &lt;ul&gt;

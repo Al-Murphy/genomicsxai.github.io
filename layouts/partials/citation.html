@@ -23,11 +23,5 @@
     <a href="{{ $url }}">{{ $url }}</a>.
     {{ with .Params.doi }} <a href="https://doi.org/{{ . }}">DOI: {{ . }}</a>{{ end }}
   </p>
-  <div class="citation-box__actions">
-    <button type="button" class="citation-btn citation-copy-btn" data-citation-data="{{ $citationData | jsonify | safeHTMLAttr }}">Copy Citation</button>
-    <span class="citation-copy-feedback" aria-live="polite"></span>
-    <button type="button" class="citation-btn citation-download-btn" data-download="bib" data-citation-data="{{ $citationData | jsonify | safeHTMLAttr }}">Download BibTeX</button>
-    <button type="button" class="citation-btn citation-download-btn" data-download="ris" data-citation-data="{{ $citationData | jsonify | safeHTMLAttr }}">Download RIS</button>
-  </div>
 </div>
 <script src="{{ "js/citation.js" | relURL }}" defer></script>
