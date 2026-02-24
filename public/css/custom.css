@@ -139,14 +139,14 @@
 
 /* ── Center: tight cluster of sidebar + card + TOC with space at screen edges ── */
 @media (min-width: 1024px) {
-  .article-page .main-container.extended {
+  .main-container.extended {
     --left-sidebar-max-width: 180px;
     --right-sidebar-max-width: 180px;
     gap: 20px;
   }
 }
 @media (min-width: 1280px) {
-  .article-page .main-container.extended {
+  .main-container.extended {
     max-width: 1220px;
   }
 }
