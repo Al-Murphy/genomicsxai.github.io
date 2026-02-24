@@ -12,7 +12,8 @@
                     {{ end }}
                 {{ end }}
             </div>
-            {{/* Actions column (rightmost) */}}
+            {{/* Actions column: only on blog posts */}}
+            {{ if eq $context.Section "blogs" }}
             <div class="right-sidebar__actions">
                 {{ range $widget := . }}
                     {{ if eq .type "post-actions" }}
@@ -21,6 +22,7 @@
                     {{ end }}
                 {{ end }}
             </div>
+            {{ end }}
         </div>
     </aside>
 {{ end }}
