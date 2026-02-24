@@ -8,15 +8,15 @@
     </div>
 </nav>
 <script>
-(function() {
+document.addEventListener('DOMContentLoaded', function() {
     var list = document.getElementById('toc-list');
     if (!list) return;
 
-    var items = list.querySelectorAll(':scope > ul > li');
-    if (!items.length) return;
+    var allItems = list.querySelectorAll('li');
+    if (!allItems.length) return;
 
     var headingEls = [];
-    items.forEach(function(li) {
+    allItems.forEach(function(li) {
         var a = li.querySelector(':scope > a');
         if (!a) return;
         var id = a.getAttribute('href');
@@ -28,10 +28,9 @@
     if (!headingEls.length) return;
 
     function update() {
-        var scrollY = window.scrollY || window.pageYOffset;
         var current = null;
         for (var i = headingEls.length - 1; i >= 0; i--) {
-            if (headingEls[i].el.offsetTop <= scrollY + 120) {
+            if (headingEls[i].el.getBoundingClientRect().top <= 120) {
                 current = headingEls[i];
                 break;
             }
@@ -39,6 +38,18 @@
         headingEls.forEach(function(h) {
             h.li.classList.toggle('scroll-toc__item--active', h === current);
         });
+        // Auto-scroll TOC list to keep active item visible (without touching page scroll)
+        if (current) {
+            var li = current.li;
+            var container = list;
+            var liTop = li.offsetTop - container.offsetTop;
+            var liBot = liTop + li.offsetHeight;
+            if (liTop < container.scrollTop) {
+                container.scrollTop = liTop;
+            } else if (liBot > container.scrollTop + container.clientHeight) {
+                container.scrollTop = liBot - container.clientHeight;
+            }
+        }
     }
 
     var ticking = false;
@@ -49,6 +60,6 @@
         }
     });
     update();
-})();
+});
 </script>
 {{ end }}

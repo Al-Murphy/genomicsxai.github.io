@@ -5,11 +5,15 @@
 
 /* ── Scroll TOC: full list, active section highlighted on scroll ── */
 .scroll-toc {
-  position: sticky;
-  top: var(--main-top-padding, 50px);
   padding: 0;
-  max-height: calc(100vh - 80px);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+.scroll-toc__list {
   overflow-y: auto;
+  min-height: 0;
 }
 
 /* Header line */
@@ -36,8 +40,10 @@
   margin: 0;
   padding: 0;
 }
-.scroll-toc__list > ul > li > ul { display: none; }
-.scroll-toc__list > ul > li > a {
+.scroll-toc__list > ul > li > ul {
+  padding-left: 1em;
+}
+.scroll-toc__list a {
   display: block;
   padding: 4px 0;
   font-size: 1.4rem;
@@ -47,11 +53,14 @@
   text-decoration: none;
   transition: color 0.2s, font-weight 0.2s;
 }
+.scroll-toc__list > ul > li > ul a {
+  font-size: 1.3rem;
+}
 .scroll-toc__list li.scroll-toc__item--active > a {
   color: var(--accent-color);
   font-weight: 600;
 }
-.scroll-toc__list > ul > li > a:hover {
+.scroll-toc__list a:hover {
   color: var(--card-text-color-main);
 }
 
@@ -60,10 +69,19 @@
   display: flex;
   flex-direction: column;
   width: 100%;
+  max-height: calc(100vh - var(--main-top-padding, 50px) - 20px);
 }
-.right-sidebar__toc { width: 100%; }
+.right-sidebar__toc {
+  width: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
 .right-sidebar__actions {
   width: 100%;
+  flex: 0 0 auto;
   margin-top: 24px;
 }
 
