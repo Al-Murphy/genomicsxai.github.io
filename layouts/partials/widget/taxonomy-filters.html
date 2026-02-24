@@ -1,0 +1,71 @@
+{{- $context := .Context -}}
+{{- $taxonomies := slice
+  (dict "key" "tags"    "title" "Tags")
+  (dict "key" "labs"    "title" "Labs")
+  (dict "key" "authors" "title" "Authors")
+-}}
+{{- $archivesQuery := first 1 (where $context.Site.Pages "Layout" "==" "archives") -}}
+{{- $archivesPage := false -}}
+{{- if $archivesQuery -}}{{ $archivesPage = index $archivesQuery 0 }}{{ end -}}
+{{- $pages := partial "helper/pages.html" $context.Site.Home -}}
+{{- $years := $pages.GroupByDate "2006" -}}
+
+<nav class="filter-bar">
+  <h3 class="filter-bar__heading">Filter posts by&hellip;</h3>
+  {{- range $tax := $taxonomies -}}
+    {{- $terms := index $context.Site.Taxonomies .key -}}
+    {{- if $terms -}}
+    <div class="filter-bar__group">
+      <div class="filter-bar__dropdown">
+        <button type="button" class="action-bar__btn filter-bar__dropdown-toggle" aria-expanded="false" aria-label="{{ .title }}">
+          <span class="action-bar__label">{{ .title }}</span>
+          <svg class="filter-bar__chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <ul class="filter-bar__dropdown-menu" role="listbox">
+          {{- range $terms.ByCount -}}
+          <li role="option"><a href="{{ .Page.RelPermalink }}">{{ .Page.Title }}</a></li>
+          {{- end -}}
+        </ul>
+      </div>
+    </div>
+    {{- end -}}
+  {{- end -}}
+  {{/* Year dropdown */}}
+  {{- if $years -}}
+  <div class="filter-bar__group">
+    <div class="filter-bar__dropdown">
+      <button type="button" class="action-bar__btn filter-bar__dropdown-toggle" aria-expanded="false" aria-label="Year">
+        <span class="action-bar__label">Year</span>
+        <svg class="filter-bar__chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <ul class="filter-bar__dropdown-menu" role="listbox">
+        {{- range $years -}}
+        {{- $id := lower (replace .Key " " "-") -}}
+        <li role="option"><a href="{{ if $archivesPage }}{{ $archivesPage.RelPermalink }}#{{ $id }}{{ end }}">{{ .Key }}</a></li>
+        {{- end -}}
+      </ul>
+    </div>
+  </div>
+  {{- end -}}
+</nav>
+
+<script>
+(function() {
+  document.querySelectorAll('.filter-bar__dropdown-toggle').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var open = btn.getAttribute('aria-expanded') === 'true';
+      // Close all others first
+      document.querySelectorAll('.filter-bar__dropdown-toggle[aria-expanded="true"]').forEach(function(other) {
+        if (other !== btn) other.setAttribute('aria-expanded', 'false');
+      });
+      btn.setAttribute('aria-expanded', String(!open));
+    });
+  });
+  document.addEventListener('click', function() {
+    document.querySelectorAll('.filter-bar__dropdown-toggle[aria-expanded="true"]').forEach(function(btn) {
+      btn.setAttribute('aria-expanded', 'false');
+    });
+  });
+})();
+</script>
