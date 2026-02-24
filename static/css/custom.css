@@ -143,9 +143,6 @@
   font-weight: 600;
   line-height: 1;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
 }
 .action-bar__count {
   font-size: 1.1rem;
