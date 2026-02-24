@@ -95,12 +95,10 @@
   gap: 8px;
 }
 .filter-bar__heading {
-  font-size: 1.3rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--card-text-color-secondary, #888);
-  margin: 0 0 2px 0;
+  font-size: 1.6rem;
+  font-weight: inherit;
+  color: var(--accent-color);
+  margin: 0 0 4px 0;
 }
 .filter-bar__dropdown {
   position: relative;
