@@ -130,9 +130,8 @@ Here, we are still using the full model stack (encoder → transformer → decod
 
 In practice, reducing input length is a pragmatic trade-off between computational efficiency and long-range regulatory context (i.e. performance).
 
----
 
-### Package key features
+## Package key features
 
 * Custom prediction heads – easily register predefined, template, or fully custom heads
 
