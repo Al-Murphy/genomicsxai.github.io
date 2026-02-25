@@ -1,5 +1,6 @@
 {{- $authorTerms := .GetTerms "authors" -}}
 {{- $displayAuthors := .Params.authors_display -}}
+{{- $isListPage := or .IsHome .IsSection -}}
 
 {{- if $authorTerms -}}
 <div class="article-authors">
@@ -25,7 +26,7 @@
         href="{{ $term.RelPermalink }}"
         class="article-author link"
       >{{ $term.LinkTitle }}</a>
-      {{- if or $aff $orcid }}
+      {{- if and (not $isListPage) (or $aff $orcid) }}
       <div class="author-tooltip">
         {{- with $aff }}
         <div class="author-tooltip__affiliation">{{ . }}</div>
@@ -57,7 +58,7 @@
       {{- end -}}
       <div class="article-author-block">
         <span class="article-author">{{ $name }}</span>
-        {{- if or $aff $orcid }}
+        {{- if and (not $isListPage) (or $aff $orcid) }}
         <div class="author-tooltip">
           {{- with $aff }}
           <div class="author-tooltip__affiliation">{{ . }}</div>
@@ -85,7 +86,7 @@
     {{- end -}}
     <div class="article-author-block">
       <span class="article-author">{{ $name }}</span>
-      {{- if or $aff $orcid }}
+      {{- if and (not $isListPage) (or $aff $orcid) }}
       <div class="author-tooltip">
         {{- with $aff }}
         <div class="author-tooltip__affiliation">{{ . }}</div>

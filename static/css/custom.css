@@ -377,13 +377,13 @@ article img {
 .summary-box {
   margin: var(--block-spacing) 0 2rem 0;
   padding: 2rem 2.25rem;
-  background: var(--card-background, #fff);
-  border: 1px solid var(--card-separator-color, rgba(218,218,218,0.5));
+  background: #d6e6ff; /* light blue so it clearly stands out in light mode */
+  border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: 12px;
   box-shadow: 0 1px 4px rgba(0,0,0,0.06);
 }
 [data-scheme="dark"] .summary-box {
-  background: rgba(255, 255, 255, 0.04);
+  background: #2d3138; /* slightly lighter than main dark background */
   border-color: rgba(255, 255, 255, 0.1);
 }
 .summary-box__title,

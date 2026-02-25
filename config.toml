@@ -2,6 +2,7 @@ baseURL = "https://genomicsxai.github.io/"
 title = "Genomics x AI"
 theme = "Stack"
 enableRobotsTXT = true
+enableGitInfo = true
 
 # So image attributes (e.g. {width=400px}) apply to the image, not the wrapping <p>
 [markup.goldmark.parser]
