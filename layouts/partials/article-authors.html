@@ -21,15 +21,13 @@
       {{- end -}}
     {{- end -}}
     <div class="article-author-block">
-      <a href="{{ $term.RelPermalink }}" class="article-author link">{{ $term.LinkTitle }}</a>
-      {{- with $aff }}
-      <div class="article-author-affiliation">{{ . }}</div>
-      {{- end }}
-      {{- with $orcid }}
-      <div class="article-author-orcid">
-        <a href="https://orcid.org/{{ . }}" target="_blank" rel="noopener">ORCID: {{ . }}</a>
-      </div>
-      {{- end }}
+      <a
+        href="{{ $term.RelPermalink }}"
+        class="article-author link"
+        {{- if or $aff $orcid -}}
+        title="{{ with $aff }}{{ . }}{{ end }}{{ if and $aff $orcid }} • {{ end }}{{ with $orcid }}ORCID: {{ . }}{{ end }}"
+        {{- end -}}
+      >{{ $term.LinkTitle }}</a>
     </div>
   {{- end -}}
 </div>
@@ -49,15 +47,12 @@
         {{- end -}}
       {{- end -}}
       <div class="article-author-block">
-        <span class="article-author">{{ $name }}</span>
-        {{- with $aff }}
-        <div class="article-author-affiliation">{{ . }}</div>
-        {{- end }}
-        {{- with $orcid }}
-        <div class="article-author-orcid">
-          <a href="https://orcid.org/{{ . }}" target="_blank" rel="noopener">ORCID: {{ . }}</a>
-        </div>
-        {{- end }}
+        <span
+          class="article-author"
+          {{- if or $aff $orcid -}}
+          title="{{ with $aff }}{{ . }}{{ end }}{{ if and $aff $orcid }} • {{ end }}{{ with $orcid }}ORCID: {{ . }}{{ end }}"
+          {{- end -}}
+        >{{ $name }}</span>
       </div>
     {{- end -}}
   {{- else -}}
@@ -73,15 +68,12 @@
       {{- end -}}
     {{- end -}}
     <div class="article-author-block">
-      <span class="article-author">{{ $name }}</span>
-      {{- with $aff }}
-      <div class="article-author-affiliation">{{ . }}</div>
-      {{- end }}
-      {{- with $orcid }}
-      <div class="article-author-orcid">
-        <a href="https://orcid.org/{{ . }}" target="_blank" rel="noopener">ORCID: {{ . }}</a>
-      </div>
-      {{- end }}
+      <span
+        class="article-author"
+        {{- if or $aff $orcid -}}
+        title="{{ with $aff }}{{ . }}{{ end }}{{ if and $aff $orcid }} • {{ end }}{{ with $orcid }}ORCID: {{ . }}{{ end }}"
+        {{- end -}}
+      >{{ $name }}</span>
     </div>
   {{- end -}}
 </div>
