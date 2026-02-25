@@ -24,10 +24,19 @@
       <a
         href="{{ $term.RelPermalink }}"
         class="article-author link"
-        {{- if or $aff $orcid -}}
-        title="{{ with $aff }}{{ . }}{{ end }}{{ if and $aff $orcid }} • {{ end }}{{ with $orcid }}ORCID: {{ . }}{{ end }}"
-        {{- end -}}
       >{{ $term.LinkTitle }}</a>
+      {{- if or $aff $orcid }}
+      <div class="author-tooltip">
+        {{- with $aff }}
+        <div class="author-tooltip__affiliation">{{ . }}</div>
+        {{- end }}
+        {{- with $orcid }}
+        <div class="author-tooltip__orcid">
+          <a href="https://orcid.org/{{ . }}" target="_blank" rel="noopener">ORCID: {{ . }}</a>
+        </div>
+        {{- end }}
+      </div>
+      {{- end }}
     </div>
   {{- end -}}
 </div>
@@ -47,12 +56,19 @@
         {{- end -}}
       {{- end -}}
       <div class="article-author-block">
-        <span
-          class="article-author"
-          {{- if or $aff $orcid -}}
-          title="{{ with $aff }}{{ . }}{{ end }}{{ if and $aff $orcid }} • {{ end }}{{ with $orcid }}ORCID: {{ . }}{{ end }}"
-          {{- end -}}
-        >{{ $name }}</span>
+        <span class="article-author">{{ $name }}</span>
+        {{- if or $aff $orcid }}
+        <div class="author-tooltip">
+          {{- with $aff }}
+          <div class="author-tooltip__affiliation">{{ . }}</div>
+          {{- end }}
+          {{- with $orcid }}
+          <div class="author-tooltip__orcid">
+            <a href="https://orcid.org/{{ . }}" target="_blank" rel="noopener">ORCID: {{ . }}</a>
+          </div>
+          {{- end }}
+        </div>
+        {{- end }}
       </div>
     {{- end -}}
   {{- else -}}
@@ -68,12 +84,19 @@
       {{- end -}}
     {{- end -}}
     <div class="article-author-block">
-      <span
-        class="article-author"
-        {{- if or $aff $orcid -}}
-        title="{{ with $aff }}{{ . }}{{ end }}{{ if and $aff $orcid }} • {{ end }}{{ with $orcid }}ORCID: {{ . }}{{ end }}"
-        {{- end -}}
-      >{{ $name }}</span>
+      <span class="article-author">{{ $name }}</span>
+      {{- if or $aff $orcid }}
+      <div class="author-tooltip">
+        {{- with $aff }}
+        <div class="author-tooltip__affiliation">{{ . }}</div>
+        {{- end }}
+        {{- with $orcid }}
+        <div class="author-tooltip__orcid">
+          <a href="https://orcid.org/{{ . }}" target="_blank" rel="noopener">ORCID: {{ . }}</a>
+        </div>
+        {{- end }}
+      </div>
+      {{- end }}
     </div>
   {{- end -}}
 </div>
