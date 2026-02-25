@@ -11,7 +11,7 @@ authors_display:
     affiliation: "Cold Spring Harbor Labs (CSHL)"
     orcid: "0000-0002-2487-8753"
 
-  - name: "Masayuki (Moon) Nagai"
+  - name: "Masayuki Nagai"
     affiliation: "Cold Spring Harbor Labs (CSHL)"
     orcid: "0009-0004-6465-2929"
 
@@ -105,7 +105,29 @@ Benefits of fine-tuning include:
 
 In practice, many workflows begin by training a task-specific head with the backbone frozen, then progressively unfreezing components if additional capacity is needed.
 
-### Key features
+
+## Fine-tuning with shorter sequence windows
+
+By default, AlphaGenome is trained on ~1 million base-pair (1 Mb) input sequences, allowing the model to capture long-range regulatory interactions. However, during fine-tuning you are not required to use the full 1 Mb context.
+
+If your downstream task does not depend strongly on ultra-long-range interactions, you can fine-tune using shorter input windows (e.g., 32 kb). This reduces memory usage, increases batch size flexibility, and can substantially speed up training.
+
+This is particularly useful when:
+
+* The signal of interest is predominantly local (functional outputs like chromatin accessibility are)
+
+* You are adapting to assays with shorter effective regulatory range
+
+* You want faster experimentation cycles
+
+Importantly, this is different from encoder-only fine-tuning used for very short sequences (e.g., ~200–300 bp MPRA constructs). In that setting, only the convolutional encoder is used, bypassing the transformer and decoder entirely. This is covered in [another post](https://genomicsxai.github.io/blogs/2026-002/).
+
+Here, we are still using the full model stack (encoder → transformer → decoder), but operating on a reduced genomic window.
+
+In practice, reducing input length is a pragmatic trade-off between computational efficiency and long-range regulatory context (i.e. performance).
+
+
+### Package key features
 
 * Custom prediction heads – easily register predefined, template, or fully custom heads
 
@@ -120,7 +142,8 @@ In practice, many workflows begin by training a task-specific head with the back
 * Native JAX/Haiku – fully compatible with original AlphaGenome pipelines
 
 
-* **Figure 1:** AlphaGenome fine-tuning workflows schematic
+AlphaGenome fine-tuning workflows schematic
+
 
 ![alphagenome_ft schematic](alphagenome_ft.png "width=600 Schematic of alphagenome-ft. alphagenome-ft enables fine-tuning of AlphaGenome (architecture shown) from different, modular stages of the model (the encoder - for short sequences, the transformer - for 128 base-pair resolution, and the decoder - 1 base-pair resolution). You can control what parts of the model are frozen or free to update and you can calculate attributions, all in native JAX/Haiku.")
 
