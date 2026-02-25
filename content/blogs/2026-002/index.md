@@ -14,6 +14,9 @@ authors_display:
   - name: "Alan Murphy"
     affiliation: "Cold Spring Harbor Labs (CSHL)"
     orcid: "0000-0002-2487-8753"
+  - name: "Peter Koo"
+    affiliation: "Cold Spring Harbor Labs (CSHL)"
+    orcid: "0000-0001-8722-0038"
 
 editor: "Editor Name"
 
@@ -47,7 +50,7 @@ Foundation sequence-to-function models like AlphaGenome and Enformer are trained
 
 By extracting this encoder from the long-range transformer and decoder modules, we:
 
-* achieve state-of-the-art performance on [MPRA](https://www.nature.com/articles/s41586-024-08430-9), [STARR-seq](https://www.nature.com/articles/s41588-022-01048-5), and [CAGI5](http://www.genomeinterpretation.org/cagi5-regulation-saturation.html) benchmarks
+* achieve state-of-the-art performance on [lentiMPRA](https://www.nature.com/articles/s41586-024-08430-9), [STARR-seq](https://www.nature.com/articles/s41588-022-01048-5), and [CAGI5](http://www.genomeinterpretation.org/cagi5-regulation-saturation.html) benchmarks
 * reduce inference cost by ~500×
 * generalise across assays, species, and architectures
 
@@ -59,6 +62,8 @@ This reframes foundation genomics models as modular regulatory representation en
 {{< /summary >}}
 
 ---
+
+## Motivation
 
 Foundation-scale sequence-to-function models have rapidly advanced regulatory genomics. Architectures like [AlphaGenome](https://www.nature.com/articles/s41586-025-10014-0) and [Enformer](https://www.nature.com/articles/s41592-021-01252-x) predict thousands of regulatory tracks across large genomic contexts and achieve impressive genome-wide accuracy (hence the term generalists).
 
@@ -132,9 +137,9 @@ This allows direct training on short sequences while preserving pretrained regul
 
 Before I get into the how of doing this, let me convince you that it's worthwhile — we evaluated modular encoders on:
 
-* lentiMPRA constructs (HepG2, K562, WTC11)
+* [lentiMPRA](https://www.nature.com/articles/s41586-024-08430-9) constructs (HepG2, K562, WTC11)
 
-* STARR-seq enhancer activity in Drosophila
+* [STARR-seq](https://www.nature.com/articles/s41588-022-01048-5) enhancer activity in Drosophila
 
 Results:
 
@@ -445,3 +450,12 @@ Starting from the best Stage 1 configuration, we varied the unfreezing schedule.
 | s2-s1ep5        | **0.8706** | 0.8435     | 0.7654     | 0.8265     | 5    |
 | s2-s1ep1        | 0.8507     | 0.8382     | 0.7651     | 0.8180     | 6    |
 
+
+## References
+
+1. Avsec, Ž. et al. Advancing regulatory variant effect prediction with alphagenome., 649, Nature (2026).
+2. Avsec, Ž. et al. Effective gene expression prediction from sequence by integrating long-range interactions., 18, Nat. methods (2021).
+3. Agarwal, V. et al. Massively parallel characterization of transcriptional regulatory elements., 639, Nature (2025).
+4. de Almeida, B. P., Reiter, F., Pagani, M. & Stark, A. Deepstarr predicts enhancer activity from dna sequence and enables thede novo design of synthetic enhancers., 54, Nat. genetics (2022).
+5. of Genome Interpretation Consortium, T. C. A. Cagi, the critical assessment of genome interpretation, establishes progress and prospects for computational genetic variant interpretation methods., 25, Genome biology (2024).
+6. Rafi, A. M. et al. A community effort to optimize sequence-based deep learning models of gene regulation., 43, Nat. biotechnology (2025).

@@ -14,7 +14,7 @@ math: true
 # Author(s): list of names (used for /authors/<slug>/)
 authors: ["Author One", "Author Two"]
 
-# Optional: full details for citation and JSON-LD
+# Optional: full details for citation, display and JSON-LD
 authors_display:
   - name: "Author One"
     affiliation: "Institution"
@@ -69,3 +69,5 @@ Your content here. Use standard Markdown. For images in the post folder:
 ```
 
 See [BLOG_SPEC.md](./BLOG_SPEC.md) for full frontmatter and tag options.
+
+## References

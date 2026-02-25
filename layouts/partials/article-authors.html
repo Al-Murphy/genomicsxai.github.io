@@ -1,9 +1,36 @@
 {{- $authorTerms := .GetTerms "authors" -}}
+{{- $displayAuthors := .Params.authors_display -}}
+
 {{- if $authorTerms -}}
 <div class="article-authors">
   {{- range $i, $term := $authorTerms -}}
-    {{- if $i -}}, {{ end -}}
-    <a href="{{ $term.RelPermalink }}" class="article-author link">{{ $term.LinkTitle }}</a>
+    {{- $aff := "" -}}
+    {{- $orcid := "" -}}
+    {{- if $displayAuthors -}}
+      {{- range $displayAuthors -}}
+        {{- if and (reflect.IsMap .) (eq .name $term.LinkTitle) -}}
+          {{- $aff = .affiliation -}}
+          {{- $orcid = .orcid -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+    {{- if site.Data.authors -}}
+      {{- with index site.Data.authors $term.Slug -}}
+        {{- if not $aff }}{{- $aff = .affiliation -}}{{- end -}}
+        {{- if not $orcid }}{{- $orcid = .orcid -}}{{- end -}}
+      {{- end -}}
+    {{- end -}}
+    <div class="article-author-block">
+      <a href="{{ $term.RelPermalink }}" class="article-author link">{{ $term.LinkTitle }}</a>
+      {{- with $aff }}
+      <div class="article-author-affiliation">{{ . }}</div>
+      {{- end }}
+      {{- with $orcid }}
+      <div class="article-author-orcid">
+        <a href="https://orcid.org/{{ . }}" target="_blank" rel="noopener">ORCID: {{ . }}</a>
+      </div>
+      {{- end }}
+    </div>
   {{- end -}}
 </div>
 {{- else if .Params.authors -}}
@@ -11,11 +38,51 @@
   {{- $list := .Params.authors -}}
   {{- if reflect.IsSlice $list -}}
     {{- range $i, $name := $list -}}
-      {{- if $i -}}, {{ end -}}
-      <span class="article-author">{{ $name }}</span>
+      {{- $aff := "" -}}
+      {{- $orcid := "" -}}
+      {{- if $displayAuthors -}}
+        {{- range $displayAuthors -}}
+          {{- if and (reflect.IsMap .) (eq .name $name) -}}
+            {{- $aff = .affiliation -}}
+            {{- $orcid = .orcid -}}
+          {{- end -}}
+        {{- end -}}
+      {{- end -}}
+      <div class="article-author-block">
+        <span class="article-author">{{ $name }}</span>
+        {{- with $aff }}
+        <div class="article-author-affiliation">{{ . }}</div>
+        {{- end }}
+        {{- with $orcid }}
+        <div class="article-author-orcid">
+          <a href="https://orcid.org/{{ . }}" target="_blank" rel="noopener">ORCID: {{ . }}</a>
+        </div>
+        {{- end }}
+      </div>
     {{- end -}}
   {{- else -}}
-    <span class="article-author">{{ $list }}</span>
+    {{- $name := $list -}}
+    {{- $aff := "" -}}
+    {{- $orcid := "" -}}
+    {{- if $displayAuthors -}}
+      {{- range $displayAuthors -}}
+        {{- if and (reflect.IsMap .) (eq .name $name) -}}
+          {{- $aff = .affiliation -}}
+          {{- $orcid = .orcid -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+    <div class="article-author-block">
+      <span class="article-author">{{ $name }}</span>
+      {{- with $aff }}
+      <div class="article-author-affiliation">{{ . }}</div>
+      {{- end }}
+      {{- with $orcid }}
+      <div class="article-author-orcid">
+        <a href="https://orcid.org/{{ . }}" target="_blank" rel="noopener">ORCID: {{ . }}</a>
+      </div>
+      {{- end }}
+    </div>
   {{- end -}}
 </div>
 {{- end -}}

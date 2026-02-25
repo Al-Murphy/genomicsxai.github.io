@@ -47,6 +47,9 @@ Comments and likes on the blog use **GitHub Discussions**. To get notified when 
 
 Editors and maintainers can use the same options to follow all post activity.
 
-### Writing Note
+### Writing Notes
 
-There is no strict criteria on the style that your blog post should follow but aim to make it clear and engaging!
+   - There are no strict stylistic requirements, but posts should be clear, accessible, and engaging for a broad scientific audience.
+   - Use headings, figures, and examples where helpful to improve readability.
+   - Cite relevant prior work using hyperlinks or a formal inline citation style, and the inclusion of a references section at the end of the post is encouraged.
+   - Ensure that claims are supported by appropriate sources.
