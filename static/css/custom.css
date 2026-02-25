@@ -377,7 +377,7 @@ article img {
 .summary-box {
   margin: var(--block-spacing) 0 2rem 0;
   padding: 2rem 2.25rem;
-  background: #d6e6ff; /* light blue so it clearly stands out in light mode */
+  background: #e6f2ff; /* light blue so it clearly stands out in light mode */
   border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: 12px;
   box-shadow: 0 1px 4px rgba(0,0,0,0.06);
