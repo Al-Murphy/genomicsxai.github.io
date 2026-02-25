@@ -5,7 +5,7 @@
   padding: 1.25rem 1.5rem;
   margin: 1.5rem 0;
   border: 1px solid rgba(0, 0, 0, 0.06);
-  background-color: #d6e6ff; /* slightly stronger light blue */
+  background-color: #e6f2ff; /* slightly stronger light blue */
 }
 
 .summary-box__title {
@@ -39,7 +39,7 @@
   border-radius: 0.45rem;
   background-color: #ffffff;
   box-shadow: 0 8px 24px rgba(15, 23, 42, 0.18);
-  font-size: 0.95rem;
+  font-size: inherit; /* match author name size */
   min-width: 220px;
   max-width: 280px;
   opacity: 0;
