@@ -14,7 +14,7 @@
 {{- $citationData := dict "citation" $citationPlain "title" .Title "authors" $authorNames "year" $year "doi" (.Params.doi | default "") "postId" (.Params.post_id | default "") "url" .Permalink "blogName" $blogName -}}
 
 <div class="citation-box">
-  <h3 class="citation-box__title">Citation</h3>
+  <h3 class="citation-box__title">Cite this post:</h3>
   <p class="citation-box__text">
     {{ $authorStr }}.
     "{{ .Title }}."
