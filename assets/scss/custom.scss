@@ -1,0 +1,25 @@
+/* Custom styles for Genomics × AI site */
+
+.summary-box {
+  border-radius: 0.5rem;
+  padding: 1.25rem 1.5rem;
+  margin: 1.5rem 0;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  background-color: #e6f2ff;
+}
+
+.summary-box__title {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.summary-box__body {
+  margin: 0;
+}
+
+/* Dark mode tweaks */
+[data-scheme="dark"] .summary-box {
+  background-color: #2a2d33;
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
