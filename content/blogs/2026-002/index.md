@@ -459,4 +459,5 @@ Starting from the best Stage 1 configuration, we varied the unfreezing schedule.
 4. de Almeida, B. P., Reiter, F., Pagani, M. & Stark, A. Deepstarr predicts enhancer activity from dna sequence and enables thede novo design of synthetic enhancers., 54, Nat. genetics (2022).
 5. of Genome Interpretation Consortium, T. C. A. Cagi, the critical assessment of genome interpretation, establishes progress and prospects for computational genetic variant interpretation methods., 25, Genome biology (2024).
 6. Rafi, A. M. et al. A community effort to optimize sequence-based deep learning models of gene regulation., 43, Nat. biotechnology (2025).
-7. Alan Murphy, Masayuki Nagai, Alejandro Buendia, Anshul Kundaje, Peter Koo. "Fine-tuning AlphaGenome in native JAX/Haiku." Genomics × AI Blog, 25 February 2026. https://genomicsxai.github.io/blogs/2026-003/.
+7. Lal, A., Garfield, D., Biancalani, T. & Eraslan, G. Designing realistic regulatory dna with autoregressive language models., 34, Genome Res. (2024).
+8. Alan Murphy, Masayuki Nagai, Alejandro Buendia, Anshul Kundaje, Peter Koo. "Fine-tuning AlphaGenome in native JAX/Haiku." Genomics × AI Blog, 25 February 2026. https://genomicsxai.github.io/blogs/2026-003/.
