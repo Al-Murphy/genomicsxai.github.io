@@ -273,7 +273,7 @@ Extracting and adapting these representations enables efficient perturbation mod
 
 Finally, how can you use this approach:
 
-This analysis uses the native jax/haiku AlphaGenome wrapper package  which is available from the [Genomics x AI community github](https://github.com/genomicsxai/alphagenome_ft) (more on this in a future post) and all code to run the analysis is [here](https://github.com/Al-Murphy/alphagenome_FT_MPRA).
+This analysis uses the native jax/haiku AlphaGenome wrapper package  which is available from the [Genomics x AI community github](https://github.com/genomicsxai/alphagenome_ft) (see [our post on this](https://genomicsxai.github.io/blogs/2026-003/)) and all code to run the analysis is [here](https://github.com/Al-Murphy/alphagenome_FT_MPRA).
 
 But here is a minimum script or if you would prefer to run it yourself on lentiMPRA data, see our [colab notebook](https://colab.research.google.com/github/genomicsxai/alphagenome_ft/blob/main/notebooks/finetune_encoder_only_mpra.ipynb):
 
@@ -459,3 +459,4 @@ Starting from the best Stage 1 configuration, we varied the unfreezing schedule.
 4. de Almeida, B. P., Reiter, F., Pagani, M. & Stark, A. Deepstarr predicts enhancer activity from dna sequence and enables thede novo design of synthetic enhancers., 54, Nat. genetics (2022).
 5. of Genome Interpretation Consortium, T. C. A. Cagi, the critical assessment of genome interpretation, establishes progress and prospects for computational genetic variant interpretation methods., 25, Genome biology (2024).
 6. Rafi, A. M. et al. A community effort to optimize sequence-based deep learning models of gene regulation., 43, Nat. biotechnology (2025).
+7. Alan Murphy, Masayuki Nagai, Alejandro Buendia, Anshul Kundaje, Peter Koo. "Fine-tuning AlphaGenome in native JAX/Haiku." Genomics × AI Blog, 25 February 2026. https://genomicsxai.github.io/blogs/2026-003/.
