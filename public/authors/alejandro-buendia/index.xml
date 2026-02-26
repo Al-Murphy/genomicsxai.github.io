@@ -117,7 +117,7 @@
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;AlphaGenome fine-tuning workflows schematic&lt;/p&gt;
-&lt;figure&gt;&lt;a href="https://genomicsxai.github.io/blogs/2026-003/alphagenome_ft.png" class="image-link" data-pswp-width="600" data-pswp-height="360"&gt;
+&lt;figure&gt;&lt;a href="https://genomicsxai.github.io/blogs/2026-003/alphagenome_ft.png" class="image-link" data-pswp-width="500" data-pswp-height="300"&gt;
 		&lt;img src="https://genomicsxai.github.io/blogs/2026-003/alphagenome_ft.png" width="600px" height="360"loading="lazy"
 			alt="alphagenome_ft schematic"
 			title="Schematic of alphagenome-ft. alphagenome-ft enables fine-tuning of AlphaGenome (architecture shown) from different, modular stages of the model (the encoder - for short sequences, the transformer - for 128 base-pair resolution, and the decoder - 1 base-pair resolution). You can control what parts of the model are frozen or free to update and you can calculate attributions, all in native JAX/Haiku." data-title-escaped="Schematic of alphagenome-ft. alphagenome-ft enables fine-tuning of AlphaGenome (architecture shown) from different, modular stages of the model (the encoder - for short sequences, the transformer - for 128 base-pair resolution, and the decoder - 1 base-pair resolution). You can control what parts of the model are frozen or free to update and you can calculate attributions, all in native JAX/Haiku."&gt;
@@ -228,7 +228,7 @@
 &lt;p&gt;You can also visualise contributions with &lt;code&gt;plot_attribution_map&lt;/code&gt; or &lt;code&gt;plot_sequence_logo&lt;/code&gt; functions! See below for an example attribution map when we fine-tuned AlphaGenome&amp;rsquo;s encoder on &lt;a class="link" href="https://www.nature.com/articles/s41588-022-01048-5" target="_blank" rel="noopener"
  &gt;fly STARR-seq data&lt;/a&gt; - See our &lt;a class="link" href="https://genomicsxai.github.io/blogs/2026-002/" target="_blank" rel="noopener"
  &gt;MPRA post&lt;/a&gt; for more details.&lt;/p&gt;
-&lt;figure&gt;&lt;a href="https://genomicsxai.github.io/blogs/2026-003/sequence_logo_gradient_x_input.png" class="image-link" data-pswp-width="900" data-pswp-height="129"&gt;
+&lt;figure&gt;&lt;a href="https://genomicsxai.github.io/blogs/2026-003/sequence_logo_gradient_x_input.png" class="image-link" data-pswp-width="2982" data-pswp-height="430"&gt;
 		&lt;img src="https://genomicsxai.github.io/blogs/2026-003/sequence_logo_gradient_x_input.png" width="900px" height="129"loading="lazy"
 			alt="attribution map"
 			title="Gradient x Input attribution map for AlphaGenome encoder only fine-tuning on [fly STARR-seq data](https://www.nature.com/articles/s41588-022-01048-5) - See our [MPRA post](https://genomicsxai.github.io/blogs/2026-002/) for more details on this fine-tuning. We can see the model highlights an AP-1 motif around position ~230, consistent with known enhancer regulatory logic." data-title-escaped="Gradient x Input attribution map for AlphaGenome encoder only fine-tuning on [fly STARR-seq data](https://www.nature.com/articles/s41588-022-01048-5) - See our [MPRA post](https://genomicsxai.github.io/blogs/2026-002/) for more details on this fine-tuning. We can see the model highlights an AP-1 motif around position ~230, consistent with known enhancer regulatory logic."&gt;

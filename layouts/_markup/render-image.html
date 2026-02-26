@@ -20,23 +20,20 @@
 {{- with $image -}}
 	{{- if .Permalink -}}
 		{{- $galleryImage := and .Height .Width (not $attrWidth) (not $attrHeight) -}}
-		{{/* Compute display width and height integers for data-pswp-* so Photoswipe knows the
-		     scaled size it will actually render, not the full native dimensions.
-		     If the author sets width=N in the title, scale height proportionally.
-		     This prevents Photoswipe from opening a tiny/blurry scaled-down version. */}}
-		{{- $dispW := .Width -}}
-		{{- $dispH := .Height -}}
+		{{/* When width=N is set in the title, compute proportional display height.
+		     data-pswp-* always use NATIVE dimensions so Photoswipe can zoom to full resolution.
+		     The <img> height uses the scaled value so the inline aspect ratio is correct. */}}
+		{{- $imgDisplayH := .Height -}}
 		{{- if and $attrWidth .Width .Height -}}
 			{{- $parsedW := $attrWidth | replaceRE "[^0-9]" "" | int -}}
 			{{- if $parsedW -}}
-				{{- $dispW = $parsedW -}}
-				{{- $dispH = div (mul $parsedW .Height) .Width -}}
+				{{- $imgDisplayH = div (mul $parsedW .Height) .Width -}}
 			{{- end -}}
 		{{- end -}}
-		<figure><a href="{{ .Permalink }}" class="image-link" data-pswp-width="{{ $dispW }}" data-pswp-height="{{ $dispH }}">
+		<figure><a href="{{ .Permalink }}" class="image-link" data-pswp-width="{{ .Width }}" data-pswp-height="{{ .Height }}">
 		<img src="{{ .Permalink }}"
 			{{- if $attrWidth }} width="{{ $attrWidth }}"{{ else }}{{ with .Width }} width="{{ . }}"{{ end }}{{ end -}}
-			{{- if $attrHeight }} height="{{ $attrHeight }}"{{ else }}{{ with $dispH }} height="{{ . }}"{{ end }}{{ end -}}
+			{{- if $attrHeight }} height="{{ $attrHeight }}"{{ else }}{{ with $imgDisplayH }} height="{{ . }}"{{ end }}{{ end -}}
 			loading="lazy"
 			{{ with $alt }}alt="{{ . }}"{{ end }}
 			{{ with $displayTitle }}title="{{ . }}" data-title-escaped="{{ $displayTitle | htmlEscape }}"{{ end }}
