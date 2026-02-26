@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Pages on Genomics x AI</title><link>https://genomicsxai.github.io/page/</link><description>Recent content in Pages on Genomics x AI</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Thu, 01 Jan 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://genomicsxai.github.io/page/index.xml" rel="self" type="application/rss+xml"/><item><title>Editorial Board</title><link>https://genomicsxai.github.io/editorial-board/</link><pubDate>Thu, 01 Jan 2026 00:00:00 +0000</pubDate><guid>https://genomicsxai.github.io/editorial-board/</guid><description>&lt;h2 id="editorial-governance"&gt;Editorial Governance
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Pages on Genomics x AI</title><link>https://genomicsxai.github.io/page/</link><description>Recent content in Pages on Genomics x AI</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Wed, 25 Feb 2026 08:48:02 -0500</lastBuildDate><atom:link href="https://genomicsxai.github.io/page/index.xml" rel="self" type="application/rss+xml"/><item><title>Editorial Board</title><link>https://genomicsxai.github.io/editorial-board/</link><pubDate>Thu, 01 Jan 2026 00:00:00 +0000</pubDate><guid>https://genomicsxai.github.io/editorial-board/</guid><description>&lt;h2 id="editorial-governance"&gt;Editorial Governance
 &lt;/h2&gt;&lt;p&gt;The Genomics × AI blog is guided by a Steering Committee and supported by an Editorial Board. Together they define scope, standards, and long term direction.&lt;/p&gt;
 &lt;h2 id="steering-committee"&gt;Steering Committee
 &lt;/h2&gt;&lt;p&gt;The Steering Committee sets the strategic vision and scope of the platform. Responsibilities include:&lt;/p&gt;
@@ -10,7 +10,7 @@
 &lt;/ul&gt;
 &lt;h3 id="current-steering-committee"&gt;Current Steering Committee
 &lt;/h3&gt;&lt;ul&gt;
-&lt;li&gt;Peter K Koo (Cold Spring Harbor Laboratory)&lt;/li&gt;
+&lt;li&gt;Peter Koo (Cold Spring Harbor Laboratory)&lt;/li&gt;
 &lt;li&gt;Anshul Kundaje (Stanford University)&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2 id="editorial-team"&gt;Editorial Team
@@ -35,17 +35,25 @@
  &gt;GitHub Discussions&lt;/a&gt;.&lt;/p&gt;</description></item><item><title>Forum</title><link>https://genomicsxai.github.io/forum/</link><pubDate>Thu, 01 Jan 2026 00:00:00 +0000</pubDate><guid>https://genomicsxai.github.io/forum/</guid><description>&lt;h2 id="community-discussion"&gt;Community Discussion
 &lt;/h2&gt;&lt;p&gt;Join the conversation on GitHub Discussions:&lt;/p&gt;
 &lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a class="link" href="https://github.com/genomicsxai/genomicsxai.github.io/discussions/categories/announcements" target="_blank" rel="noopener"
+ &gt;Announcements&lt;/a&gt;&lt;/strong&gt; — Official updates and news from the editorial team&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a class="link" href="https://github.com/genomicsxai/genomicsxai.github.io/discussions/categories/calls-for-posts" target="_blank" rel="noopener"
+ &gt;Calls for Posts&lt;/a&gt;&lt;/strong&gt; — Open calls for blog post contributions&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;&lt;a class="link" href="https://github.com/genomicsxai/genomicsxai.github.io/discussions/categories/general" target="_blank" rel="noopener"
- &gt;General Discussion&lt;/a&gt;&lt;/strong&gt; - General topics and announcements&lt;/li&gt;
+ &gt;General&lt;/a&gt;&lt;/strong&gt; — General topics and open-ended conversation&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a class="link" href="https://github.com/genomicsxai/genomicsxai.github.io/discussions/categories/ideas" target="_blank" rel="noopener"
+ &gt;Ideas&lt;/a&gt;&lt;/strong&gt; — Propose ideas for posts, tools, or the platform&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;&lt;a class="link" href="https://github.com/genomicsxai/genomicsxai.github.io/discussions/categories/methods" target="_blank" rel="noopener"
- &gt;Methods&lt;/a&gt;&lt;/strong&gt; - Discussion about methods and techniques&lt;/li&gt;
+ &gt;Methods&lt;/a&gt;&lt;/strong&gt; — Discussion about methods and techniques&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a class="link" href="https://github.com/genomicsxai/genomicsxai.github.io/discussions/categories/polls" target="_blank" rel="noopener"
+ &gt;Polls&lt;/a&gt;&lt;/strong&gt; — Community polls and surveys&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;&lt;a class="link" href="https://github.com/genomicsxai/genomicsxai.github.io/discussions/categories/post-discussions" target="_blank" rel="noopener"
- &gt;Post Discussions&lt;/a&gt;&lt;/strong&gt; - Discussions about published posts&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;&lt;a class="link" href="https://github.com/genomicsxai/genomicsxai.github.io/discussions/categories/calls-for-papers" target="_blank" rel="noopener"
- &gt;Calls for Posts&lt;/a&gt;&lt;/strong&gt; - Open calls and opportunities&lt;/li&gt;
+ &gt;Post Discussions&lt;/a&gt;&lt;/strong&gt; — Discussions linked to published blog posts&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a class="link" href="https://github.com/genomicsxai/genomicsxai.github.io/discussions/categories/q-a" target="_blank" rel="noopener"
+ &gt;Q&amp;amp;A&lt;/a&gt;&lt;/strong&gt; — Ask and answer questions&lt;/li&gt;
 &lt;/ul&gt;
 &lt;hr&gt;
-&lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: Each blog post also has a dedicated discussion thread. Look for the &amp;ldquo;Discuss this post&amp;rdquo; link on individual posts.&lt;/p&gt;</description></item><item><title>Policies</title><link>https://genomicsxai.github.io/policies/</link><pubDate>Thu, 01 Jan 2026 00:00:00 +0000</pubDate><guid>https://genomicsxai.github.io/policies/</guid><description>&lt;h2 id="editorial-and-community-policies"&gt;Editorial and Community Policies
+&lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: Each blog post also has a dedicated discussion thread. Look for the &amp;ldquo;Like&amp;rdquo; and &amp;ldquo;Comment&amp;rdquo; buttons on individual posts.&lt;/p&gt;</description></item><item><title>Policies</title><link>https://genomicsxai.github.io/policies/</link><pubDate>Thu, 01 Jan 2026 00:00:00 +0000</pubDate><guid>https://genomicsxai.github.io/policies/</guid><description>&lt;h2 id="editorial-and-community-policies"&gt;Editorial and Community Policies
 &lt;/h2&gt;&lt;p&gt;The Genomics × AI blog follows transparent, Git-native policies for submissions, review, and discussion.&lt;/p&gt;
 &lt;h3 id="submission-and-review"&gt;Submission and Review
 &lt;/h3&gt;&lt;ul&gt;
@@ -108,6 +116,12 @@
 &lt;li&gt;Your post will appear on the blog&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Updates&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Once merged, you can continue to submit updates to your post which will alter the updated date.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
 &lt;/ol&gt;
 &lt;h3 id="getting-notified-of-comments-and-likes"&gt;Getting notified of comments and likes
 &lt;/h3&gt;&lt;p&gt;Comments and likes on the blog use &lt;strong&gt;GitHub Discussions&lt;/strong&gt;. To get notified when someone comments or reacts to your post:&lt;/p&gt;
@@ -124,5 +138,10 @@ Once your post has at least one comment or reaction, a discussion is created und
 &lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;Editors and maintainers can use the same options to follow all post activity.&lt;/p&gt;
-&lt;h3 id="writing-note"&gt;Writing Note
-&lt;/h3&gt;&lt;p&gt;There is no strict criteria on the style that your blog post should follow but aim to make it clear and engaging!&lt;/p&gt;</description></item><item><title>Archives</title><link>https://genomicsxai.github.io/archives/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://genomicsxai.github.io/archives/</guid><description>&lt;p&gt;Posts grouped by year.&lt;/p&gt;</description></item></channel></rss>
+&lt;h3 id="writing-notes"&gt;Writing Notes
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;There are no strict stylistic requirements, but posts should be clear, accessible, and engaging for a broad scientific audience.&lt;/li&gt;
+&lt;li&gt;Use headings, figures, and examples where helpful to improve readability.&lt;/li&gt;
+&lt;li&gt;Cite relevant prior work using hyperlinks or a formal inline citation style, and the inclusion of a references section at the end of the post is encouraged.&lt;/li&gt;
+&lt;li&gt;Ensure that claims are supported by appropriate sources.&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>Archives</title><link>https://genomicsxai.github.io/archives/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://genomicsxai.github.io/archives/</guid><description>&lt;p&gt;Posts grouped by year.&lt;/p&gt;</description></item></channel></rss>
