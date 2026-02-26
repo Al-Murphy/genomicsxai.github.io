@@ -60,7 +60,7 @@ We highlight workflows for
 * freezing/unfreezing parameters
 * attribution approaches
 
-While fine-tuning the encoder for short sequences such as MPRA constructs has its own dedicated [post](https://genomicsxai.github.io/blogs/2026-002/), here we focus on general workflows applicable to genome-scale assays and custom heads.
+Here we focus on general workflows applicable to genome-scale assays and custom heads. For fine-tuning the encoder for short sequences such as MPRA, see this [post](https://genomicsxai.github.io/blogs/2026-002/).
 
 **Code**:
 [AlphaGenome fine-tuning utilities](https://github.com/genomicsxai/alphagenome_ft)
@@ -92,6 +92,8 @@ To help with this, we developed [alphagenome-ft](https://github.com/genomicsxai/
 ## But wait, why fine-tune AlphaGenome?
 
 Foundation sequence models like AlphaGenome are trained on diverse genome-scale assays, allowing them to learn general regulatory sequence features. However, most research questions involve **specific cell types, assays, perturbations, or organisms** that differ from the original training distribution.
+
+You should first check if the foundation model alphagenome has an ouput track that's the same/similar to your cell type of interest, that might be enough! Otherwise, fine-tuning on your cell type/assay of interest is an option.
 
 Fine-tuning adapts the pretrained model to these new contexts while preserving the regulatory knowledge already encoded in the backbone.
 
@@ -162,19 +164,19 @@ If these features don't win you over, let's walk through how easy it is to use:
 alphagenome-ft wraps AlphaGenome and AlphaGenome Research and is available through [pip](https://pypi.org/project/alphagenome/) . Installation requires three steps:
 
 ```python
-# Step 1: Install alphagenome-ft
-pip install alphagenome-ft
-
-# Step 2: Install AlphaGenome and Research
+# Step 1: Install AlphaGenome and Research
 pip install git+https://github.com/google-deepmind/alphagenome.git
 pip install git+https://github.com/google-deepmind/alphagenome_research.git
+
+# Step 2: Install alphagenome-ft
+pip install alphagenome-ft
 ```
 
 Python ≥ 3.11 is required. All other dependencies (JAX, Haiku, optax, etc.) are handled automatically.
 
 ### Quick Start: Adding new heads
 
-There are three main ways to add heads to AlphaGenome with the package (see the figure above for architecture references):
+There are two main ways to add heads to AlphaGenome with the package (see the figure above for architecture references):
 
 1. **Predefined heads**
 
@@ -195,15 +197,17 @@ model.freeze_except_head("K562_rna_seq")
 #Now ready to train!
 ```
 
-2. **Template heads**
+2. **Custom heads and reference templates**
 
-Template heads access different embeddings, which correspond to different biological resolutions - base-pair (bp) precision, regional regulatory context, and short-sequence feature extraction:
+Our template heads give guidance on accessing different embeddings, which correspond to different biological resolutions - base-pair (bp) precision, regional regulatory context, and short-sequence feature extraction:
 
 * StandardHead – 1bp embeddings (decoder output)
 
 * TransformerHead – 128bp embeddings (transformer output)
 
 * EncoderOnlyHead – CNN encoder output, <1 kb sequences (encoder output)
+
+**Note:** Template heads are there as a guide for to how to set up your own custom head rather than a definitive 'best'/'standard' option. You should update these with your own layer and loss function choices to fit your data needs.
 
 ```python
 from alphagenome_ft import templates, CustomHeadConfig, CustomHeadType, register_custom_head
@@ -217,20 +221,16 @@ register_custom_head(
 )
 ```
 
-3. **Fully custom head**
-
-We wanted to be flexible with how you do your fine-tuning so you can define your own CustomHead with arbitrary layers and loss function choices!
-
 ---
 
 ### Workflows
 
 A full selection of four workflows are given in our [github repository](https://github.com/genomicsxai/alphagenome_ft), covering:
 
-* Encoder-only (MPRA / short sequences)
 * Heads-only fine-tuning (frozen backbone)
 * LoRA-style adapters (parameter-efficient fine-tuning)
 * Full-model fine-tuning
+* Encoder-only (MPRA / short sequences)
 
 See the dedicated [MPRA post](https://genomicsxai.github.io/blogs/2026-002/) for full post dedicated to Encoder-only fine-tuning (it's great, even though I may be slightly biased as the one who wrote it ...). 
 
