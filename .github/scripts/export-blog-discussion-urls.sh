@@ -48,8 +48,8 @@ Q2='query($owner: String!, $name: String!, $cid: ID!) {
       nodes {
         title
         url
-        reactionGroups { reactors(first: 0) { totalCount } }
-        comments(first: 0) { totalCount }
+        reactionGroups { reactors(first: 1) { totalCount } }
+        comments(first: 1) { totalCount }
       }
     }
   }
