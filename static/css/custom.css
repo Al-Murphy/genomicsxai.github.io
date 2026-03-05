@@ -893,6 +893,15 @@ article img {
 .newsletter-widget__btn:hover {
   opacity: 0.85;
 }
+[data-scheme="dark"] .newsletter-widget {
+  background: #2d3138;
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: none;
+}
+[data-scheme="dark"] .newsletter-widget__btn {
+  background: rgba(52, 73, 94, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
 .newsletter-widget__manage {
   display: block;
   margin-top: 7px;
