@@ -964,6 +964,10 @@ article img {
 .newsletter-page__btn:hover {
   opacity: 0.8;
 }
+[data-scheme="dark"] .newsletter-page__btn--subscribe {
+  background: rgba(52, 73, 94, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
 .newsletter-page__note {
   font-size: 1.2rem;
   color: var(--card-text-color-secondary, #888);
