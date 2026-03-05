@@ -5,6 +5,9 @@ enableRobotsTXT = true
 enableGitInfo = true
 
 # So image attributes (e.g. {width=400px}) apply to the image, not the wrapping <p>
+[markup.goldmark.renderer]
+  unsafe = true
+
 [markup.goldmark.parser]
   wrapStandAloneImageWithinParagraph = false
 
@@ -106,3 +109,9 @@ enableGitInfo = true
   name = "Policies"
   url = "/policies/"
   weight = 5
+
+[[menu.main]]
+  identifier = "newsletter"
+  name = "Newsletter"
+  url = "/newsletter/"
+  weight = 6

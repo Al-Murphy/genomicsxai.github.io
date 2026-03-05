@@ -827,6 +827,134 @@ article img {
   fill: currentColor;
 }
 
+/* ── Newsletter sidebar widget ── */
+.newsletter-widget {
+  margin-top: 20px;
+  padding: 14px 16px;
+  background: var(--card-background);
+  border: 1px solid var(--card-separator-color, rgba(218,218,218,0.5));
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.newsletter-widget__title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--card-text-color-secondary, #888);
+  margin: 0 0 4px 0;
+}
+.newsletter-widget__desc {
+  font-size: 1.2rem;
+  color: var(--card-text-color-secondary, #888);
+  margin: 0 0 10px 0;
+  line-height: 1.4;
+}
+.newsletter-widget__form {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.newsletter-widget__input {
+  width: 100%;
+  padding: 7px 10px;
+  font-size: 1.3rem;
+  font-family: inherit;
+  border: 1px solid var(--card-separator-color, rgba(218,218,218,0.7));
+  border-radius: 8px;
+  background: var(--body-background);
+  color: var(--card-text-color-main);
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.newsletter-widget__input:focus {
+  border-color: var(--accent-color, #34495e);
+}
+.newsletter-widget__btn {
+  width: 100%;
+  padding: 7px 10px;
+  font-size: 1.3rem;
+  font-weight: 600;
+  font-family: inherit;
+  background: var(--accent-color, #34495e);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.newsletter-widget__btn:hover {
+  opacity: 0.85;
+}
+.newsletter-widget__manage {
+  display: block;
+  margin-top: 7px;
+  font-size: 1.15rem;
+  color: var(--card-text-color-secondary, #888);
+  text-align: center;
+  text-decoration: none;
+}
+.newsletter-widget__manage:hover {
+  text-decoration: underline;
+  color: var(--accent-color);
+}
+
+/* ── Newsletter dedicated page forms ── */
+.newsletter-page__section {
+  margin: 1.5em 0;
+}
+.newsletter-page__form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 0.5em;
+}
+.newsletter-page__input {
+  flex: 1 1 220px;
+  padding: 9px 14px;
+  font-size: 1.4rem;
+  font-family: inherit;
+  border: 1px solid var(--card-separator-color, rgba(218,218,218,0.7));
+  border-radius: 8px;
+  background: var(--body-background);
+  color: var(--card-text-color-main);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.newsletter-page__input:focus {
+  border-color: var(--accent-color, #34495e);
+}
+.newsletter-page__btn {
+  padding: 9px 20px;
+  font-size: 1.4rem;
+  font-weight: 600;
+  font-family: inherit;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+}
+.newsletter-page__btn--subscribe {
+  background: var(--accent-color, #34495e);
+  color: #fff;
+}
+.newsletter-page__btn--unsubscribe {
+  background: transparent;
+  color: var(--card-text-color-secondary, #888);
+  border: 1px solid var(--card-separator-color, rgba(218,218,218,0.7));
+}
+.newsletter-page__btn:hover {
+  opacity: 0.8;
+}
+.newsletter-page__note {
+  font-size: 1.2rem;
+  color: var(--card-text-color-secondary, #888);
+  margin: 0.25em 0 0 0;
+}
+
 /* PhotoSwipe lightbox: caption as a banner below the image */
 .pswp__custom-caption {
   position: absolute;

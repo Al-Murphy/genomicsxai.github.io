@@ -117,8 +117,8 @@
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;AlphaGenome fine-tuning workflows schematic&lt;/p&gt;
-&lt;figure&gt;&lt;a href="https://genomicsxai.github.io/blogs/2026-003/alphagenome_ft.png" class="image-link" data-pswp-width="500" data-pswp-height="300"&gt;
-		&lt;img src="https://genomicsxai.github.io/blogs/2026-003/alphagenome_ft.png" width="600px" height="360"loading="lazy"
+&lt;figure&gt;&lt;a href="https://genomicsxai.github.io/blogs/2026-003/alphagenome_ft.png" class="image-link" data-pswp-width="5209" data-pswp-height="3125"&gt;
+		&lt;img src="https://genomicsxai.github.io/blogs/2026-003/alphagenome_ft.png" width="600px" height="359"loading="lazy"
 			alt="alphagenome_ft schematic"
 			title="Schematic of alphagenome-ft. alphagenome-ft enables fine-tuning of AlphaGenome (architecture shown) from different, modular stages of the model (the encoder - for short sequences, the transformer - for 128 base-pair resolution, and the decoder - 1 base-pair resolution). You can control what parts of the model are frozen or free to update and you can calculate attributions, all in native JAX/Haiku." data-title-escaped="Schematic of alphagenome-ft. alphagenome-ft enables fine-tuning of AlphaGenome (architecture shown) from different, modular stages of the model (the encoder - for short sequences, the transformer - for 128 base-pair resolution, and the decoder - 1 base-pair resolution). You can control what parts of the model are frozen or free to update and you can calculate attributions, all in native JAX/Haiku."&gt;
 		&lt;/a&gt;&lt;/figure&gt;&lt;hr&gt;

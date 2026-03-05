@@ -1,0 +1,202 @@
+name: Weekly Newsletter Digest
+
+on:
+  schedule:
+    # Every Monday at 9am UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run — save as draft, do not send'
+        type: boolean
+        default: true
+      days_back:
+        description: 'Look back N days for new posts (default: 7)'
+        type: number
+        default: 7
+
+jobs:
+  send-digest:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Find new posts and build email
+        id: build
+        run: |
+          DAYS_BACK="${{ github.event.inputs.days_back || 7 }}"
+          python3 - <<'PYEOF'
+          import os, json, re, sys
+          from datetime import datetime, timedelta, timezone
+
+          days_back = int(os.environ.get("DAYS_BACK", 7))
+          cutoff = datetime.now(timezone.utc) - timedelta(days=days_back)
+          posts = []
+
+          blogs_dir = "content/blogs"
+          for slug in sorted(os.listdir(blogs_dir)):
+              path = os.path.join(blogs_dir, slug, "index.md")
+              if not os.path.exists(path):
+                  continue
+
+              with open(path, "r", encoding="utf-8") as f:
+                  content = f.read()
+
+              # Parse YAML frontmatter
+              fm_match = re.match(r"^---\n(.*?)\n---", content, re.DOTALL)
+              if not fm_match:
+                  continue
+              fm = fm_match.group(1)
+
+              # Date
+              date_match = re.search(r"^date:\s*(.+)$", fm, re.MULTILINE)
+              if not date_match:
+                  continue
+              date_str = date_match.group(1).strip().strip('"').strip("'").split()[0]
+              try:
+                  post_date = datetime.strptime(date_str, "%Y-%m-%d").replace(tzinfo=timezone.utc)
+              except ValueError:
+                  continue
+
+              if post_date < cutoff:
+                  continue
+
+              # Title
+              title_match = re.search(r"^title:\s*(.+)$", fm, re.MULTILINE)
+              title = title_match.group(1).strip().strip('"').strip("'") if title_match else slug
+
+              # Authors (inline list only)
+              authors_match = re.search(r"^authors:\s*\[(.+)\]", fm, re.MULTILINE)
+              if authors_match:
+                  authors = ", ".join(a.strip().strip('"').strip("'") for a in authors_match.group(1).split(","))
+              else:
+                  # Multi-line list fallback
+                  block = re.search(r"^authors:((?:\n\s*-[^\n]+)+)", fm, re.MULTILINE)
+                  if block:
+                      authors = ", ".join(re.findall(r'-\s*"?([^"\n]+)"?', block.group(1)))
+                  else:
+                      authors = ""
+
+              # Summary shortcode
+              summary_match = re.search(
+                  r"\{\{<\s*summary\s*>\}\}(.*?)\{\{<\s*/summary\s*>\}\}", content, re.DOTALL
+              )
+              if summary_match:
+                  summary = summary_match.group(1).strip()
+                  # Strip basic markdown formatting
+                  summary = re.sub(r"\*\*(.+?)\*\*", r"\1", summary)
+                  summary = re.sub(r"\*(.+?)\*", r"\1", summary)
+                  summary = re.sub(r"`(.+?)`", r"\1", summary)
+                  summary = re.sub(r"\[(.+?)\]\(.+?\)", r"\1", summary)
+                  summary = re.sub(r"^[#\-\*]\s+", "", summary, flags=re.MULTILINE)
+                  summary = " ".join(summary.split())
+              else:
+                  summary = ""
+
+              posts.append({
+                  "title": title,
+                  "authors": authors,
+                  "url": f"https://genomicsxai.github.io/blogs/{slug}/",
+                  "summary": summary,
+                  "date": date_str,
+              })
+
+          # Write results for the next step
+          with open("/tmp/new_posts.json", "w") as f:
+              json.dump(posts, f)
+
+          print(f"Found {len(posts)} new post(s)")
+          sys.exit(0)
+          PYEOF
+        env:
+          DAYS_BACK: ${{ github.event.inputs.days_back || 7 }}
+
+      - name: Send digest
+        run: |
+          COUNT=$(python3 -c "import json; print(len(json.load(open('/tmp/new_posts.json'))))")
+
+          if [ "$COUNT" -eq 0 ]; then
+            echo "No new posts in the last ${{ github.event.inputs.days_back || 7 }} days — skipping newsletter."
+            exit 0
+          fi
+
+          echo "Sending digest for $COUNT new post(s)..."
+
+          # Determine send status: draft for manual/dry-run, about_to_send for scheduled
+          DRY_RUN="${{ github.event.inputs.dry_run }}"
+          if [ "$DRY_RUN" = "true" ]; then
+            STATUS="draft"
+            echo "Dry run mode — email will be saved as draft."
+          else
+            STATUS="about_to_send"
+          fi
+
+          python3 - <<'PYEOF'
+          import json, os, urllib.request, urllib.error
+
+          posts = json.load(open("/tmp/new_posts.json"))
+          status = os.environ["STATUS"]
+          api_key = os.environ["BUTTONDOWN_API_KEY"]
+
+          count = len(posts)
+          if count == 1:
+              subject = f"New on Genomics × AI: {posts[0]['title']}"
+          else:
+              subject = f"New on Genomics × AI: {count} new posts"
+
+          # Build HTML email
+          lines = [
+              '<!DOCTYPE html>',
+              '<html lang="en"><body style="font-family: Georgia, serif; max-width: 600px; margin: 0 auto; padding: 24px; color: #222;">',
+              '<h1 style="font-size: 1.6em; color: #34495e; border-bottom: 2px solid #34495e; padding-bottom: 0.4em; margin-bottom: 1.5em;">',
+              'Genomics × AI — New Posts</h1>',
+          ]
+
+          for post in posts:
+              lines += [
+                  '<div style="margin-bottom: 2em;">',
+                  f'<h2 style="font-size: 1.25em; margin: 0 0 0.2em 0;">',
+                  f'<a href="{post["url"]}" style="color: #34495e; text-decoration: none;">{post["title"]}</a></h2>',
+              ]
+              if post["authors"]:
+                  lines.append(f'<p style="color: #888; font-size: 0.85em; margin: 0 0 0.75em 0;">{post["authors"]} &middot; {post["date"]}</p>')
+              if post["summary"]:
+                  lines.append(f'<p style="line-height: 1.7; margin: 0 0 0.75em 0;">{post["summary"]}</p>')
+              lines += [
+                  f'<a href="{post["url"]}" style="color: #34495e; font-weight: bold; text-decoration: none;">Read post &rarr;</a>',
+                  '</div>',
+                  '<hr style="border: none; border-top: 1px solid #eee; margin: 1.5em 0;">',
+              ]
+
+          lines += [
+              '<p style="color: #aaa; font-size: 0.8em;">',
+              'You are receiving this because you subscribed to the Genomics &times; AI newsletter. ',
+              '<a href="{{unsubscribe_url}}" style="color: #aaa;">Unsubscribe</a>',
+              '</p>',
+              '</body></html>',
+          ]
+
+          body = "\n".join(lines)
+
+          payload = json.dumps({"subject": subject, "body": body, "status": status}).encode()
+          req = urllib.request.Request(
+              "https://api.buttondown.email/v1/emails",
+              data=payload,
+              headers={
+                  "Authorization": f"Token {api_key}",
+                  "Content-Type": "application/json",
+              },
+              method="POST",
+          )
+          try:
+              with urllib.request.urlopen(req) as resp:
+                  result = json.loads(resp.read())
+                  print(f"Email created (status={status}): id={result.get('id','?')}, subject={result.get('subject','?')}")
+          except urllib.error.HTTPError as e:
+              print(f"API error {e.code}: {e.read().decode()}")
+              raise
+          PYEOF
+        env:
+          BUTTONDOWN_API_KEY: ${{ secrets.BUTTONDOWN_API_KEY }}
+          STATUS: ${{ (github.event.inputs.dry_run == 'true' && 'draft') || (github.event_name == 'workflow_dispatch' && 'draft') || 'about_to_send' }}
