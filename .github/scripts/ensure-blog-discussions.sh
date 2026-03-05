@@ -52,15 +52,15 @@ if [ ${#PATHS[@]} -eq 0 ]; then
 fi
 
 # 3) Fetch existing discussion titles in this category
-Q2='query($rid: ID!, $cid: ID!) {
-  repository(id: $rid) {
+Q2='query($owner: String!, $name: String!, $cid: ID!) {
+  repository(owner: $owner, name: $name) {
     discussions(first: 100, categoryId: $cid) {
       nodes { title }
     }
   }
 }'
 RES2=$(curl -s -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
-  -d "{\"query\": $(echo "$Q2" | jq -Rs .), \"variables\": {\"rid\": \"$REPO_ID\", \"cid\": \"$CATEGORY_ID\"}}" "$API")
+  -d "{\"query\": $(echo "$Q2" | jq -Rs .), \"variables\": {\"owner\": \"$OWNER\", \"name\": \"$REPO\", \"cid\": \"$CATEGORY_ID\"}}" "$API")
 EXISTING=$(echo "$RES2" | jq -r '.data.repository.discussions.nodes[].title' | tr '\n' '\n')
 
 # 4) Create discussion for each path that doesn't exist
