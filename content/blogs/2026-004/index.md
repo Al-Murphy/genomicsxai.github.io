@@ -1,330 +1,153 @@
 ---
-post_id: "2026-003"
-title: "Fine-tuning AlphaGenome in native JAX/Haiku"
-image: "alphagenome_ft.png"
+post_id: "2026-004"
+title: "Implementing AlphaGenome in PyTorch"
 math: false
 
-authors: ["Alan Murphy", "Masayuki Nagai", "Alejandro Buendia", "Anshul Kundaje", "Peter Koo"]
+authors: ["Danila Bredikhin", "Alejandro Buendia", "Martin Kjellberg", "Christopher Zou", "Xinming Tu", "Anshul Kundaje"]
 
 authors_display:
-  - name: "Alan Murphy"
-    affiliation: "Cold Spring Harbor Labs (CSHL)"
-    orcid: "0000-0002-2487-8753"
-
-  - name: "Masayuki Nagai"
-    affiliation: "Cold Spring Harbor Labs (CSHL)"
-    orcid: "0009-0004-6465-2929"
+  - name: "Danila Bredikhin"
+    affiliation: "Stanford University"
+    orcid: "0000-0001-8089-6983"
 
   - name: "Alejandro Buendia"
     affiliation: "Stanford University"
     orcid: "0009-0001-6562-9876"
 
-  - name: Anshul Kundaje  
+  - name: "Martin Kjellberg"
+    affiliation: "Stanford University"
+
+  - name: "Christopher Zou"
+    affiliation: "Stanford University"
+
+  - name: "Xinming Tu"
+    affiliation: "University of Washington"
+
+  - name: "Anshul Kundaje"
     affiliation: "Stanford University"
     orcid: "0000-0003-3084-2287"
 
-  - name: "Peter Koo"
-    affiliation: "Cold Spring Harbor Labs (CSHL)"
-    orcid: "0000-0001-8722-0038"
-
 editor: "Editor Name"
 
-tags: ["genomics", "fine-tuning","AlphaGenome","seq2func","JAX","haiku"]
+tags: ["genomics", "finetuning", "AlphaGenome", "seq2func", "pytorch"]
 categories: ["Blog Post"]
 
 scope: ["tutorials"]
 audience: ["general"]
-labs: ["Koo lab","Kundaje lab"]
+labs: ["Kundaje lab"]
 
 status: "submitted"
 revision: 1
 
-date_submitted: 2026-02-25
+date_submitted: 2026-04-05
 date_accepted:
-date: 2026-02-25
+date: 2026-04-05
 
 doi: ""
 revision_history:
   - version: 1
-    date: 2026-02-25
+    date: 2026-04-05
     notes: "Initial submission"
 ---
 
 {{< summary >}}
-This post introduces [alphagenome-ft](https://github.com/genomicsxai/alphagenome_ft), a lightweight Python package for fine-tuning [AlphaGenome](https://www.nature.com/articles/s41586-025-10014-0) using native JAX/Haiku.
 
-We highlight workflows for 
+This post introduces [alphagenome-pytorch](https://github.com/genomicsxai/alphagenome-pytorch), a faithful reimplementation of Google DeepMind's AlphaGenome model in PyTorch.
 
-* adding custom prediction heads
-* differing fine-tuning strategies
-* freezing/unfreezing parameters
-* attribution approaches
+We reproduce the full AlphaGenome architecture in PyTorch and release PyTorch weights for fold-specific and distilled models. We also verify numerical equivalence of predictions across all output tracks with the JAX checkpoint from DeepMind. Our package exposes a simple inference API that slots into any PyTorch project without requiring JAX, XLA, or TPU-specific tooling.
 
-Here we focus on general workflows applicable to genome-scale assays and custom heads. For fine-tuning the encoder for short sequences such as MPRA, see this [post](https://genomicsxai.github.io/blogs/2026-002/).
+In this post, we review the initial release for the package and walk through two use cases it enables:
+
+* Drop-in inference within existing PyTorch pipelines, which allows for genome-wide inference across tracks 
+* Variant effect prediction and in silico mutagenesis (ISM)
 
 **Code**:
-[AlphaGenome fine-tuning utilities](https://github.com/genomicsxai/alphagenome_ft)
+[alphagenome-pytorch](https://github.com/genomicsxai/alphagenome-pytorch)
 
 {{< /summary >}}
 
 ---
 
-## Motivation
+## Overview
 
-[AlphaGenome](https://www.nature.com/articles/s41586-025-10014-0) is a foundation sequence-to-function model trained on genome-scale data. Its native JAX/Haiku implementation is powerful but can be cumbersome to modify for custom tasks (we learned this the hard way!). Researchers often want to:
+Understanding how a single DNA change propagates through the complex machinery of gene regulation has been a grand challenge in genomics. Google DeepMind's [AlphaGenome](https://www.nature.com/articles/s41586-025-10014-0) represents a major step forward: a unified model that takes a DNA sequence of up to one million base pairs and predicts, at single base-pair resolution, hundreds of genomic tracks across diverse cell types, cell lines, and conditions. With both the [model code](https://github.com/google-deepmind/alphagenome_research) and [pretrained weights](https://www.kaggle.com/models/google/alphagenome) publicly released, the genomics community now has a powerful foundation to build on.
 
-* Train a new head on a novel assay
-
-* Apply low-rank adapters for efficient backbone updates
-
-* Fine-tune the full model progressively
-
-* Freeze certain components for stability
-
-* Perform attribution analyses to gain insight into learned __cis__-regulatory logic
-
-To help with this, we developed [alphagenome-ft](https://github.com/genomicsxai/alphagenome_ft) which provides a lightweight wrapper that achieves all these asks without modifying the original AlphaGenome codebase.
-
-> _Side note:_ AlphaGenome is a deep learning model that predicts functional genomic signals (e.g., accessibility, transcription, binding) directly from DNA sequence. We call such models sequence-to-function (seq2func) models.
-
-> _Side note 2:_ JAX/Haiku are DeepMind's frameworks which are similar to using PyTorch but optimized for large-scale accelerator workloads.
-
-## But wait, why fine-tune AlphaGenome?
-
-Foundation sequence models like AlphaGenome are trained on diverse genome-scale assays, allowing them to learn general regulatory sequence features. However, most research questions involve **specific cell types, assays, perturbations, or organisms** that differ from the original training distribution.
-
-You should first check if the foundation model alphagenome has an ouput track that's the same/similar to your cell type of interest, that might be enough! Otherwise, fine-tuning on your cell type/assay of interest is an option.
-
-Fine-tuning adapts the pretrained model to these new contexts while preserving the regulatory knowledge already encoded in the backbone.
-
-Benefits of fine-tuning include:
-
-* **Improved performance with limited data** - Leverages pretrained regulatory features instead of learning from scratch.
-
-* **Stability and efficiency via frozen parameters** - Freezing the backbone while training a new head reduces overfitting, lowers compute cost (this is important AlphaGenome is a BIG model -450m parameters), and prevents catastrophic forgetting.
-
-* **Parameter-efficient adaptation** - Methods such as adapters or partial unfreezing allow targeted updates without retraining the full model.
-
-* **Faster experimentation cycles** - New assays or prediction targets can be incorporated with minimal engineering effort.
-
-* **Preservation of biological priors** - Retains learned sequence motifs and regulatory grammar that remain relevant across assays and cell types.
-
-In practice, many workflows begin by training a task-specific head with the backbone frozen, then progressively unfreezing components if additional capacity is needed.
-
-
-## Fine-tuning with shorter sequence windows
-
-By default, AlphaGenome is trained on ~1 million base-pair (1 Mb) input sequences, allowing the model to capture long-range regulatory interactions. However, during fine-tuning you are not required to use the full 1 Mb context.
-
-If your downstream task does not depend strongly on ultra-long-range interactions, you can fine-tune using shorter input windows (e.g., 32 kb). This reduces memory usage, increases batch size flexibility, and can substantially speed up training.
-
-This is particularly useful when:
-
-* The signal of interest is predominantly local (functional outputs like chromatin accessibility are)
-
-* You are adapting to assays with shorter effective regulatory range
-
-* You want faster experimentation cycles
-
-Importantly, this is different from encoder-only fine-tuning used for very short sequences (e.g., ~200–300 bp MPRA constructs). In that setting, only the convolutional encoder is used, bypassing the transformer and decoder entirely. This is covered in [another post](https://genomicsxai.github.io/blogs/2026-002/).
-
-Here, we are still using the full model stack (encoder → transformer → decoder), but operating on a reduced genomic window.
-
-In practice, reducing input length is a pragmatic trade-off between computational efficiency and long-range regulatory context (i.e. performance).
-
-
-## Package key features
-
-* Custom prediction heads – easily register predefined, template, or fully custom heads
-
-* Flexible parameter freezing – freeze backbone, individual modules, or heads
-
-* Seamless integration – works with pretrained AlphaGenome weights
-
-* Parameter inspection – explore and count model parameters
-
-* Attribution analysis – gradient-based or in silico mutagenesis (ISM) methods
-
-* Native JAX/Haiku – fully compatible with original AlphaGenome pipelines
-
-
-AlphaGenome fine-tuning workflows schematic
-
-
-![alphagenome_ft schematic](alphagenome_ft.png "width=600 Schematic of alphagenome-ft. alphagenome-ft enables fine-tuning of AlphaGenome (architecture shown) from different, modular stages of the model (the encoder - for short sequences, the transformer - for 128 base-pair resolution, and the decoder - 1 base-pair resolution). You can control what parts of the model are frozen or free to update and you can calculate attributions, all in native JAX/Haiku.")
+The original AlphaGenome model is implemented in [JAX](https://github.com/jax-ml/jax), a high-performance framework for numerical computing and deep learning. Here we present an implementation of AlphaGenome in PyTorch. We strived to make our implementation an accessible, readable, and hackable port of the model for the wider community to build on and adapt for their unique use cases. We also enable workflows to finetune the model on new datasets and cell types using your own data, and offer an early version of finetuning functionality in this release.
 
 ---
 
-## Usage
+## Numerical Equivalence with JAX
 
-If these features don't win you over, let's walk through how easy it is to use:
+**Our PyTorch model implementation is numerically on par with the original implementation in JAX.**
 
-### Installation
+Small implementation differences can silently change scientific conclusions. Therefore we strived to make sure our implementation is on par with the original JAX implementation. We added tests for numerical equivalence of the outputs of individual model heads and a full forward pass through the model, gradients, loss values.
 
-alphagenome-ft wraps AlphaGenome and AlphaGenome Research and is available through [pip](https://pypi.org/project/alphagenome/) . Installation requires three steps:
+We verified equivalence at multiple levels:
 
-```python
-# Step 1: Install AlphaGenome and Research
-pip install git+https://github.com/google-deepmind/alphagenome.git
-pip install git+https://github.com/google-deepmind/alphagenome_research.git
+* Layer-by-layer outputs: Each convolutional block, attention mechanism, and transformer layer produces outputs within numerical precision (less than `1e-5` relative error) of the JAX implementation
+* Full forward pass: End-to-end predictions across all genomic tracks match within floating-point precision
+* Gradient computations: Backpropagation yields equivalent gradients, ensuring training dynamics remain faithful to the original
+* Loss values: Multinomial loss computes identically on the same inputs
 
-# Step 2: Install alphagenome-ft
-pip install alphagenome-ft
-```
-
-Python ≥ 3.11 is required. All other dependencies (JAX, Haiku, optax, etc.) are handled automatically.
-
-### Quick Start: Adding new heads
-
-There are two main ways to add heads to AlphaGenome with the package (see the figure above for architecture references):
-
-1. **Predefined heads**
-
-Use existing AlphaGenome head types, e.g., rna_seq, atac, chip_tf:
-
-```python
-from alphagenome_ft import (
-    get_predefined_head_config,
-    register_predefined_head,
-    create_model_with_heads,
-)
-
-rna_config = get_predefined_head_config("rna_seq", num_tracks=4)
-register_predefined_head("K562_rna_seq", rna_config)
-model = create_model_with_heads("all_folds", heads=["K562_rna_seq"])
-model.freeze_except_head("K562_rna_seq")
-
-#Now ready to train!
-```
-
-2. **Custom heads and reference templates**
-
-Our template heads give guidance on accessing different embeddings, which correspond to different biological resolutions - base-pair (bp) precision, regional regulatory context, and short-sequence feature extraction:
-
-* StandardHead – 1bp embeddings (decoder output)
-
-* TransformerHead – 128bp embeddings (transformer output)
-
-* EncoderOnlyHead – CNN encoder output, <1 kb sequences (encoder output)
-
-**Note:** Template heads are there as a guide for to how to set up your own custom head rather than a definitive 'best'/'standard' option. You should update these with your own layer and loss function choices to fit your data needs.
-
-```python
-from alphagenome_ft import templates, CustomHeadConfig, CustomHeadType, register_custom_head
-
-register_custom_head(
-    'my_head',
-    templates.StandardHead,
-    CustomHeadConfig(type=CustomHeadType.GENOME_TRACKS,
-                     output_type='rna_seq',
-                     num_tracks=1)
-)
-```
+We converted the pre-trained weights directly from [the released checkpoints](https://www.kaggle.com/models/google/alphagenome) so that it’s easy to start working with the model with a single `.from_pretrained()` call.
 
 ---
 
-### Workflows
+## Getting Started
 
-A full selection of four workflows are given in our [github repository](https://github.com/genomicsxai/alphagenome_ft), covering:
+The package can be installed from pypi as:
 
-* Heads-only fine-tuning (frozen backbone)
-* LoRA-style adapters (parameter-efficient fine-tuning)
-* Full-model fine-tuning
-* Encoder-only (MPRA / short sequences)
+    pip install alphagenome-pytorch
 
-See the dedicated [MPRA post](https://genomicsxai.github.io/blogs/2026-002/) for full post dedicated to Encoder-only fine-tuning (it's great, even though I may be slightly biased as the one who wrote it ...). 
+Using AlphaGenome in PyTorch is straightforward. Here we show how to load the model and run inference on a DNA sequence:
 
-> _Side note:_ [Low-rank adapters (LoRA)](https://arxiv.org/abs/2106.09685) enable parameter-efficient fine-tuning by learning small update matrices instead of modifying the full backbone.
+    from alphagenome_pytorch import AlphaGenome
+    from alphagenome_pytorch.utils.sequence import sequence_to_onehot_tensor
+    import pyfaidx
+    import torch
 
-If unsure where to start, we recommend training a task-specific head with the backbone frozen, then progressively unfreezing components if additional capacity is needed.
+    device = "cuda" if torch.cuda.is_available() else "cpu"
 
----
+    model = AlphaGenome.from_pretrained("model.pth", device=device)
 
-Some extra functionality you might be interested in:
+    with pyfaidx.Fasta("hg38.fa") as genome:
+        sequence = str(genome["chr1"][1_000_000:1_131_072])
 
-### Parameter management and checkpoints
+    dna_onehot = sequence_to_onehot_tensor(sequence, device=device).unsqueeze(0)
 
-alphagenome-ft allows:
+    # Organism index: 0 = human, 1 = mouse
+    preds = model(dna_onehot, 0)
 
-* Modular freezing: encoder, transformer, decoder
-* Freezing all heads except one: `model.freeze_except_head('my_head')`
-* Saving checkpoints (heads-only or full model)
-* Loading with custom head registration
+    # Access predictions (batch, sequence, tracks) by head name and resolution:
+    # - preds['atac'][1]: 1bp resolution, shape (1, 131072, 256)
+    # - preds['atac'][128]: 128bp resolution, shape (1, 1024, 256)
 
-
-## Attribution analysis
-
-After training, alphagenome-ft also supports:
-
-* DeepSHAP-like attributions - using dinucleotide shuffled reference sequences
-* Gradient × Input
-* Gradient
-* In silico mutagenesis (ISM)
-
-> _Side note:_ Attribution methods highlight which nucleotides drive predictions in these models, helping reveal regulatory motifs and sequence grammar learned by the model.
-
-You can also visualise contributions with `plot_attribution_map` or `plot_sequence_logo` functions! See below for an example attribution map when we fine-tuned AlphaGenome's encoder on [fly STARR-seq data](https://www.nature.com/articles/s41588-022-01048-5) - See our [MPRA post](https://genomicsxai.github.io/blogs/2026-002/) for more details.
-
-![attribution map](sequence_logo_gradient_x_input.png "width=900 Gradient x Input attribution map for AlphaGenome encoder only fine-tuning on [fly STARR-seq data](https://www.nature.com/articles/s41588-022-01048-5) - See our [MPRA post](https://genomicsxai.github.io/blogs/2026-002/) for more details on this fine-tuning. We can see the model highlights an AP-1 motif around position ~230, consistent with known enhancer regulatory logic.")
-
-You can see we recover the AP-1 motif (`TGAsTCA`) comes up at roughly position 230 which is a known regulator for [developmental genes in flies](https://www.nature.com/articles/s41588-022-01048-5/figures/2).
+The model accepts sequences of up to 1,048,576 base pairs (1 Mb) and returns predictions at single-nucleotide and 128 bp resolutions for the genomic tracks it was trained on.
 
 ---
 
-## Implications
+## What Can You Do With This?
 
-To take a step back, what do we get with alphagenome-ft? AlphaGenome becomes flexible to:
+Beyond drop-in replacement for the JAX implementation, our PyTorch version opens up several possibilities:
 
-* Rapid adaptation to new tasks
-* Modular freezing/unfreezing for stability
-* Supports genome-scale or perturbation assays
-* Enables downstream interpretability
-
-AlphaGenome can now be adapted as easily as modern vision and language foundation models — opening the door to rapid regulatory genomics experimentation. So if you think AlphaGenome could be useful if applied to your research, take a look at our package!
-
-> alphagenome-ft brings foundation-model-style transfer learning workflows to regulatory genomics.
+* Integration with PyTorch Ecosystems: Seamlessly combine AlphaGenome with other PyTorch-based genomics tools, use familiar PyTorch Lightning training loops, or integrate with libraries like Hugging Face's transformers and datasets.
+* Variant Effect Prediction: Compute the impact of genetic variants by running inference on reference and alternate sequences, and then compare the predicted genomic tracks. This is particularly powerful for understanding disease-associated variants.
+* In Silico Mutagenesis (ISM): Systematically mutate sequences to identify important regulatory elements and understand sequence grammar.
+* Finetuning on Custom Data: Perhaps most excitingly, you can adapt the model to your specific cell types, conditions, or even different species. We provide utilities for finetuning with your own genomic assay data. In an upcoming post, we'll dive deeper into finetuning strategies, including data preparation, training best practices, and evaluation metrics to ensure your adapted model performs well on your specific use case.
 
 ---
 
-## Compute requirements
-
-* Fine-tuning with a frozen backbone typically fits on a single, high VRAM GPU (e.g., H100).
-* Full-model fine-tuning or large batch training will essentially require multi-GPU or TPU setups.
+The code is available on [GitHub](https://github.com/genomicsxai/alphagenome-pytorch) with detailed [documentation]() and [example notebooks]() to help you get started with this implementation. This is naturally a work in progress--we're actively developing new features, improving code and performance, and working on new examples. We welcome contributions, feedback, bug reports, and stories of how this implementation has helped your research!
 
 ---
 
 ## Code and tutorials
 
-* [Source code & utilities](https://github.com/genomicsxai/alphagenome_ft)
-* Colab notebooks: [Encoder Fine-tuning (MPRA)](https://colab.research.google.com/github/genomicsxai/alphagenome_ft/blob/main/notebooks/finetune_encoder_only_mpra.ipynb) | [Heads-only Fine-tuning](https://colab.research.google.com/github/genomicsxai/alphagenome_ft/blob/main/notebooks/finetune_rna_head_only.ipynb)
-
----
-
-## TL;DR
-
-* **AlphaGenome** is a powerful sequence-to-function foundation model, but adapting it natively in JAX/Haiku can be cumbersome.
-
-* **alphagenome-ft** provides a lightweight wrapper for:
-
-    * adding custom or predefined prediction heads
-
-    * freezing and unfreezing specific modules
-
-    * parameter-efficient fine-tuning (e.g., adapters)
-
-    * running attribution analyses
-
-* Most workflows can start by training a task-specific head with the backbone frozen, then progressively unfreezing if needed.
-
-* This enables rapid adaptation to new assays while preserving pretrained regulatory knowledge.
-
-If you want to fine-tune AlphaGenome without modifying its core codebase, alphagenome-ft is designed to make that process modular, efficient, and reproducible!
+* [Source code & utilities](https://github.com/genomicsxai/alphagenome-pytorch)
+* [Tutorial notebooks]()
 
 ---
 
 ## References
 
 1. Avsec, Ž. et al. Advancing regulatory variant effect prediction with AlphaGenome., 649, Nature (2026).
-2. Alan Murphy, Peter Koo. "Adapting AlphaGenome to MPRA data." Genomics × AI Blog, 20 February 2026. https://genomicsxai.github.io/blogs/2026-002/
-3. Hu, E. J. et al. Lora: Low-rank adaptation of large language models (2021), https://arxiv.org/abs/2106.09685. 2106.09685.
-4. de Almeida, B. P., Reiter, F., Pagani, M. & Stark, A. Deepstarr predicts enhancer activity from dna sequence and enables the de novo design of synthetic enhancers., 54, Nat. genetics (2022).
