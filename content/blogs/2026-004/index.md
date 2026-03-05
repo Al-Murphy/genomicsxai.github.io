@@ -76,23 +76,6 @@ The original AlphaGenome model is implemented in [JAX](https://github.com/jax-ml
 
 ---
 
-## Numerical Equivalence with JAX
-
-**Our PyTorch model implementation is numerically on par with the original implementation in JAX.**
-
-Small implementation differences can silently change scientific conclusions. Therefore we strived to make sure our implementation is on par with the original JAX implementation. We added tests for numerical equivalence of the outputs of individual model heads and a full forward pass through the model, gradients, loss values.
-
-We verified equivalence at multiple levels:
-
-* Layer-by-layer outputs: Each convolutional block, attention mechanism, and transformer layer produces outputs within numerical precision (less than `1e-5` relative error) of the JAX implementation
-* Full forward pass: End-to-end predictions across all genomic tracks match within floating-point precision
-* Gradient computations: Backpropagation yields equivalent gradients, ensuring training dynamics remain faithful to the original
-* Loss values: Multinomial loss computes identically on the same inputs
-
-We converted the pre-trained weights directly from [the released checkpoints](https://www.kaggle.com/models/google/alphagenome) so that it’s easy to start working with the model with a single `.from_pretrained()` call.
-
----
-
 ## Getting Started
 
 The package can be installed from pypi as:
@@ -126,6 +109,31 @@ The model accepts sequences of up to 1,048,576 base pairs (1 Mb) and returns pre
 
 ---
 
+## Numerical Equivalence with JAX
+
+**Our PyTorch model implementation is numerically on par with the original implementation in JAX.**
+
+Small implementation differences can silently change scientific conclusions. Therefore we strived to make sure our implementation is on par with the original JAX implementation. We added tests for numerical equivalence of the outputs of individual model heads and a full forward pass through the model, gradients, loss values.
+
+We verified equivalence at multiple levels:
+
+* Layer-by-layer outputs: Each convolutional block, attention mechanism, and transformer layer produces outputs within numerical precision (less than `1e-5` relative error) of the JAX implementation
+* Full forward pass: End-to-end predictions across all genomic tracks match within floating-point precision
+* Gradient computations: Backpropagation yields equivalent gradients, ensuring training dynamics remain faithful to the original
+* Loss values: Multinomial loss computes identically on the same inputs
+
+We converted the pre-trained weights directly from [the released checkpoints](https://www.kaggle.com/models/google/alphagenome) so that it’s easy to start working with the model with a single `.from_pretrained()` call.
+
+To demonstrate parity of our implementation with AlphaGenome's model, we show predicted tracks in the HepG2 cell line from the 1-Mb held-out region of chromosome 19, examined in Figure 2a of the [paper](https://www.nature.com/articles/s41586-025-10014-0):
+
+![Predicted tracks for HepG2 in chr19 (Figure 2a)](hepg2_pred_tracks.png "width=600 alphagenome-pytorch predictions show high concordance with JAX predictions across RNA-seq, ATAC, DNase, H3K27ac, and CTCF tracks in the HepG2 cell line.")
+
+Predicted contact maps for this region also show high Pearson correlation when comparing the two implementations (Pearson r = 0.9999):
+
+![Predicted contact maps for HepG2 in chr19 (Figure 2a)](hepg2_pred_cmaps.png "width=600 alphagenome-pytorch predictions show high concordance with JAX predictions for contact maps in the HepG2 cell line.")
+
+---
+
 ## What Can You Do With This?
 
 Beyond drop-in replacement for the JAX implementation, our PyTorch version opens up several possibilities:
@@ -135,16 +143,26 @@ Beyond drop-in replacement for the JAX implementation, our PyTorch version opens
 * In Silico Mutagenesis (ISM): Systematically mutate sequences to identify important regulatory elements and understand sequence grammar.
 * Finetuning on Custom Data: Perhaps most excitingly, you can adapt the model to your specific cell types, conditions, or even different species. We provide utilities for finetuning with your own genomic assay data. In an upcoming post, we'll dive deeper into finetuning strategies, including data preparation, training best practices, and evaluation metrics to ensure your adapted model performs well on your specific use case.
 
+We also show an example of variant effect prediction and in silico mutagenesis for variants impacting the TAL1 gene. Figure 6 of the original paper shows the efect of an oncogenic mutation in CD34+ common myeloid progenitors. We show that alphagenome-pytorch recapitulates the difference between predicted tracks of the alternate and reference sequences of the variant with high accuracy:
+
+![Predicted alternate versus reference sequence for common myeloid progenitors (CMPs) in chr1 (Figure 6b)](cmp_pred_tracks.png "width=600 alphagenome-pytorch predictions show high concordance with JAX predictions when computing the difference in alt and ref sequences in CMPs.")
+
+alphagenome-pytorch also correctly reproduces in silico mutagenesis (ISM) at this locus, which we verify against the original JAX checkpoint:
+
+![In silico mutagenesis for chr1:47239296:C>ACG in PyTorch (Figure 6e)](cmp_ism_torch.png "width=600")
+
+![In silico mutagenesis for chr1:47239296:C>ACG in JAX (Figure 6e)](cmp_ism_jax.png "width=600")
+
 ---
 
-The code is available on [GitHub](https://github.com/genomicsxai/alphagenome-pytorch) with detailed [documentation]() and [example notebooks]() to help you get started with this implementation. This is naturally a work in progress--we're actively developing new features, improving code and performance, and working on new examples. We welcome contributions, feedback, bug reports, and stories of how this implementation has helped your research!
+The code is available on [GitHub](https://github.com/genomicsxai/alphagenome-pytorch) with detailed [documentation](todo) and [example notebooks](todo) to help you get started with this implementation. This is naturally a work in progress--we're actively developing new features, improving code and performance, and working on new examples. We welcome contributions, feedback, bug reports, and stories of how this implementation has helped your research!
 
 ---
 
 ## Code and tutorials
 
 * [Source code & utilities](https://github.com/genomicsxai/alphagenome-pytorch)
-* [Tutorial notebooks]()
+* [Tutorial notebooks](todo)
 
 ---
 
