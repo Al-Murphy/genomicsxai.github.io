@@ -24,8 +24,10 @@ The Genomics × AI blog uses a Git-native, PR-based submission workflow. All sub
 
 3. **Preview Your Post**  
    - Within a few minutes of opening the PR, a bot will post a comment with a live preview URL  
+   - Once the link appears, it may show a 404 for 1–2 minutes while GitHub Pages propagates — refresh until the post loads  
    - The preview renders your post exactly as it will appear on the blog  
-   - It updates automatically on each new commit to the PR  
+   - It updates automatically on each new commit to the PR (allow 1–2 minutes after each push)  
+   - Your PR must only contain files inside `content/blogs/` — if it includes other files the preview will be skipped  
    - The preview is not indexed by search engines and is not linked from the main blog; it is deleted automatically when the PR is closed  
 
 4. **Editor Review**  
