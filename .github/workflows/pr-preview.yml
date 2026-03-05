@@ -1,0 +1,120 @@
+name: PR Preview
+
+# pull_request_target runs in the base repo context so fork PRs have access to
+# GITHUB_TOKEN for deploying to gh-pages. The base repo's workflow file is always
+# used (not the PR's), so the workflow itself cannot be hijacked.
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'content/blogs/**'
+
+jobs:
+  deploy-preview:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      # Safety check: only proceed if the PR exclusively touches content/blogs/.
+      # This guards against PRs that also modify layouts, scripts, or config,
+      # which could (in theory) affect the build environment.
+      - name: Check PR only modifies blog content
+        id: safety
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          FILES=$(gh api "repos/${{ github.repository }}/pulls/${{ github.event.number }}/files" \
+            --jq '.[].filename')
+          NON_CONTENT=$(echo "$FILES" | grep -v '^content/blogs/' || true)
+          if [ -n "$NON_CONTENT" ]; then
+            echo "safe=false" >> "$GITHUB_OUTPUT"
+            echo "PR modifies files outside content/blogs/: $NON_CONTENT"
+          else
+            echo "safe=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Comment: preview skipped (unsafe PR)
+        if: steps.safety.outputs.safe == 'false'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: preview-deployment
+          message: |
+            ## Preview Deployment Skipped
+
+            This PR modifies files outside `content/blogs/`. Preview deployment
+            is only available for PRs that exclusively add or edit blog post content.
+
+      # Safe to check out the PR head — we only run Hugo on markdown content.
+      - name: Checkout PR head
+        if: steps.safety.outputs.safe == 'true'
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          submodules: true
+          fetch-depth: 0
+
+      - name: Setup Hugo
+        if: steps.safety.outputs.safe == 'true'
+        uses: peaceiris/actions-hugo@v3
+        with:
+          extended: true
+
+      - name: Detect changed blog posts
+        if: steps.safety.outputs.safe == 'true'
+        id: detect
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BASE_URL="https://genomicsxai.github.io/previews/pr-${{ github.event.number }}"
+          SLUGS=$(gh api "repos/${{ github.repository }}/pulls/${{ github.event.number }}/files" \
+            --jq '[.[].filename
+              | select(test("^content/blogs/[^/]+/"))
+              | capture("content/blogs/(?P<slug>[^/]+)/").slug
+            ] | unique | .[]')
+
+          LINKS=""
+          for slug in $SLUGS; do
+            LINKS="${LINKS}- [${slug}](${BASE_URL}/blogs/${slug}/)"$'\n'
+          done
+
+          # Use heredoc to safely pass multi-line output
+          echo "links<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$LINKS" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+      - name: Build preview site
+        if: steps.safety.outputs.safe == 'true'
+        run: |
+          # Stub out data files generated at full-deploy time
+          echo '{}' > data/discussions.json
+          echo '[]' > data/editors.json
+          hugo --minify \
+               --environment preview \
+               --baseURL "https://genomicsxai.github.io/previews/pr-${{ github.event.number }}/"
+
+      - name: Deploy preview to gh-pages
+        if: steps.safety.outputs.safe == 'true'
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GH_PAGES_TOKEN || secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
+          publish_branch: gh-pages
+          destination_dir: previews/pr-${{ github.event.number }}
+          keep_files: true
+
+      - name: Post preview comment
+        if: steps.safety.outputs.safe == 'true'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: preview-deployment
+          message: |
+            ## Preview Deployment Ready
+
+            **Preview URL:** https://genomicsxai.github.io/previews/pr-${{ github.event.number }}/
+
+            Posts in this PR:
+            ${{ steps.detect.outputs.links }}
+            > Not indexed by search engines and not linked from the main blog.
+            > Updated automatically on each new commit. Deleted when the PR is closed.

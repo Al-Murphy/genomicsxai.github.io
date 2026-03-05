@@ -22,17 +22,23 @@ The Genomics × AI blog uses a Git-native, PR-based submission workflow. All sub
    - Add your post to `content/blogs/YYYY-NNN/index.md`  
    - Create a PR with the submission template filled out  
 
-3. **Editor Review**  
+3. **Preview Your Post**  
+   - Within a few minutes of opening the PR, a bot will post a comment with a live preview URL  
+   - The preview renders your post exactly as it will appear on the blog  
+   - It updates automatically on each new commit to the PR  
+   - The preview is not indexed by search engines and is not linked from the main blog; it is deleted automatically when the PR is closed  
+
+4. **Editor Review**  
    - Editors will review your submission  
    - They may request changes via PR comments  
    - Address feedback and update your PR  
 
-4. **Going live**  
+5. **Going live**  
    - Once approved, editors will merge your PR  
    - The post will be automatically deployed via GitHub Actions  
    - Your post will appear on the blog  
 
-5. **Updates**
+6. **Updates**
    - Once merged, you can continue to submit updates to your post which will alter the updated date.
 
 ### Getting notified of comments and likes

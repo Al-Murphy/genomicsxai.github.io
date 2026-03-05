@@ -114,10 +114,7 @@ jobs:
           # Fallback to GITHUB_TOKEN if PAT is not set
           github_token: ${{ secrets.GH_PAGES_TOKEN || secrets.GITHUB_TOKEN }}
           publish_dir: ./public
-          # Explicitly set the branch name
           publish_branch: gh-pages
-          # Don't keep old files - ensure clean deployment
-          keep_files: false
-          # Force orphan to start completely fresh (removes all old files)
-          force_orphan: true
+          # keep_files: true preserves the previews/ subdirectory across deploys
+          keep_files: true
 

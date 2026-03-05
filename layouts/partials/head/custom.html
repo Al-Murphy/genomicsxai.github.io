@@ -3,3 +3,7 @@
 <meta http-equiv="Cache-Control" content="max-age=0, no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
+{{/* Preview builds: block search engine indexing */}}
+{{- if site.Params.previewMode -}}
+<meta name="robots" content="noindex,nofollow">
+{{- end -}}

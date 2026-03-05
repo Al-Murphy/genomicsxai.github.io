@@ -1,0 +1,42 @@
+name: PR Preview Cleanup
+
+on:
+  pull_request_target:
+    types: [closed]
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout gh-pages branch
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          token: ${{ secrets.GH_PAGES_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - name: Delete preview directory
+        run: |
+          PR_DIR="previews/pr-${{ github.event.number }}"
+          if [ -d "$PR_DIR" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git rm -rf "$PR_DIR"
+            git commit -m "chore: remove preview for PR #${{ github.event.number }}"
+            git push
+            echo "Deleted preview at $PR_DIR"
+          else
+            echo "No preview found for PR #${{ github.event.number }}, nothing to clean up."
+          fi
+
+      - name: Update PR comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: preview-deployment
+          message: |
+            ## Preview Deployment Removed
+
+            The preview for this PR has been deleted now that it is closed.
