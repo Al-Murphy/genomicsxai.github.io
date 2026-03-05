@@ -827,9 +827,15 @@ article img {
   fill: currentColor;
 }
 
+/* ── Newsletter right sidebar container (homepage) ── */
+.right-sidebar__newsletter {
+  width: 100%;
+  margin-top: 16px;
+}
+
 /* ── Newsletter sidebar widget ── */
 .newsletter-widget {
-  margin-top: 20px;
+  margin-top: 0;
   padding: 14px 16px;
   background: var(--card-background);
   border: 1px solid var(--card-separator-color, rgba(218,218,218,0.5));
