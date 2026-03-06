@@ -4,7 +4,7 @@ title: "Implementing AlphaGenome in PyTorch"
 image: "alphagenome_ft.png"
 math: false
 
-authors: ["Danila Bredikhin", "Martin Kjellberg", "Christopher Zou", "Xinming Tu", "Alejandro Buendia", "Anshul Kundaje"]
+authors: ["Danila Bredikhin", "Martin Kjellberg", "Christopher Zou", "Alejandro Buendia", "Xinming Tu", "Anshul Kundaje"]
 
 authors_display:
   - name: "Danila Bredikhin"
@@ -17,13 +17,13 @@ authors_display:
   - name: "Christopher Zou"
     affiliation: "Stanford University"
 
-  - name: "Xinming Tu"
-    affiliation: "University of Washington"
-  
   - name: "Alejandro Buendia"
     affiliation: "Stanford University"
     orcid: "0009-0001-6562-9876"
 
+  - name: "Xinming Tu"
+    affiliation: "University of Washington"
+  
   - name: "Anshul Kundaje"
     affiliation: "Stanford University"
     orcid: "0000-0003-3084-2287"
