@@ -40,14 +40,14 @@ labs: ["Kundaje lab"]
 status: "submitted"
 revision: 1
 
-date_submitted: 2026-04-05
+date_submitted: 2026-03-05
 date_accepted:
-date: 2026-04-05
+date: 2026-03-05
 
 doi: ""
 revision_history:
   - version: 1
-    date: 2026-04-05
+    date: 2026-03-05
     notes: "Initial submission"
 ---
 
@@ -145,7 +145,7 @@ Beyond drop-in replacement for the JAX implementation, our PyTorch version opens
 * In Silico Mutagenesis (ISM): Systematically mutate sequences to identify important regulatory elements and understand sequence grammar.
 * Finetuning on Custom Data: Perhaps most excitingly, you can adapt the model to your specific cell types, conditions, or even different species. We provide utilities for finetuning with your own genomic assay data. In an upcoming post, we'll dive deeper into finetuning strategies, including data preparation, training best practices, and evaluation metrics to ensure your adapted model performs well on your specific use case.
 
-We also show an example of variant effect prediction and in silico mutagenesis for variants impacting the TAL1 gene. Figure 6 of the original paper shows the efect of an oncogenic mutation in CD34+ common myeloid progenitors. We show that alphagenome-pytorch recapitulates the difference between predicted tracks of the alternate and reference sequences for the variant with high accuracy:
+We also show an example of variant effect prediction and in silico mutagenesis for variants impacting the TAL1 gene. Figure 6 of the original paper shows the effect of an oncogenic mutation in CD34+ common myeloid progenitors. We show that alphagenome-pytorch recapitulates the difference between predicted tracks of the alternate and reference sequences for the variant with high accuracy:
 
 ![Predicted alternate versus reference sequence for common myeloid progenitors (CMPs) in chr1 (Figure 6b)](cmp_pred_tracks.png "width=600 alphagenome-pytorch predictions show high concordance with JAX predictions when computing the difference in alt and ref sequences in CMPs.")
 
