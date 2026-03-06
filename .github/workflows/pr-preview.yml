@@ -27,10 +27,15 @@ jobs:
         run: |
           FILES=$(gh api "repos/${{ github.repository }}/pulls/${{ github.event.number }}/files" \
             --jq '.[].filename')
-          NON_CONTENT=$(echo "$FILES" | grep -v '^content/blogs/' || true)
+          # Strip empty lines before checking so trailing newlines don't cause false positives
+          NON_CONTENT=$(echo "$FILES" | grep -v '^content/blogs/' | grep -v '^[[:space:]]*$' || true)
           if [ -n "$NON_CONTENT" ]; then
             echo "safe=false" >> "$GITHUB_OUTPUT"
             echo "PR modifies files outside content/blogs/: $NON_CONTENT"
+            # Pass the file list to the comment step
+            echo "offending_files<<EOF" >> "$GITHUB_OUTPUT"
+            echo "$NON_CONTENT" >> "$GITHUB_OUTPUT"
+            echo "EOF" >> "$GITHUB_OUTPUT"
           else
             echo "safe=true" >> "$GITHUB_OUTPUT"
           fi
@@ -43,8 +48,14 @@ jobs:
           message: |
             ## Preview Deployment Skipped
 
-            This PR modifies files outside `content/blogs/`. Preview deployment
-            is only available for PRs that exclusively add or edit blog post content.
+            This PR modifies files outside `content/blogs/` — preview deployment is only available for PRs that exclusively add or edit blog post content.
+
+            **Files detected outside `content/blogs/`:**
+            ```
+            ${{ steps.safety.outputs.offending_files }}
+            ```
+
+            Please remove these files from your PR branch (or ensure all your changes are within `content/blogs/YYYY-NNN/`) and push a new commit to trigger the preview again.
 
       # Safe to check out the PR head — we only run Hugo on markdown content.
       - name: Checkout PR head

@@ -19,7 +19,8 @@ The Genomics × AI blog uses a Git-native, PR-based submission workflow. All sub
 
 2. **Create a Pull Request**  
    - Fork the repository  
-   - Add your post to `content/blogs/YYYY-NNN/index.md`  
+   - Add your post to `content/blogs/YYYY-NNN/index.md`; place all images and assets in the **same folder** (e.g. `content/blogs/YYYY-NNN/figure1.png`)  
+   - Your PR must **only** contain files inside `content/blogs/YYYY-NNN/` — do not modify any files outside this folder (no `static/`, `config.toml`, `.github/`, etc.)  
    - Create a PR with the submission template filled out  
 
 3. **Preview Your Post**  
@@ -27,7 +28,7 @@ The Genomics × AI blog uses a Git-native, PR-based submission workflow. All sub
    - Once the link appears, it may show a 404 for 1–2 minutes while GitHub Pages propagates — refresh until the post loads  
    - The preview renders your post exactly as it will appear on the blog  
    - It updates automatically on each new commit to the PR (allow 1–2 minutes after each push)  
-   - Your PR must only contain files inside `content/blogs/` — if it includes other files the preview will be skipped  
+   - If the bot instead posts "Preview Deployment Skipped", it means the PR contains files outside `content/blogs/` — the comment will list the offending files so you can remove them  
    - The preview is not indexed by search engines and is not linked from the main blog; it is deleted automatically when the PR is closed  
 
 4. **Editor Review**  
