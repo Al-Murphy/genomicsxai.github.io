@@ -126,7 +126,7 @@ We verified equivalence at multiple levels:
 * Gradient computations: Backpropagation yields equivalent gradients, ensuring training dynamics remain faithful to the original implementation
 * Loss values: Multinomial loss computes identically on the same inputs
 
-We converted the pretrained weights directly from [the released checkpoints](https://www.kaggle.com/models/google/alphagenome) so that it’s easy to start working with the model with a single `.from_pretrained()` call.
+We converted the pretrained weights directly from [the released checkpoints](https://www.kaggle.com/models/google/alphagenome) so that it is easy to start working with the model with a single `.from_pretrained()` call.
 
 To demonstrate parity of our implementation with DeepMind's model, we show predicted tracks in the HepG2 cell line from a 1 Mb held-out region of chromosome 19, examined in Figure 2a of the original [paper](https://www.nature.com/articles/s41586-025-10014-0):
 
@@ -143,7 +143,7 @@ Beyond drop-in replacement for the JAX implementation, our PyTorch version opens
 * Integration with PyTorch Ecosystems: Seamlessly combine AlphaGenome with other PyTorch-based genomics tools, use familiar PyTorch Lightning training loops, or integrate with libraries like Hugging Face's transformers and datasets.
 * Variant Effect Prediction: Compute the impact of genetic variants by running inference on reference and alternate sequences, and then compare the predicted genomic tracks. This is particularly powerful for understanding disease-associated variants.
 * In Silico Mutagenesis (ISM): Systematically mutate sequences to identify important regulatory elements and understand sequence grammar.
-* Finetuning on Custom Data: Perhaps most excitingly, you can adapt the model to your specific cell types, conditions, or even different species. We provide utilities for finetuning with your own genomic assay data. In an upcoming post, we'll dive deeper into different finetuning strategies impelemented in the package, including data preparation, training best practices, and evaluation metrics to ensure your adapted model performs well for your specific use case.
+* Finetuning on Custom Data: Perhaps most excitingly, you can adapt the model to your specific cell types, conditions, or even different species. We provide utilities for finetuning with your own genomic assay data. In an upcoming post, we'll dive deeper into different finetuning strategies implemented in the package, including data preparation, training best practices, and evaluation metrics to ensure your adapted model performs well for your specific use case.
 
 To demonstrate this functionality, we also show an example of variant effect prediction and in silico mutagenesis for a variant impacting the TAL1 gene examined in Figure 6 of the original paper. This variant is an oncogenic insertion in CD34+ common myeloid progenitors. We show that alphagenome-pytorch recapitulates the difference between predicted tracks of the alternate and reference sequences for the variant with high accuracy:
 
@@ -170,4 +170,4 @@ The code is available on [GitHub](https://github.com/genomicsxai/alphagenome-pyt
 
 ## References
 
-1. Avsec, Ž. et al. Advancing regulatory variant effect prediction with AlphaGenome. Nature (2026).
+1. Avsec, Ž. et al. Advancing regulatory variant effect prediction with AlphaGenome. *Nature* **649** (2026).
