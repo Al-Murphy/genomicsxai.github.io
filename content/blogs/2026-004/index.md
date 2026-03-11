@@ -28,7 +28,7 @@ authors_display:
     affiliation: "Stanford University"
     orcid: "0000-0003-3084-2287"
 
-editor: "Editor Name"
+editor: "Alan Murphy"
 
 tags: ["genomics", "finetuning", "AlphaGenome", "seq2func", "PyTorch"]
 categories: ["Blog Post"]
@@ -243,7 +243,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 ## Acknowledgements
 
-We thank Peter Koo, Alan Murphy, Masayuki Nagai, and other members of the [Koo Lab](https://koolab.cshl.edu/) for helping initiate the GenomicsXAI organization and reviewing this post. We acknowledge Phil Wang, Miquel Anglada-Girotto, and Xinming Tu as developers of an older AlphaGenome PyTorch implementation unrelated to this port.
+We thank Peter Koo, Alan Murphy, Masayuki Nagai, and other members of the [Koo Lab](https://koolab.cshl.edu/) for helping initiate the GenomicsxAI organization and reviewing this post. We acknowledge Phil Wang, Miquel Anglada-Girotto, and Xinming Tu as developers of an older AlphaGenome PyTorch implementation unrelated to this port.
 
 ---
 
