@@ -182,8 +182,11 @@ To demonstrate functionality around variant analysis, we give an example of vari
 Our port also correctly reproduces in silico mutagenesis (ISM). We implement a simple API for running ISM:
 
 ```python
-from alphagenome_pytorch.variant_scoring import CenterMaskScorer, AggregationType
-from alphagenome_pytorch.variant_scoring.scorers import GeneMaskLFCScorer
+from alphagenome_pytorch.variant_scoring import (
+  CenterMaskScorer,
+  AggregationType,
+  GeneMaskLFCScorer
+)
 
 # Using previously defined AlphaGenome and VariantScoringModel objects
 ism_scorers = [
