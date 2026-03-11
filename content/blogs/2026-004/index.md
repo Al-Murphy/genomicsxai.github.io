@@ -183,9 +183,9 @@ Our port also correctly reproduces in silico mutagenesis (ISM). We implement a s
 
 ```python
 from alphagenome_pytorch.variant_scoring import (
-  CenterMaskScorer,
-  AggregationType,
-  GeneMaskLFCScorer
+    CenterMaskScorer,
+    AggregationType,
+    GeneMaskLFCScorer
 )
 
 # Using previously defined AlphaGenome and VariantScoringModel objects
