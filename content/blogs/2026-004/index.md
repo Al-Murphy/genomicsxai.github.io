@@ -63,7 +63,7 @@ In this post, we review the initial release for the package and walk through two
 
 **Contributions**:
 
-* Core Development Team: Danila Bredikhin (Lead), Martin Kjellberg, Christopher Zou
+* Initial Development Team: Danila Bredikhin (Lead), Martin Kjellberg, Christopher Zou
 * Finetuning and Validation: Danila Bredikhin, Alejandro Buendia, Xinming Tu
 * Blog Post: Alejandro Buendia, Danila Bredikhin
 
@@ -230,7 +230,7 @@ This project is a port of the [google-deepmind/alphagenome_research](https://git
 
 >Copyright 2026 Google LLC
 
-The weights are subject to the [model terms](https://deepmind.google.com/science/alphagenome/model-terms).
+The model parameters, output, and any derivatives thereof remain subject to [Google DeepMind’s AlphaGenome Model Terms](https://deepmind.google.com/science/alphagenome/model-terms).
 
 This port is licensed under the Apache License, Version 2.0 (Apache 2.0):
 
