@@ -1,5 +1,5 @@
 ---
-title: "Editorial review (MVR)"
+title: "Editorial Review (MVR)"
 date: 2026-03-30
 url: "/editorial-review/"
 ---
@@ -101,7 +101,7 @@ Editors choose one:
 * **Accept**
 * **Minor revisions**
 * **Major revisions**
-* **Reject** (out of scope or insufficient quality)
+* **Not Accepted** (out of scope or insufficient quality)
 
 ---
 

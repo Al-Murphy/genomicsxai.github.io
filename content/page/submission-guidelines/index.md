@@ -32,9 +32,10 @@ The Genomics × AI blog uses a Git-native, PR-based submission workflow. All sub
    - The preview is not indexed by search engines and is not linked from the main blog; it is deleted automatically when the PR is closed  
 
 4. **Editor Review**  
-   - Editors will review your submission  
+   - Editors review submissions with a **minimal editorial review (MVR)**—a quality gate for clarity, correctness, and fit, not full academic peer review  
    - They may request changes via PR comments  
    - Address feedback and update your PR  
+   - For the full checklist, possible outcomes, and timing, see [Editorial Review (MVR)](https://genomicsxai.github.io/editorial-review/)  
 
 5. **Going live**  
    - Once approved, editors will merge your PR  
@@ -62,3 +63,18 @@ Editors and maintainers can use the same options to follow all post activity.
    - Use headings, figures, and examples where helpful to improve readability.
    - Cite relevant prior work using hyperlinks or a formal inline citation style, and the inclusion of a references section at the end of the post is encouraged.
    - Ensure that claims are supported by appropriate sources.
+
+## Example of a strong post
+
+Style and length can vary, but a good reference for structure and depth is [**Adapting AlphaGenome to MPRA data**](https://genomicsxai.github.io/blogs/2026-002/): it states the problem clearly, walks through methods and results in order, includes a reader-facing **Summary**, figures, code-oriented guidance, references, and honest limitations. Use it as inspiration, not a rigid template.
+
+## What editors look for (high level)
+
+Editors aim to confirm, in a lightweight pass, that your post:
+
+* **Belongs here** — genomics × AI remit; `scope`, tags, and `audience` match the content  
+* **Holds up technically** — no obvious factual errors; claims match the evidence you provide  
+* **Works for readers** — logical flow (motivation → content → takeaway), appropriate level for the audience  
+* **Is complete in the basics** — opening summary via the `summary` shortcode, reasonable attribution, working links, and clean formatting  
+
+For the full framework (checklist, review outcomes, escalation, and time expectations), see **[Editorial Review (MVR)](https://genomicsxai.github.io/editorial-review/)**.
