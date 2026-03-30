@@ -100,7 +100,7 @@ enableGitInfo = true
 
 [[menu.main]]
   identifier = "editorial-review"
-  name = "Editorial review"
+  name = "Editorial Review"
   url = "/editorial-review/"
   weight = 4
 
