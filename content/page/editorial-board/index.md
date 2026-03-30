@@ -20,7 +20,15 @@ The Steering Committee sets the strategic vision and scope of the platform. Resp
 * Peter Koo (Cold Spring Harbor Laboratory)
 * Anshul Kundaje (Stanford University)
 
-## Editorial Team
+## Editorial Lead
+
+The Editorial Lead is the **single point of coordination** between Editorial Board ↔ Steering Committee.
+
+### Current Editorial Lead
+
+* Dr. Alan Murphy (Cold Spring Harbor Laboratory) — GitHub [@Al_murphy](https://github.com/Al_murphy)
+
+## Editorial Board
 
 The Editorial Board oversees content review and maintains scientific and community standards. Board members:
 
@@ -30,7 +38,7 @@ The Editorial Board oversees content review and maintains scientific and communi
 * Enforce submission and community guidelines
 * Editorial decisions are made collaboratively when needed.
 
-Day-to-day review follows the [Minimal Editorial Review (MVR) framework](/editorial-review/).
+Review follows the [Minimal Editorial Review (MVR) framework](/editorial-review/). Editorial decisions are made collaboratively when needed.
 
 ### Current Editorial Board
 
