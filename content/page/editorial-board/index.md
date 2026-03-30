@@ -30,6 +30,8 @@ The Editorial Board oversees content review and maintains scientific and communi
 * Enforce submission and community guidelines
 * Editorial decisions are made collaboratively when needed.
 
+Day-to-day review follows the [Minimal Editorial Review (MVR) framework](/editorial-review/).
+
 ### Current Editorial Board
 
 {{< editors-list >}}
