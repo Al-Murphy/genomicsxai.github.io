@@ -17,6 +17,22 @@
   {{ if $showReadingTime }}
   <time class="article-meta__reading" datetime="PT{{ .ReadingTime }}M">{{ T "article.readingTime" .ReadingTime }}</time>
   {{ end }}
+  <span class="article-meta__sep article-meta__sep--views" style="display:none"> · </span>
+  <span class="article-meta__views" id="gc-views" style="display:none"></span>
+  <script>
+    fetch('https://{{ .Site.Params.goatCounterCode }}.goatcounter.com/counter/' + encodeURIComponent(window.location.pathname) + '.json')
+      .then(function(r){ return r.json(); })
+      .then(function(d){
+        if (d.count && d.count !== '0') {
+          var el = document.getElementById('gc-views');
+          el.textContent = d.count + ' views';
+          el.style.display = '';
+          var sep = document.querySelector('.article-meta__sep--views');
+          if (sep) sep.style.display = '';
+        }
+      })
+      .catch(function(){});
+  </script>
   {{ if $hasLabs }}
   <div class="article-meta__row">
     <span class="article-meta__label">Lab</span>

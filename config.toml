@@ -25,6 +25,7 @@ enableGitInfo = true
 
 [params]
   defaultTheme = "auto"
+  goatCounterCode = "genomicsxai"
   ShowReadingTime = true
   ShowBreadCrumbs = true
   # Include blogs section in main sections for homepage
