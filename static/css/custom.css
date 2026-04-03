@@ -974,6 +974,70 @@ article img {
   margin: 0.25em 0 0 0;
 }
 
+/* ── Print / Download as PDF ── */
+@media print {
+  /* Hide everything except the article */
+  .left-sidebar,
+  .right-sidebar,
+  #main-menu,
+  .action-bar,
+  .article-comments,
+  .article-extra .citation-box,
+  footer,
+  .pswp,
+  header.site-header {
+    display: none !important;
+  }
+
+  /* Full-width article, no card shadow */
+  .main-container,
+  .main-container.extended {
+    display: block !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    gap: 0 !important;
+  }
+  .article-page .main-article {
+    max-width: 100% !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+  }
+  .article-content {
+    max-width: 100% !important;
+  }
+
+  /* Ensure images render correctly */
+  img {
+    display: block !important;
+    max-width: 100% !important;
+    height: auto !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Ensure images and figures don't break across pages */
+  figure,
+  img,
+  .table-wrapper {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* Keep headings with their following content */
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  body {
+    font-size: 12pt;
+    color: #000;
+    background: #fff;
+  }
+}
+
 /* PhotoSwipe lightbox: caption as a banner below the image */
 .pswp__custom-caption {
   position: absolute;
