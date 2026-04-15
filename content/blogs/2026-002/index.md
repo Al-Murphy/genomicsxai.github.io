@@ -161,7 +161,7 @@ This supports the idea that genome-scale training learns reusable regulatory str
 
 ## What matters when adapting encoders?
 
-So in an attempt to push performance as much as possible, we did a hyperparameter sweep which revealed the:
+So in an attempt to understand the loss landscape as much as possible, we did a hyperparameter sweep which revealed the:
 
 ### Most important choices
 
@@ -177,7 +177,7 @@ So in an attempt to push performance as much as possible, we did a hyperparamete
 
 * learning rate schedule
 
-Progressive unfreezing provided modest gains, with a slight benefit from delaying encoder updates. The results of this sweep is at the end of the post.
+Progressive unfreezing also provided modest gains, with a benefit from earlier encoder updates. The results of this sweep is at the end of the post. Note we used the sweep as a starting point for an iterative greedy search over hyperparameters to get the local optimal for each lentiMPRA cell line.
 
 ---
 
@@ -205,9 +205,9 @@ This may highlight a trade-off of specialisation vs generalisation, or with bett
 
 When we tested against the AlphaGenome model before any fine-tuning on MPRA data, we noticed something interesting. 
 
-Aligning the aggregated window size to match the size of the MPRA assay (central 384 base-pairs) improved zero-shot prediction relative to AlphaGenome’s original protocol (central 501bp) by 25%!
+Aligning the aggregated window size of the chromatin accessibility (DNase HepG2 and K562 tracks) to match the size of the MPRA assay (central 384 base-pairs) improved zero-shot prediction relative to AlphaGenome’s original protocol (central 501bp) by 25%!
 
-![Central aggregation approach AlphaGenome](cagi5_central_mask_comparison.png "width=700 Differing AlphaGenome's mask size for CAGI5 benchmark on HepG2 and K562 variants; right, high-confidence SNP subset. Pretrained AlphaGenome performance when using our approach of aggregating the central 384 base-pairs versus the protocol outlined in AlphaGenome's original publication (central 501 base-pairs). The smaller window led to much improved performance but still below that after fine-tuning on MPRA data (our approach). Performance is measured as Pearson correlation between predicted and observed activity.")
+![Central aggregation approach AlphaGenome](cagi5_central_mask_comparison.png "width=700 Differing AlphaGenome's mask size for CAGI5 benchmark on HepG2 and K562 variants; right, high-confidence SNP subset. Pretrained AlphaGenome performance when using our approach of aggregating the central 384 base-pairs for DNase HepG2 and K562 tracks versus the protocol outlined in AlphaGenome's original publication (central 501 base-pairs). The smaller window led to much improved performance but still below that after fine-tuning on MPRA data (our approach). Performance is measured as Pearson correlation between predicted and observed activity.")
 
 So I would advise testing differing aggregation windows if you are using AlphaGenome in this manner. Or, just use our extracted encoder approach which boosted performance by another 10%!
 
@@ -311,6 +311,8 @@ model = create_model_with_heads(
 # 3. Optionally freeze backbone to start with heads-only finetuning
 model.freeze_except_head("mpra_head")
 
+#Now ready to train!
+
 ```
 Key points:
 - `use_encoder_output=True` bypasses the transformer/decoder stack and exposes encoder features at ~128 bp resolution
@@ -332,12 +334,19 @@ import jax.numpy as jnp
 import optax
 
 from alphagenome_ft import CustomHead
+from alphagenome_ft import create_optimizer
 
 # Suppose you have: sequences_onehot: (B, L, 4), targets: (B, 1)
 
 loss_fn = model.create_loss_fn_for_head("mpra_head")
 
-optimizer = optax.adamw(learning_rate=1e-3, weight_decay=1e-4)
+optimizer = create_optimizer(
+    model._params,
+    trainable_head_names=("mpra_head",),
+    learning_rate=1e-3,
+    weight_decay=1e-4,
+    heads_only=True,
+)
 opt_state = optimizer.init(model._params)
 
 def train_step(params, state, opt_state, batch_sequences, batch_targets):
@@ -360,7 +369,7 @@ def train_step(params, state, opt_state, batch_sequences, batch_targets):
         return loss_dict["loss"]
 
     loss, grads = jax.value_and_grad(loss_inner)(params)
-    updates, new_opt_state = optimizer.update(grads, opt_state)
+    updates, new_opt_state = optimizer.update(grads, opt_state, params)
     new_params = optax.apply_updates(params, updates)
     return new_params, new_opt_state, loss
 
@@ -402,53 +411,55 @@ https://github.com/genomicsxai/alphagenome_ft
 
 ### Stage 1
 
-Stage 1 was a hyperparameter sweep for lentiMPRA with a frozen encoder (probing regime). 
+Stage 1 was a hyperparameter sweep for lentiMPRA with a frozen encoder (probing regime). The performance shown is batch-averaged Pearson R (not Pearson R over the hole set so will often be lower) on the **validation set**. Note that the optimal hyperparameters were used as a starting point for a cell type-specific iterative greedy search.
 
 We varied the prediction head architecture and training hyperparameters while keeping encoder weights fixed. Note no reverse complement or random shift augementations were used for this benchmark. mlp-X-Y denotes a two-layer multilayer perceptron head with hidden dimensions X and Y; mlp-X denotes a single hidden layer of size X; pool-flatten uses global pooling followed by flattening; pool-center extracts the central token representation; do-p indicates dropout rate p applied to the head; wd-1eK indicates weight decay of $10^{-K}$; lr-plateau and lr-cosine denote ReduceLROnPlateau and cosine annealing learning rate schedules, respectively; opt-adamw indicates the AdamW optimiser; act-gelu replaces the default activation with GELU. Baseline used a single multilayer perceptron head of size 1024 with sum pooling, Adam optimiser and RELU activation, and no dropout, weight decay or learning rate plateau. Performance is reported as Pearson correlation on the held-out test fold for HepG2, K562, and WTC11, with average performance and rank across cell types.
 
-| Hyperparameter | HepG2      | K562       | WTC11  | Average    | Rank |
-| -------------- | ---------- | ---------- | ------ | ---------- | ---- |
-| mlp-512-512    | **0.8581** | 0.8258     | 0.7825 | **0.8221** | 1    |
-| mlp-512-256    | 0.8573     | **0.8273** | 0.7803 | 0.8216     | 2    |
-| pool-flatten   | 0.8547     | 0.8250     | 0.7837 | **0.8211** | 3    |
-| mlp-256-256    | 0.8544     | 0.8253     | 0.7814 | 0.8204     | 4    |
-| mlp-128        | 0.8532     | 0.8235     | 0.7786 | 0.8185     | 5    |
-| mlp-256        | 0.8527     | 0.8212     | 0.7758 | 0.8166     | 6    |
-| pool-center    | 0.8498     | 0.8211     | 0.7778 | 0.8162     | 7    |
-| do-0.1         | 0.8521     | 0.8193     | 0.7755 | 0.8156     | 8    |
-| do-0.2         | 0.8522     | 0.8188     | 0.7755 | 0.8155     | 9    |
-| mlp-512        | 0.8514     | 0.8199     | 0.7752 | 0.8155     | 10   |
-| do-0.5         | 0.8521     | 0.8188     | 0.7755 | 0.8155     | 11   |
-| do-0.4         | 0.8521     | 0.8188     | 0.7755 | 0.8155     | 12   |
-| do-0.3         | 0.8521     | 0.8188     | 0.7752 | 0.8154     | 13   |
-| wd-1e6         | 0.8529     | 0.8171     | 0.7738 | 0.8146     | 14   |
-| wd-1e5         | 0.8530     | 0.8166     | 0.7742 | 0.8146     | 15   |
-| lr-plateau     | 0.8526     | 0.8170     | 0.7733 | 0.8143     | 16   |
-| -------------- | ---------- | ---------- | ------ | ---------- | ---- |
-| baseline       | 0.8526     | 0.8170     | 0.7733 | 0.8143     | 17   |
-| -------------- | ---------- | ---------- | ------ | ---------- | ---- |
-| opt-adamw      | 0.8526     | 0.8161     | 0.7738 | 0.8142     | 18   |
-| wd-1e4         | 0.8522     | 0.8167     | 0.7732 | 0.8141     | 19   |
-| act-gelu       | 0.8513     | 0.8167     | 0.7724 | 0.8134     | 20   |
-| lr-cosine      | 0.8399     | 0.8007     | 0.7605 | 0.8004     | 21   |
+
+| Hyperparameter   | HepG2      | K562       | WTC11      | Average    | Rank |
+| ---------------- | ---------- | ---------- | ---------- | ---------- | ---- |
+| pool-flatten     | **0.8536** | **0.8253** | **0.7727** | **0.8172** | 1    |
+| nl-512-256       | 0.8495     | 0.8239     | 0.7698     | 0.8144     | 2    |
+| nl-256-256       | 0.8501     | 0.8216     | 0.7697     | 0.8138     | 3    |
+| nl-512-512       | 0.8482     | 0.8234     | 0.7694     | 0.8137     | 4    |
+| nl-128           | 0.8498     | 0.8209     | 0.7676     | 0.8128     | 5    |
+| pool-center      | 0.8476     | 0.8205     | 0.7666     | 0.8116     | 6    |
+| do-0.5           | 0.8482     | 0.8194     | 0.7670     | 0.8115     | 7    |
+| nl-256           | 0.8479     | 0.8180     | 0.7645     | 0.8101     | 8    |
+| do-0.1           | 0.8477     | 0.8190     | 0.7636     | 0.8101     | 9    |
+| nl-2048          | 0.8467     | 0.8159     | 0.7674     | 0.8100     | 10   |
+| do-0.4           | 0.8470     | 0.8179     | 0.7641     | 0.8097     | 11   |
+| wd-1e6           | 0.8466     | 0.8152     | 0.7670     | 0.8096     | 12   |
+| nl-512           | 0.8452     | 0.8169     | 0.7661     | 0.8094     | 13   |
+| do-0.2           | 0.8471     | 0.8166     | 0.7644     | 0.8094     | 14   |
+| do-0.3           | 0.8458     | 0.8172     | 0.7637     | 0.8089     | 15   |
+| wd-1e4           | 0.8459     | 0.8145     | 0.7647     | 0.8084     | 16   |
+| ---------------  | ---------- | ---------- | ---------  | ---------- | ---- |
+| baseline-default | 0.8458     | 0.8150     | 0.7639     | 0.8082     | 17   |
+| ---------------  | ---------- | ---------- | ---------  | ---------- | ---- |
+| opt-adamw        | 0.8458     | 0.8150     | 0.7635     | 0.8081     | 19   |
+| nl-1024          | 0.8458     | 0.8150     | 0.7635     | 0.8081     | 19   |
+| wd-1e5           | 0.8459     | 0.8152     | 0.7632     | 0.8081     | 19   |
+| act-gelu         | 0.8431     | 0.8168     | 0.7576     | 0.8058     | 21   |
+
 
 
 ### Stage 2
 
-Stage 2 was a hyperparameter sweep for lentiMPRA with encoder unfreezing (fine-tuning regime). 
+Stage 2 was a hyperparameter sweep for lentiMPRA with encoder unfreezing (fine-tuning regime). The performance shown is batch-averaged Pearson R (not Pearson R over the hole set so will often be lower) on the **validation set**. Note that the optimal choices were not used from this sweep to ensure optimal performance of the stage 1 (frozen base) models.
 
 Starting from the best Stage 1 configuration, we varied the unfreezing schedule. s2-s1epN denotes unfreezing the encoder after N epochs of head-only training; s2-baseline denotes the default unfreezing schedule used in the main experiments (unfreezing triggered by validation loss plateau). Baseline used a single multilayer perceptron head of size 1024 with sum pooling, Adam optimiser and RELU activation, and no dropout, weight decay or learning rate plateau. All models used reverse complement and random shift augmentations. Performance is reported as Pearson correlation on the held-out test fold for HepG2, K562, and WTC11, with average performance and rank across cell types.
 
 | Hyperparameter  | HepG2      | K562       | WTC11      | Average    | Rank |
 | --------------- | ---------- | ---------- | ---------- | ---------- | ---- |
-| s2-s1ep3        | 0.8663     | 0.8439     | **0.7730** | **0.8277** | 1    |
+| s2-s1ep1        | **0.8720** | **0.8437** | **0.7754** | **0.8304** | 1    |
+| s2-s1ep2        | 0.8709     | 0.8432     | 0.7731     | 0.8291     | 2    |
+| s2-s1ep3        | 0.8689     | 0.8417     | 0.7706     | 0.8271     | 3    |
+| s2-s1ep5        | 0.8695     | 0.8396     | 0.7691     | 0.8261     | 4    |
+| s2-s1ep4        | 0.8686     | 0.8413     | 0.7668     | 0.8256     | 5    |
 | --------------- | ---------- | ---------- | ---------- | ---------- | ---- |
-| s2-baseline     | 0.8701     | **0.8439** | 0.7686     | 0.8276     | 2    |
-| --------------- | ---------- | ---------- | ---------- | ---------- | ---- |
-| s2-s1ep2        | 0.8655     | 0.8441     | 0.7723     | 0.8273     | 3    |
-| s2-s1ep4        | 0.8689     | 0.8449     | 0.7668     | 0.8269     | 4    |
-| s2-s1ep5        | **0.8706** | 0.8435     | 0.7654     | 0.8265     | 5    |
-| s2-s1ep1        | 0.8507     | 0.8382     | 0.7651     | 0.8180     | 6    |
+| s2-baseline-es  | 0.8624     | 0.8362     | 0.7688     | 0.8225     | 6    |
+
 
 
 ## References
