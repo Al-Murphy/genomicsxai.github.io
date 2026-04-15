@@ -1,0 +1,1059 @@
+/* Always show the main navigation menu in the left sidebar (Stack theme) */
+#main-menu {
+  display: flex !important;
+}
+
+/* ── Scroll TOC: full list, active section highlighted on scroll ── */
+.scroll-toc {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+.scroll-toc__list {
+  overflow-y: auto;
+  min-height: 0;
+}
+
+/* Header line */
+.scroll-toc__header {
+  padding: 0 0 6px 0;
+  margin-bottom: 6px;
+  border-bottom: 1px solid var(--card-separator-color, rgba(218,218,218,0.5));
+}
+.scroll-toc__header-label {
+  font-size: 1.4rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--card-text-color-secondary, #888);
+}
+
+/* TOC list: all items always visible */
+.scroll-toc__list ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.scroll-toc__list li {
+  margin: 0;
+  padding: 0;
+}
+.scroll-toc__list > ul > li > ul {
+  padding-left: 1em;
+}
+.scroll-toc__list a {
+  display: block;
+  padding: 4px 0;
+  font-size: 1.4rem;
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--card-text-color-secondary);
+  text-decoration: none;
+  transition: color 0.2s, font-weight 0.2s;
+}
+.scroll-toc__list > ul > li > ul a {
+  font-size: 1.3rem;
+}
+.scroll-toc__list li.scroll-toc__item--active > a {
+  color: var(--accent-color);
+  font-weight: 600;
+}
+.scroll-toc__list a:hover {
+  color: var(--card-text-color-main);
+}
+
+/* ── Right sidebar layout ── */
+.right-sidebar__layout {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-height: calc(100vh - var(--main-top-padding, 50px) - 20px);
+}
+.right-sidebar__toc {
+  width: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.right-sidebar__actions {
+  width: 100%;
+  flex: 0 0 auto;
+  margin-top: 24px;
+}
+
+/* ── Homepage taxonomy filter bar ── */
+.right-sidebar__filters {
+  width: 100%;
+}
+.filter-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.filter-bar__heading {
+  font-size: 1.6rem;
+  font-weight: inherit;
+  color: var(--accent-color);
+  margin: 0 0 4px 0;
+}
+.filter-bar__dropdown {
+  position: relative;
+}
+.filter-bar__dropdown-toggle {
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 8px 12px;
+}
+.filter-bar__chevron {
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+.filter-bar__dropdown-toggle[aria-expanded="true"] .filter-bar__chevron {
+  transform: rotate(180deg);
+}
+.filter-bar__dropdown-menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 10;
+  margin: 0;
+  padding: 4px 0;
+  list-style: none;
+  background: var(--card-background);
+  border: 1px solid var(--card-separator-color, rgba(218,218,218,0.5));
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  max-height: 240px;
+  overflow-y: auto;
+}
+.filter-bar__dropdown-toggle[aria-expanded="true"] + .filter-bar__dropdown-menu {
+  display: block;
+}
+.filter-bar__dropdown-menu li a {
+  display: block;
+  padding: 6px 14px;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--card-text-color-secondary, #555);
+  text-decoration: none;
+  transition: color 0.15s, background 0.15s;
+}
+.filter-bar__dropdown-menu li a:hover {
+  color: var(--accent-color);
+  background: rgba(52, 73, 94, 0.04);
+}
+[data-scheme="dark"] .filter-bar__dropdown-menu li a:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* ── Action bar: 3-row layout, each button separate ── */
+.action-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.action-bar__row {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+.action-bar__btn {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 10px 14px;
+  background: var(--card-background);
+  border: 1px solid var(--card-separator-color, rgba(218,218,218,0.5));
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  color: var(--card-text-color-secondary, #555);
+  text-decoration: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 1.4rem;
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
+}
+.action-bar__btn:hover {
+  color: var(--accent-color);
+  border-color: var(--accent-color);
+  background: rgba(52, 73, 94, 0.04);
+}
+[data-scheme="dark"] .action-bar__btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+.action-bar__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  line-height: 1;
+}
+.action-bar__icon svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+.action-bar__label {
+  font-size: 1.2rem;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}
+.action-bar__count {
+  font-size: 1.1rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+.action-bar__count:empty { display: none; }
+
+/* ── Center: tight cluster of sidebar + card + TOC with space at screen edges ── */
+@media (min-width: 1024px) {
+  .main-container.extended {
+    --left-sidebar-max-width: 180px;
+    --right-sidebar-max-width: 180px;
+    gap: 20px;
+  }
+}
+@media (min-width: 1280px) {
+  .main-container.extended {
+    max-width: 1220px;
+  }
+}
+/* Constrain and center the white card within the main area */
+.article-page .main-article {
+  max-width: 780px;
+  margin-left: auto;
+  margin-right: auto;
+  background: var(--card-background);
+}
+.article-page .main-article .article-details .article-title {
+  color: var(--card-text-color-main);
+}
+
+/* Authors and lab under title (post page and home cards) */
+.article-byline {
+  font-size: 0.95em;
+  margin-top: 0.35em;
+  color: var(--card-text-color-secondary, #666);
+}
+.article-byline .article-authors,
+.article-byline .article-labs {
+  display: inline;
+}
+.article-byline .article-byline-sep {
+  margin: 0 0.25em;
+  color: var(--card-text-color-secondary, #888);
+}
+.article-byline .article-author,
+.article-byline .article-lab,
+.article-byline .link {
+  color: inherit;
+  text-decoration: none;
+}
+.article-byline .article-author:hover,
+.article-byline .article-lab:hover,
+.article-byline .link:hover {
+  text-decoration: underline;
+}
+.article-page .main-article .article-details .article-byline {
+  color: var(--card-text-color-secondary, #555);
+}
+
+/* Posted and last updated dates below byline, above tags */
+.article-dates {
+  font-size: 0.9em;
+  margin-top: 0.35em;
+  color: var(--card-text-color-secondary, #666);
+}
+.article-dates__sep {
+  color: var(--card-text-color-secondary, #888);
+  margin: 0 0.15em;
+}
+
+/* Tags, reading time, and audience below byline on post page */
+.article-meta {
+  font-size: 0.9em;
+  margin-top: 0.4em;
+  color: var(--card-text-color-secondary, #666);
+}
+.article-meta__label {
+  font-weight: 600;
+  margin-right: 0.35em;
+  color: var(--card-text-color-secondary, #555);
+}
+.article-meta__tags,
+.article-meta__labs,
+.article-meta__audience {
+  display: inline;
+}
+.article-meta__tag,
+.article-meta__lab,
+.article-meta__audience-link {
+  color: inherit;
+  text-decoration: none;
+}
+.article-meta__tag:hover,
+.article-meta__lab:hover,
+.article-meta__audience-link:hover {
+  text-decoration: underline;
+}
+.article-meta__sep {
+  color: var(--card-text-color-secondary, #888);
+  margin: 0 0.15em;
+}
+.article-meta__reading {
+  font-variant-numeric: tabular-nums;
+}
+.article-meta__row {
+  margin-top: 0.25em;
+}
+.article-meta__row .article-meta__label {
+  margin-right: 0.35em;
+}
+
+/* Header featured image: clickable, no extra spacing from figure */
+.article-page .article-header .article-image figure {
+  margin: 0;
+}
+.article-page .article-header .article-image figure a.image-link {
+  display: block;
+}
+
+/* Keep article images from overflowing; width= from markdown attributes is respected */
+.main-article img,
+article img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ── Article content: typography and consistent vertical rhythm ── */
+/* Standard spacing unit: 1.25rem between all block elements */
+.article-content {
+  --article-line-height: 1.75;
+  --block-spacing: 1.25rem;
+  line-height: var(--article-line-height);
+  max-width: 42em;
+  letter-spacing: 0.01em;
+}
+/* Override theme's negative-margin breakout: keep all blocks aligned with body text */
+.article-page .article-content > blockquote,
+.article-page .article-content > figure,
+.article-page .article-content .highlight,
+.article-page .article-content pre,
+.article-page .article-content .table-wrapper {
+  margin-left: 0;
+  margin-right: 0;
+  width: 100%;
+}
+
+.article-content p {
+  margin: var(--block-spacing) 0;
+}
+
+.article-content > p:first-of-type {
+  font-size: 1.05em;
+}
+
+/* Blockquotes */
+.article-content blockquote {
+  margin: var(--block-spacing) 0;
+}
+
+/* ── Summary / TL;DR standout box (eLife-style card) ── */
+.summary-box {
+  margin: var(--block-spacing) 0 2rem 0;
+  padding: 2rem 2.25rem;
+  background: #f7fbff; /* very subtle, almost-white blue in light mode */
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+[data-scheme="dark"] .summary-box {
+  background: #2d3138; /* slightly lighter than main dark background */
+  border-color: rgba(255, 255, 255, 0.1);
+}
+.summary-box__title,
+.article-content .summary-box .summary-box__title {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 0 0 0.75rem 0;
+  color: var(--card-text-color-main, #222);
+  border: none;
+  border-inline-start: none;
+  margin-inline-start: 0;
+  padding-inline-start: 0;
+  padding: 0;
+}
+.article-content .summary-box h1,
+.article-content .summary-box h2,
+.article-content .summary-box h3,
+.article-content .summary-box h4,
+.article-content .summary-box h5,
+.article-content .summary-box h6 {
+  border-inline-start: none;
+  margin-inline-start: 0;
+  padding-inline-start: 0;
+}
+.summary-box__body {
+  font-size: 1em;
+  line-height: var(--article-line-height, 1.75);
+  color: var(--card-text-color-main, #333);
+}
+.summary-box__body > *:first-child { margin-top: 0; }
+.summary-box__body > *:last-child { margin-bottom: 0; }
+
+/* Horizontal rules: hidden, replaced with whitespace */
+.article-content hr {
+  border: none;
+  background: none;
+  height: 0;
+  margin: 0;
+}
+
+/* Figures / images */
+.article-content figure {
+  margin: var(--block-spacing) 0;
+}
+
+/* Lists: tight spacing, consistent with block rhythm */
+.article-page .main-article .article-content ul,
+.article-page .main-article .article-content ol {
+  margin: var(--block-spacing) 0 var(--block-spacing) 1.5em !important;
+  padding-left: 1.5em;
+}
+.article-page .main-article .article-content li {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.article-page .main-article .article-content li p {
+  margin: 0 !important;
+}
+.article-page .main-article .article-content li p + p {
+  margin-top: 0.35em !important;
+}
+.article-page .main-article .article-content ul ul,
+.article-page .main-article .article-content ul ol,
+.article-page .main-article .article-content ol ul,
+.article-page .main-article .article-content ol ol {
+  margin: 0 0 0 1.25em !important;
+}
+.article-page .main-article .article-content ul ul li,
+.article-page .main-article .article-content ul ol li,
+.article-page .main-article .article-content ol ul li,
+.article-page .main-article .article-content ol ol li {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.article-page .main-article .article-content p + ul,
+.article-page .main-article .article-content p + ol {
+  margin-top: 0 !important;
+}
+
+/* ── Heading hierarchy: clear size steps using rem for absolute control ── */
+.article-page .article-title {
+  font-size: 3.2rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 0.3em;
+}
+.article-content h1 {
+  font-size: 2.6rem;
+  font-weight: 700;
+}
+.article-content h2 {
+  font-size: 2.2rem;
+  font-weight: 600;
+}
+.article-content h3 {
+  font-size: 1.9rem;
+  font-weight: 600;
+}
+.article-content h4 {
+  font-size: 1.75rem;
+  font-weight: 600;
+}
+.article-content h5 {
+  font-size: 1.7rem;
+  font-weight: 600;
+}
+.article-content h6 {
+  font-size: 1.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.article-content h1,
+.article-content h2,
+.article-content h3,
+.article-content h4,
+.article-content h5,
+.article-content h6 {
+  line-height: 1.3;
+  margin-top: 3rem;
+  margin-bottom: 0.75rem;
+}
+.article-content h1:first-child,
+.article-content h2:first-child,
+.article-content h3:first-child {
+  margin-top: 0;
+}
+/* Only h1 and h2 get the left accent border */
+.article-content h3,
+.article-content h4,
+.article-content h5,
+.article-content h6 {
+  border-inline-start: none;
+  margin-inline-start: 0;
+  padding-inline-start: 0;
+}
+/* Tighter spacing when a subheading immediately follows a heading */
+.article-content h1 + h2,
+.article-content h2 + h3,
+.article-content h3 + h4 {
+  margin-top: 1rem;
+}
+
+/* ── Code blocks: theme-aware, Notion-style ── */
+/* Code blocks: same width as body text and tables (within article-content) */
+.article-content .code-block {
+  position: relative;
+  margin: var(--block-spacing) 0;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: #f7f7f8;
+}
+[data-scheme="dark"] .article-content .code-block {
+  background: #1e1e1e;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+/* Reset theme padding on .highlight — the pre handles it */
+.article-content .code-block .highlight {
+  margin: 0;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  position: relative;
+}
+.article-content .code-block pre,
+.article-content pre {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 8px;
+  margin: 0;
+  padding: 16px 20px;
+  background: transparent;
+}
+.article-content .code-block pre {
+  border-radius: 0;
+}
+.article-content .code-block pre code,
+.article-content pre code {
+  font-size: inherit;
+  background: transparent;
+}
+/* Copy button: visible inside the code-block */
+.article-content .code-block .copyCodeButton {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 1;
+}
+.article-content .code-block .highlight:hover .copyCodeButton {
+  opacity: 1;
+}
+/* Language label badge */
+.article-content .code-block[data-lang]::after {
+  content: attr(data-lang);
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 2px 10px;
+  font-size: 0.7rem;
+  font-family: var(--code-font-family, monospace);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.04);
+  border-bottom-left-radius: 6px;
+  pointer-events: none;
+  line-height: 1.8;
+}
+[data-scheme="dark"] .article-content .code-block[data-lang]::after {
+  color: rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.06);
+}
+/* Inline code — inherits surrounding text size */
+.article-content code:not(pre code) {
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  font-size: 0.9em;
+  background: rgba(135, 131, 120, 0.15);
+  color: #eb5757;
+  font-family: var(--code-font-family, monospace);
+}
+[data-scheme="dark"] .article-content code:not(pre code) {
+  background: rgba(135, 131, 120, 0.3);
+  color: #f08080;
+}
+
+/* ── Tables: Notion-style, single border ── */
+/* Pull tables flush with the content area edges (same width as code blocks) */
+.article-content .table-wrapper {
+  margin: var(--block-spacing) 0;
+  padding: 0;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+[data-scheme="dark"] .article-content .table-wrapper {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+.article-content table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  font-size: 1.2rem;
+  margin: 0;
+}
+/* Kill all theme cell borders — only horizontal dividers */
+.article-content th,
+.article-content td {
+  border: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+[data-scheme="dark"] .article-content th,
+[data-scheme="dark"] .article-content td {
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+.article-content tr:last-child td {
+  border-bottom: none;
+}
+.article-content th {
+  text-align: left;
+  padding: 8px 14px;
+  font-weight: 600;
+  font-size: 1.05rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--card-text-color-secondary, #555);
+  background: rgba(0, 0, 0, 0.03);
+}
+[data-scheme="dark"] .article-content th {
+  background: rgba(255, 255, 255, 0.04);
+}
+.article-content td {
+  padding: 7px 14px;
+  vertical-align: top;
+  color: var(--card-text-color-main);
+}
+/* Subtle hover instead of zebra stripes */
+.article-content tr:hover td {
+  background: rgba(0, 0, 0, 0.02);
+}
+[data-scheme="dark"] .article-content tr:hover td {
+  background: rgba(255, 255, 255, 0.03);
+}
+/* Override theme zebra stripes */
+.article-content tr:nth-child(even) td {
+  background: transparent;
+}
+.article-content tr:nth-child(even):hover td {
+  background: rgba(0, 0, 0, 0.02);
+}
+[data-scheme="dark"] .article-content tr:nth-child(even) td {
+  background: transparent;
+}
+[data-scheme="dark"] .article-content tr:nth-child(even):hover td {
+  background: rgba(255, 255, 255, 0.03);
+}
+/* Bold first column for label-style tables (like the hyperparameter sweep) */
+.article-content td:first-child {
+  font-weight: 500;
+}
+/* Numeric cells: monospace for alignment */
+.article-content td:not(:first-child) {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Align discuss + citation with article content (same max-width as body text) */
+.article-extra {
+  padding: 0 var(--card-padding);
+  max-width: 42em;
+  margin-top: 1.5em;
+}
+
+.article-extra > p {
+  margin: 1em 0;
+}
+
+/* Comments section: heading, like button, embed */
+.article-comments {
+  margin-top: 2em;
+  padding-top: 1.5em;
+  border-top: 1px solid var(--card-separator-color, #eee);
+}
+.article-comments__title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 0.75em 0;
+  color: var(--card-text-color-main, #333);
+}
+.article-comments__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25em 0.5em;
+  margin-bottom: 1.25em;
+  font-size: 0.95em;
+  color: var(--card-text-color-secondary, #666);
+}
+.article-comments__like {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  padding: 0.35em 0.65em;
+  font-weight: 500;
+  color: var(--accent-color, #34495e);
+  background: transparent;
+  border: 1px solid rgba(52, 73, 94, 0.25);
+  border-radius: 6px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+.article-comments__like:hover {
+  color: var(--accent-color-darker, #2c3e50);
+  background: rgba(52, 73, 94, 0.06);
+  border-color: var(--accent-color, #34495e);
+}
+.article-comments__like-icon {
+  font-style: normal;
+}
+.article-comments__like-count {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+.article-comments__like-count:not(:empty) {
+  margin-left: 0.25em;
+}
+.article-comments__hint {
+  font-size: 0.9em;
+  color: var(--card-text-color-secondary, #888);
+  margin: -0.5em 0 1em 0;
+}
+.article-comments__sep {
+  color: var(--card-text-color-secondary, #888);
+  margin: 0 0.15em;
+}
+.article-comments__discuss {
+  color: inherit;
+  text-decoration: none;
+}
+.article-comments__discuss:hover {
+  text-decoration: underline;
+}
+.article-comments__author-notify {
+  font-size: 0.9em;
+  color: var(--card-text-color-secondary, #888);
+}
+.article-comments__author-notify:hover {
+  text-decoration: underline;
+  color: var(--card-text-color-secondary, #666);
+}
+.article-comments__embed {
+  min-height: 120px;
+}
+
+/* Citation: no box, Stack-style actions */
+.citation-box {
+  margin-top: 2em;
+  padding: 0;
+}
+
+.citation-box__title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--body-text-color, #333);
+  margin: 0 0 0.5em 0;
+  letter-spacing: 0.02em;
+}
+
+.citation-box__text {
+  margin: 0 0 1.25em 0;
+  color: var(--card-text-color-main, #000);
+  font-size: 1.2em;
+}
+
+
+/* Editorial board: mute GitHub username next to display name */
+.editors-list .editors-username {
+  font-size: 0.9em;
+  color: var(--card-text-color-secondary, #666);
+  font-weight: normal;
+}
+
+/* PhotoSwipe lightbox: zoom in/out buttons in toolbar */
+.pswp__button--zoom-in,
+.pswp__button--zoom-out {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pswp__button--zoom-in .pswp__icn,
+.pswp__button--zoom-out .pswp__icn {
+  fill: currentColor;
+}
+
+/* ── Newsletter right sidebar container (homepage) ── */
+.right-sidebar__newsletter {
+  width: 100%;
+  margin-top: 16px;
+}
+
+/* ── Newsletter sidebar widget ── */
+.newsletter-widget {
+  margin-top: 0;
+  padding: 14px 16px;
+  background: var(--card-background);
+  border: 1px solid var(--card-separator-color, rgba(218,218,218,0.5));
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.newsletter-widget__title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--card-text-color-secondary, #888);
+  margin: 0 0 4px 0;
+}
+.newsletter-widget__desc {
+  font-size: 1.2rem;
+  color: var(--card-text-color-secondary, #888);
+  margin: 0 0 10px 0;
+  line-height: 1.4;
+}
+.newsletter-widget__form {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.newsletter-widget__input {
+  width: 100%;
+  padding: 7px 10px;
+  font-size: 1.3rem;
+  font-family: inherit;
+  border: 1px solid var(--card-separator-color, rgba(218,218,218,0.7));
+  border-radius: 8px;
+  background: var(--body-background);
+  color: var(--card-text-color-main);
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.newsletter-widget__input:focus {
+  border-color: var(--accent-color, #34495e);
+}
+.newsletter-widget__btn {
+  width: 100%;
+  padding: 7px 10px;
+  font-size: 1.3rem;
+  font-weight: 600;
+  font-family: inherit;
+  background: var(--accent-color, #34495e);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.newsletter-widget__btn:hover {
+  opacity: 0.85;
+}
+[data-scheme="dark"] .newsletter-widget {
+  background: #2d3138;
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: none;
+}
+[data-scheme="dark"] .newsletter-widget__btn {
+  background: rgba(52, 73, 94, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+.newsletter-widget__manage {
+  display: block;
+  margin-top: 7px;
+  font-size: 1.15rem;
+  color: var(--card-text-color-secondary, #888);
+  text-align: center;
+  text-decoration: none;
+}
+.newsletter-widget__manage:hover {
+  text-decoration: underline;
+  color: var(--accent-color);
+}
+
+/* ── Newsletter dedicated page forms ── */
+.newsletter-page__section {
+  margin: 1.5em 0;
+}
+.newsletter-page__form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 0.5em;
+}
+.newsletter-page__input {
+  flex: 1 1 220px;
+  padding: 9px 14px;
+  font-size: 1.4rem;
+  font-family: inherit;
+  border: 1px solid var(--card-separator-color, rgba(218,218,218,0.7));
+  border-radius: 8px;
+  background: var(--body-background);
+  color: var(--card-text-color-main);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.newsletter-page__input:focus {
+  border-color: var(--accent-color, #34495e);
+}
+.newsletter-page__btn {
+  padding: 9px 20px;
+  font-size: 1.4rem;
+  font-weight: 600;
+  font-family: inherit;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+}
+.newsletter-page__btn--subscribe {
+  background: var(--accent-color, #34495e);
+  color: #fff;
+}
+.newsletter-page__btn--unsubscribe {
+  background: transparent;
+  color: var(--card-text-color-secondary, #888);
+  border: 1px solid var(--card-separator-color, rgba(218,218,218,0.7));
+}
+.newsletter-page__btn:hover {
+  opacity: 0.8;
+}
+[data-scheme="dark"] .newsletter-page__btn--subscribe {
+  background: rgba(52, 73, 94, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+.newsletter-page__note {
+  font-size: 1.2rem;
+  color: var(--card-text-color-secondary, #888);
+  margin: 0.25em 0 0 0;
+}
+
+/* ── Print / Download as PDF ── */
+@media print {
+  /* Hide everything except the article */
+  .left-sidebar,
+  .right-sidebar,
+  #main-menu,
+  .action-bar,
+  .article-comments,
+  .article-extra .citation-box,
+  footer,
+  .pswp,
+  header.site-header {
+    display: none !important;
+  }
+
+  /* Full-width article, no card shadow */
+  .main-container,
+  .main-container.extended {
+    display: block !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    gap: 0 !important;
+  }
+  .article-page .main-article {
+    max-width: 100% !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+  }
+  .article-content {
+    max-width: 100% !important;
+  }
+
+  /* Ensure images render correctly */
+  img {
+    display: block !important;
+    max-width: 100% !important;
+    height: auto !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Ensure images and figures don't break across pages */
+  figure,
+  img,
+  .table-wrapper {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* Keep headings with their following content */
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  body {
+    font-size: 12pt;
+    color: #000;
+    background: #fff;
+  }
+}
+
+/* PhotoSwipe lightbox: caption as a banner below the image */
+.pswp__custom-caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  font-size: 14px;
+  line-height: 1.45;
+  color: #fff;
+  text-align: center;
+  padding: 14px 20px;
+  box-sizing: border-box;
+  pointer-events: none;
+  background: rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(6px);
+  max-height: 30vh;
+  overflow-y: auto;
+}

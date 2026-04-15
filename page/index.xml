@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Pages on Genomics x AI</title><link>https://genomicsxai.github.io/page/</link><description>Recent content in Pages on Genomics x AI</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Mon, 30 Mar 2026 17:10:48 -0400</lastBuildDate><atom:link href="https://genomicsxai.github.io/page/index.xml" rel="self" type="application/rss+xml"/><item><title>Editorial Review (MVR)</title><link>https://genomicsxai.github.io/editorial-review/</link><pubDate>Mon, 30 Mar 2026 00:00:00 +0000</pubDate><guid>https://genomicsxai.github.io/editorial-review/</guid><description>&lt;p&gt;This page describes the &lt;strong&gt;Minimal Editorial Review (MVR)&lt;/strong&gt; framework used by editors when reviewing pull requests. It is a &lt;strong&gt;quality gate&lt;/strong&gt;, not academic peer review.&lt;/p&gt;
+&lt;h2 id="goal"&gt;Goal
+&lt;/h2&gt;&lt;p&gt;Ensure posts are &lt;strong&gt;accurate, readable, appropriately tagged, and safe to publish&lt;/strong&gt;—while maintaining a fast turnaround (target: 48–72 hours).&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="1-core-review-dimensions"&gt;1. Core review dimensions
+&lt;/h2&gt;&lt;h3 id="a-scope-and-relevance-fast-gate"&gt;A. Scope and relevance (fast gate)
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Fits the &lt;strong&gt;genomics × AI&lt;/strong&gt; remit&lt;/li&gt;
+&lt;li&gt;Declared &lt;strong&gt;&lt;code&gt;scope&lt;/code&gt;&lt;/strong&gt; (e.g. tutorials, protocols, insights, ideas, discussions, negative-results) matches the actual content&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;audience&lt;/code&gt;&lt;/strong&gt; (within-field, general, intro-to-field) is plausible for the writing&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Decision rule:&lt;/strong&gt; If misaligned → reject or ask the author to reclassify early (update frontmatter and framing).&lt;/p&gt;
+&lt;h3 id="b-technical-soundness-lightweight"&gt;B. Technical soundness (lightweight)
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;No obvious factual errors&lt;/li&gt;
+&lt;li&gt;Methods and tools described correctly&lt;/li&gt;
+&lt;li&gt;Claims are &lt;strong&gt;proportionate to evidence&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;For tutorials and protocols:&lt;/strong&gt; Steps are logically reproducible; code snippets are coherent (they need not be executed in review).&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;For opinion or perspective-style pieces:&lt;/strong&gt; Framing is clear (opinion vs. established fact).&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Decision rule:&lt;/strong&gt; If correctness is uncertain → escalate to the author (or optional second reviewer; see below).&lt;/p&gt;
+&lt;h3 id="c-clarity-and-readability"&gt;C. Clarity and readability
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Clear target audience (implicit or explicit)&lt;/li&gt;
+&lt;li&gt;Logical structure: introduction → content → takeaway&lt;/li&gt;
+&lt;li&gt;Minimal ambiguity or confusing phrasing&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Heuristic:&lt;/strong&gt; A domain peer should be able to follow without re-reading sections multiple times.&lt;/p&gt;
+&lt;h3 id="d-metadata-and-tagging"&gt;D. Metadata and tagging
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;tags&lt;/code&gt;&lt;/strong&gt; are relevant and consistent with the post&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;categories&lt;/code&gt;&lt;/strong&gt; and &lt;strong&gt;&lt;code&gt;scope&lt;/code&gt;&lt;/strong&gt; reflect the piece&lt;/li&gt;
+&lt;li&gt;Title accurately reflects content&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="e-compliance-and-risk"&gt;E. Compliance and risk
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;No plagiarism&lt;/li&gt;
+&lt;li&gt;No slander or defamation&lt;/li&gt;
+&lt;li&gt;Proper attribution (figures, code, ideas)&lt;/li&gt;
+&lt;li&gt;No unethical or sensitive data misuse (especially genomics)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="f-presentation-quality"&gt;F. Presentation quality
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Clean formatting (headers, spacing)&lt;/li&gt;
+&lt;li&gt;Figures render correctly&lt;/li&gt;
+&lt;li&gt;Links work&lt;/li&gt;
+&lt;li&gt;Code blocks properly formatted&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="2-executive-summary-requirement"&gt;2. Executive summary requirement
+&lt;/h2&gt;&lt;h3 id="purpose"&gt;Purpose
+&lt;/h3&gt;&lt;p&gt;Provide a &lt;strong&gt;clear, concise entry point&lt;/strong&gt; for readers across disciplines.&lt;/p&gt;
+&lt;h3 id="requirement"&gt;Requirement
+&lt;/h3&gt;&lt;p&gt;Each post must include an &lt;strong&gt;executive summary&lt;/strong&gt; (3–5 bullets or a short paragraph) that:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;States the topic&lt;/li&gt;
+&lt;li&gt;Highlights key takeaway(s)&lt;/li&gt;
+&lt;li&gt;Indicates intended audience&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;On this site, that content lives in the &lt;strong&gt;&lt;code&gt;{{&amp;lt; summary &amp;gt;}}&lt;/code&gt; … &lt;code&gt;{{&amp;lt; /summary &amp;gt;}}&lt;/code&gt;&lt;/strong&gt; shortcode pair in the post body (see &lt;a class="link" href="https://genomicsxai.github.io/submission-guidelines/" &gt;submission guidelines&lt;/a&gt; and the blog post template).&lt;/p&gt;
+&lt;h3 id="responsibility"&gt;Responsibility
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Preferred:&lt;/strong&gt; Provided by the author&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Fallback:&lt;/strong&gt; Added or refined by the handling editor if missing or unclear&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="editor-guidelines"&gt;Editor guidelines
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Neutral and faithful to content&lt;/li&gt;
+&lt;li&gt;No hype or reinterpretation&lt;/li&gt;
+&lt;li&gt;Plain language&lt;/li&gt;
+&lt;li&gt;About 75–100 words or 3–5 bullets&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="3-review-outcomes"&gt;3. Review outcomes
+&lt;/h2&gt;&lt;p&gt;Editors choose one:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Accept&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Minor revisions&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Major revisions&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Not Accepted&lt;/strong&gt; (out of scope or insufficient quality)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="4-minimal-review-checklist"&gt;4. Minimal review checklist
+&lt;/h2&gt;&lt;h3 id="must-pass-hard-requirements"&gt;Must pass (hard requirements)
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; In scope (genomics × AI)&lt;/li&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; No obvious technical errors&lt;/li&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; No plagiarism / slander&lt;/li&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; Tags, scope, and audience correctly applied&lt;/li&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; Readable and logically structured&lt;/li&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; Executive summary present in the summary shortcode (or added by editor)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="should-pass-soft-requirements"&gt;Should pass (soft requirements)
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; Clear takeaway or value&lt;/li&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; Appropriate level for audience&lt;/li&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; References and links included where needed&lt;/li&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; Formatting clean&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="5-time-expectations"&gt;5. Time expectations
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Initial triage: under 10 minutes&lt;/li&gt;
+&lt;li&gt;Full minimal review: 30–45 minutes&lt;/li&gt;
+&lt;li&gt;Total turnaround: 2–3 days (target)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="6-escalation-optional-review-layer"&gt;6. Escalation (optional review layer)
+&lt;/h2&gt;&lt;p&gt;Escalate beyond MVR only if:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Highly technical or novel method&lt;/li&gt;
+&lt;li&gt;Potentially controversial claims&lt;/li&gt;
+&lt;li&gt;Uncertainty about correctness&lt;/li&gt;
+&lt;li&gt;High-visibility post&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Action:&lt;/strong&gt; Assign a second reviewer (focus on correctness, clarity, and usefulness).&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="7-roles-and-responsibilities"&gt;7. Roles and responsibilities
+&lt;/h2&gt;&lt;h3 id="handling-editor"&gt;Handling editor
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Owns the review process&lt;/li&gt;
+&lt;li&gt;Completes the MVR checklist&lt;/li&gt;
+&lt;li&gt;Adds or refines the executive summary if needed&lt;/li&gt;
+&lt;li&gt;Makes the recommendation to the team&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="optional-reviewer"&gt;Optional reviewer
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Provides input when escalated&lt;/li&gt;
+&lt;li&gt;Focus on correctness, clarity, and usefulness&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="8-guiding-principle"&gt;8. Guiding principle
+&lt;/h2&gt;
+ &lt;blockquote&gt;
+ &lt;p&gt;We are not performing academic peer review—we are ensuring clarity, correctness, and usefulness.&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2 id="9-optional-submission-enhancements"&gt;9. Optional submission enhancements
+&lt;/h2&gt;&lt;p&gt;Authors are encouraged to make explicit:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Who is this for?&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What will the reader learn?&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;These improve review efficiency and content clarity. They can sit in the summary block or the introduction.&lt;/p&gt;</description></item><item><title>Editorial Board</title><link>https://genomicsxai.github.io/editorial-board/</link><pubDate>Thu, 01 Jan 2026 00:00:00 +0000</pubDate><guid>https://genomicsxai.github.io/editorial-board/</guid><description>&lt;h2 id="editorial-governance"&gt;Editorial Governance
+&lt;/h2&gt;&lt;p&gt;The Genomics × AI blog is guided by a Steering Committee and supported by an Editorial Board. Together they define scope, standards, and long term direction.&lt;/p&gt;
+&lt;h2 id="steering-committee"&gt;Steering Committee
+&lt;/h2&gt;&lt;p&gt;The Steering Committee sets the strategic vision and scope of the platform. Responsibilities include:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Defining the scientific mission and scope&lt;/li&gt;
+&lt;li&gt;Setting editorial policies and quality standards&lt;/li&gt;
+&lt;li&gt;Appointing members of the Editorial Board&lt;/li&gt;
+&lt;li&gt;Overseeing community growth and partnerships&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="current-steering-committee"&gt;Current Steering Committee
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Peter Koo (Cold Spring Harbor Laboratory)&lt;/li&gt;
+&lt;li&gt;Anshul Kundaje (Stanford University)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="editorial-lead"&gt;Editorial Lead
+&lt;/h2&gt;&lt;p&gt;The Editorial Lead is the &lt;strong&gt;single point of coordination&lt;/strong&gt; between Editorial Board ↔ Steering Committee.&lt;/p&gt;
+&lt;h3 id="current-editorial-lead"&gt;Current Editorial Lead
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Dr. Alan Murphy (Cold Spring Harbor Laboratory) — GitHub &lt;a class="link" href="https://github.com/Al_murphy" target="_blank" rel="noopener"
+ &gt;@Al_murphy&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="editorial-board"&gt;Editorial Board
+&lt;/h2&gt;&lt;p&gt;The Editorial Board oversees content review and maintains scientific and community standards. Board members:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Manage peer-style review via GitHub Pull Requests&lt;/li&gt;
+&lt;li&gt;Provide structured feedback to authors&lt;/li&gt;
+&lt;li&gt;Ensure scientific accuracy and clarity&lt;/li&gt;
+&lt;li&gt;Enforce submission and community guidelines&lt;/li&gt;
+&lt;li&gt;Editorial decisions are made collaboratively when needed.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Review follows the &lt;a class="link" href="https://genomicsxai.github.io/editorial-review/" &gt;Minimal Editorial Review (MVR) framework&lt;/a&gt;. Editorial decisions are made collaboratively when needed.&lt;/p&gt;
+&lt;h3 id="current-editorial-board"&gt;Current Editorial Board
+&lt;/h3&gt;&lt;p&gt;Editor list is populated automatically when the site is built with access to the GitHub team. See the &lt;a href="https://github.com/orgs/genomicsxai/teams/editors" target="_blank" rel="noopener" class="link"&gt;@genomicsxai/editors&lt;/a&gt; team on GitHub.&lt;/p&gt;
+&lt;h3 id="becoming-involved"&gt;Becoming Involved
+&lt;/h3&gt;&lt;p&gt;If you are interested in:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Joining the Editorial Board&lt;/li&gt;
+&lt;li&gt;Serving as a reviewer&lt;/li&gt;
+&lt;li&gt;Contributing as an author&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Please contact us through &lt;a class="link" href="https://github.com/genomicsxai/genomicsxai.github.io/discussions" target="_blank" rel="noopener"
+ &gt;GitHub Discussions&lt;/a&gt;.&lt;/p&gt;</description></item><item><title>Forum</title><link>https://genomicsxai.github.io/forum/</link><pubDate>Thu, 01 Jan 2026 00:00:00 +0000</pubDate><guid>https://genomicsxai.github.io/forum/</guid><description>&lt;h2 id="community-discussion"&gt;Community Discussion
+&lt;/h2&gt;&lt;p&gt;Join the conversation on GitHub Discussions:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a class="link" href="https://github.com/genomicsxai/genomicsxai.github.io/discussions/categories/announcements" target="_blank" rel="noopener"
+ &gt;Announcements&lt;/a&gt;&lt;/strong&gt; — Official updates and news from the editorial team&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a class="link" href="https://github.com/genomicsxai/genomicsxai.github.io/discussions/categories/calls-for-posts" target="_blank" rel="noopener"
+ &gt;Calls for Posts&lt;/a&gt;&lt;/strong&gt; — Open calls for blog post contributions&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a class="link" href="https://github.com/genomicsxai/genomicsxai.github.io/discussions/categories/general" target="_blank" rel="noopener"
+ &gt;General&lt;/a&gt;&lt;/strong&gt; — General topics and open-ended conversation&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a class="link" href="https://github.com/genomicsxai/genomicsxai.github.io/discussions/categories/ideas" target="_blank" rel="noopener"
+ &gt;Ideas&lt;/a&gt;&lt;/strong&gt; — Propose ideas for posts, tools, or the platform&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a class="link" href="https://github.com/genomicsxai/genomicsxai.github.io/discussions/categories/methods" target="_blank" rel="noopener"
+ &gt;Methods&lt;/a&gt;&lt;/strong&gt; — Discussion about methods and techniques&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a class="link" href="https://github.com/genomicsxai/genomicsxai.github.io/discussions/categories/polls" target="_blank" rel="noopener"
+ &gt;Polls&lt;/a&gt;&lt;/strong&gt; — Community polls and surveys&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a class="link" href="https://github.com/genomicsxai/genomicsxai.github.io/discussions/categories/post-discussions" target="_blank" rel="noopener"
+ &gt;Post Discussions&lt;/a&gt;&lt;/strong&gt; — Discussions linked to published blog posts&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a class="link" href="https://github.com/genomicsxai/genomicsxai.github.io/discussions/categories/q-a" target="_blank" rel="noopener"
+ &gt;Q&amp;amp;A&lt;/a&gt;&lt;/strong&gt; — Ask and answer questions&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: Each blog post also has a dedicated discussion thread. Look for the &amp;ldquo;Like&amp;rdquo; and &amp;ldquo;Comment&amp;rdquo; buttons on individual posts.&lt;/p&gt;</description></item><item><title>Newsletter</title><link>https://genomicsxai.github.io/newsletter/</link><pubDate>Thu, 01 Jan 2026 00:00:00 +0000</pubDate><guid>https://genomicsxai.github.io/newsletter/</guid><description>&lt;p&gt;Stay up to date with new posts on the &lt;strong&gt;Genomics × AI&lt;/strong&gt; blog. When a new post is published, a short digest is sent with the title, summary, and a link — no spam, no ads, unsubscribe any time.&lt;/p&gt;
+&lt;p&gt;Emails are sent weekly &lt;strong&gt;only when new posts have been published&lt;/strong&gt;. If there are no new posts that week, no email is sent.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="subscribe"&gt;Subscribe
+&lt;/h2&gt;&lt;div class="newsletter-page__section"&gt;
+ &lt;form class="newsletter-page__form"
+ action="https://buttondown.email/api/emails/embed-subscribe/aemurphy1994"
+ method="post"
+ target="_blank"&gt;
+ &lt;input class="newsletter-page__input"
+ type="email"
+ name="email"
+ placeholder="your@email.com"
+ required&gt;
+ &lt;button class="newsletter-page__btn newsletter-page__btn--subscribe" type="submit"&gt;
+ Subscribe
+ &lt;/button&gt;
+ &lt;/form&gt;
+ &lt;p class="newsletter-page__note"&gt;
+ After submitting you will receive a confirmation email — click the link in it to complete your subscription.
+ &lt;/p&gt;
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2 id="unsubscribe"&gt;Unsubscribe
+&lt;/h2&gt;&lt;p&gt;Every newsletter email contains a personal unsubscribe link at the bottom — click it and you will be removed immediately with no further steps required.&lt;/p&gt;
+&lt;p&gt;The unsubscribe link is unique to your subscription, so it cannot be used by anyone else to remove you.&lt;/p&gt;</description></item><item><title>Policies</title><link>https://genomicsxai.github.io/policies/</link><pubDate>Thu, 01 Jan 2026 00:00:00 +0000</pubDate><guid>https://genomicsxai.github.io/policies/</guid><description>&lt;h2 id="editorial-and-community-policies"&gt;Editorial and Community Policies
+&lt;/h2&gt;&lt;p&gt;The Genomics × AI blog follows transparent, Git-native policies for submissions, review, and discussion.&lt;/p&gt;
+&lt;h3 id="submission-and-review"&gt;Submission and Review
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;All posts are submitted via &lt;strong&gt;Pull Request&lt;/strong&gt; and require &lt;strong&gt;at least one editor approval&lt;/strong&gt; before merge.&lt;/li&gt;
+&lt;li&gt;Authors are expected to complete lab-internal review before submitting.&lt;/li&gt;
+&lt;li&gt;Editors review for suitability, scientific accuracy, and adherence to &lt;a class="link" href="https://genomicsxai.github.io/submission-guidelines/" &gt;Submission Guidelines&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="access-and-permissions"&gt;Access and Permissions
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Authors&lt;/strong&gt;: Submit and revise posts via PRs.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Editors&lt;/strong&gt;: Review, request changes, and merge to &lt;code&gt;main&lt;/code&gt;. Implemented via GitHub branch protection and the &lt;a class="link" href="https://github.com/orgs/genomicsxai/teams/editors" target="_blank" rel="noopener"
+ &gt;@genomicsxai/editors&lt;/a&gt; team (CODEOWNERS).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Readers&lt;/strong&gt;: View content and participate in &lt;a class="link" href="https://github.com/genomicsxai/genomicsxai.github.io/discussions" target="_blank" rel="noopener"
+ &gt;GitHub Discussions&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="code-of-conduct-and-reuse"&gt;Code of Conduct and Reuse
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Content is published under the site’s default license (see footer or per-post notices).&lt;/li&gt;
+&lt;li&gt;By submitting, you confirm you have the rights to publish the content and that it meets our &lt;a class="link" href="https://genomicsxai.github.io/submission-guidelines/" &gt;Submission Guidelines&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="changes-to-these-policies"&gt;Changes to These Policies
+&lt;/h3&gt;&lt;p&gt;Policy updates are proposed and discussed via the repository (e.g. issues or discussions) and reflected in this page after consensus.&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;For questions, use &lt;a class="link" href="https://github.com/genomicsxai/genomicsxai.github.io/discussions" target="_blank" rel="noopener"
+ &gt;GitHub Discussions&lt;/a&gt; or open an issue.&lt;/p&gt;</description></item><item><title>Submission Guidelines</title><link>https://genomicsxai.github.io/submission-guidelines/</link><pubDate>Thu, 01 Jan 2026 00:00:00 +0000</pubDate><guid>https://genomicsxai.github.io/submission-guidelines/</guid><description>&lt;h2 id="how-to-submit-a-blog-post"&gt;How to Submit a Blog Post
+&lt;/h2&gt;&lt;h3 id="overview"&gt;Overview
+&lt;/h3&gt;&lt;p&gt;The Genomics × AI blog uses a Git-native, PR-based submission workflow. All submissions go through peer review before the post goes live.&lt;/p&gt;
+&lt;h3 id="submission-process"&gt;Submission Process
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Write Your Post&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Use the &lt;a class="link" href="https://github.com/genomicsxai/genomicsxai.github.io/blob/main/docs/blog-post-template.md" target="_blank" rel="noopener"
+ &gt;blog post template&lt;/a&gt; (copy the frontmatter and adapt)&lt;/li&gt;
+&lt;li&gt;Conduct internal lab review first&lt;/li&gt;
+&lt;li&gt;Ensure all required frontmatter fields are complete&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Create a Pull Request&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Fork the repository&lt;/li&gt;
+&lt;li&gt;Add your post to &lt;code&gt;content/blogs/YYYY-NNN/index.md&lt;/code&gt;; place all images and assets in the &lt;strong&gt;same folder&lt;/strong&gt; (e.g. &lt;code&gt;content/blogs/YYYY-NNN/figure1.png&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;Your PR must &lt;strong&gt;only&lt;/strong&gt; contain files inside &lt;code&gt;content/blogs/YYYY-NNN/&lt;/code&gt; — do not modify any files outside this folder (no &lt;code&gt;static/&lt;/code&gt;, &lt;code&gt;config.toml&lt;/code&gt;, &lt;code&gt;.github/&lt;/code&gt;, etc.)&lt;/li&gt;
+&lt;li&gt;Create a PR with the submission template filled out&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Preview Your Post&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Within a few minutes of opening the PR, a bot will post a comment with a live preview URL&lt;/li&gt;
+&lt;li&gt;Once the link appears, it may show a 404 for 1–2 minutes while GitHub Pages propagates — refresh until the post loads&lt;/li&gt;
+&lt;li&gt;The preview renders your post exactly as it will appear on the blog&lt;/li&gt;
+&lt;li&gt;It updates automatically on each new commit to the PR (allow 1–2 minutes after each push)&lt;/li&gt;
+&lt;li&gt;If the bot instead posts &amp;ldquo;Preview Deployment Skipped&amp;rdquo;, it means the PR contains files outside &lt;code&gt;content/blogs/&lt;/code&gt; — the comment will list the offending files so you can remove them&lt;/li&gt;
+&lt;li&gt;The preview is not indexed by search engines and is not linked from the main blog; it is deleted automatically when the PR is closed&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Editor Review&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Editors review submissions with a &lt;strong&gt;minimal editorial review (MVR)&lt;/strong&gt;—a quality gate for clarity, correctness, and fit, not full academic peer review&lt;/li&gt;
+&lt;li&gt;They may request changes via PR comments&lt;/li&gt;
+&lt;li&gt;Address feedback and update your PR&lt;/li&gt;
+&lt;li&gt;For the full checklist, possible outcomes, and timing, see &lt;a class="link" href="https://genomicsxai.github.io/editorial-review/" target="_blank" rel="noopener"
+ &gt;Editorial Review (MVR)&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Going live&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Once approved, editors will merge your PR&lt;/li&gt;
+&lt;li&gt;The post will be automatically deployed via GitHub Actions&lt;/li&gt;
+&lt;li&gt;Your post will appear on the blog&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Updates&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Once merged, you can continue to submit updates to your post which will alter the updated date.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="getting-notified-of-comments-and-likes"&gt;Getting notified of comments and likes
+&lt;/h3&gt;&lt;p&gt;Comments and likes on the blog use &lt;strong&gt;GitHub Discussions&lt;/strong&gt;. To get notified when someone comments or reacts to your post:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Watch the repository&lt;/strong&gt;&lt;br&gt;
+On the &lt;a class="link" href="https://github.com/genomicsxai/genomicsxai.github.io" target="_blank" rel="noopener"
+ &gt;repo page&lt;/a&gt;, click &lt;strong&gt;Watch&lt;/strong&gt; → &lt;strong&gt;Custom&lt;/strong&gt; → enable &lt;strong&gt;Discussions&lt;/strong&gt;. You’ll get GitHub notifications (and email if your GitHub settings allow it) for new discussions and comments.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Subscribe to your post’s discussion&lt;/strong&gt;&lt;br&gt;
+Once your post has at least one comment or reaction, a discussion is created under &lt;a class="link" href="https://github.com/genomicsxai/genomicsxai.github.io/discussions/categories/post-discussions" target="_blank" rel="noopener"
+ &gt;Post Discussions&lt;/a&gt;. Open your post’s discussion and click &lt;strong&gt;Subscribe&lt;/strong&gt; (top right) to get notified only for that thread.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Editors and maintainers can use the same options to follow all post activity.&lt;/p&gt;
+&lt;h3 id="writing-notes"&gt;Writing Notes
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;There are no strict stylistic requirements, but posts should be clear, accessible, and engaging for a broad scientific audience.&lt;/li&gt;
+&lt;li&gt;Use headings, figures, and examples where helpful to improve readability.&lt;/li&gt;
+&lt;li&gt;Cite relevant prior work using hyperlinks or a formal inline citation style, and the inclusion of a references section at the end of the post is encouraged.&lt;/li&gt;
+&lt;li&gt;Ensure that claims are supported by appropriate sources.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="example-of-a-strong-post"&gt;Example of a strong post
+&lt;/h2&gt;&lt;p&gt;Style and length can vary, but a good reference for structure and depth is &lt;a class="link" href="https://genomicsxai.github.io/blogs/2026-002/" target="_blank" rel="noopener"
+ &gt;&lt;strong&gt;Adapting AlphaGenome to MPRA data&lt;/strong&gt;&lt;/a&gt;: it states the problem clearly, walks through methods and results in order, includes a reader-facing &lt;strong&gt;Summary&lt;/strong&gt;, figures, code-oriented guidance, references, and honest limitations. Use it as inspiration, not a rigid template.&lt;/p&gt;
+&lt;h2 id="what-editors-look-for-high-level"&gt;What editors look for (high level)
+&lt;/h2&gt;&lt;p&gt;Editors aim to confirm, in a lightweight pass, that your post:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Belongs here&lt;/strong&gt; — genomics × AI remit; &lt;code&gt;scope&lt;/code&gt;, tags, and &lt;code&gt;audience&lt;/code&gt; match the content&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Holds up technically&lt;/strong&gt; — no obvious factual errors; claims match the evidence you provide&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Works for readers&lt;/strong&gt; — logical flow (motivation → content → takeaway), appropriate level for the audience&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Is complete in the basics&lt;/strong&gt; — opening summary via the &lt;code&gt;summary&lt;/code&gt; shortcode, reasonable attribution, working links, and clean formatting&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;For the full framework (checklist, review outcomes, escalation, and time expectations), see &lt;strong&gt;&lt;a class="link" href="https://genomicsxai.github.io/editorial-review/" target="_blank" rel="noopener"
+ &gt;Editorial Review (MVR)&lt;/a&gt;&lt;/strong&gt;.&lt;/p&gt;</description></item><item><title>Archives</title><link>https://genomicsxai.github.io/archives/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://genomicsxai.github.io/archives/</guid><description>&lt;p&gt;Posts grouped by year.&lt;/p&gt;</description></item></channel></rss>

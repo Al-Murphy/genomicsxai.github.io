@@ -1,0 +1,501 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Anshul Kundaje on Genomics x AI</title><link>https://genomicsxai.github.io/authors/anshul-kundaje/</link><description>Recent content in Anshul Kundaje on Genomics x AI</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Thu, 12 Mar 2026 08:23:40 -0700</lastBuildDate><atom:link href="https://genomicsxai.github.io/authors/anshul-kundaje/index.xml" rel="self" type="application/rss+xml"/><item><title>Porting AlphaGenome to PyTorch</title><link>https://genomicsxai.github.io/blogs/2026-004/</link><pubDate>Tue, 10 Mar 2026 00:00:00 +0000</pubDate><guid>https://genomicsxai.github.io/blogs/2026-004/</guid><description>&lt;img src="https://genomicsxai.github.io/" alt="Featured image of post Porting AlphaGenome to PyTorch" /&gt;&lt;aside class="summary-box"&gt;
+ &lt;h2 class="summary-box__title"&gt;Summary&lt;/h2&gt;
+ &lt;div class="summary-box__body"&gt;
+ &lt;p&gt;This post introduces &lt;a class="link" href="https://github.com/genomicsxai/alphagenome-pytorch" target="_blank" rel="noopener"
+ &gt;alphagenome-pytorch&lt;/a&gt;, a faithful port of Google DeepMind&amp;rsquo;s AlphaGenome model to PyTorch.&lt;/p&gt;
+&lt;p&gt;We reproduce the full AlphaGenome architecture in PyTorch and release weights for fold-specific and distilled models. We also verify numerical equivalence of predictions across all output tracks with the original JAX checkpoint from DeepMind. Our package exposes a simple inference API that slots into any PyTorch project without requiring JAX, XLA, or TPU-specific tooling.&lt;/p&gt;
+&lt;p&gt;In this post, we review the initial release for the package and walk through two use cases it enables:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Inference within existing PyTorch pipelines, which allows for genome-wide inference across tracks&lt;/li&gt;
+&lt;li&gt;Variant effect prediction and in silico mutagenesis (ISM)&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;Contributions&lt;/strong&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Initial Development Team: Danila Bredikhin (Lead), Martin Kjellberg, Christopher Zou&lt;/li&gt;
+&lt;li&gt;Finetuning and Validation: Danila Bredikhin, Alejandro Buendia, Xinming Tu&lt;/li&gt;
+&lt;li&gt;Blog Post: Alejandro Buendia, Danila Bredikhin&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Code&lt;/strong&gt;:
+&lt;a class="link" href="https://github.com/genomicsxai/alphagenome-pytorch" target="_blank" rel="noopener"
+ &gt;alphagenome-pytorch&lt;/a&gt;&lt;/p&gt;
+
+ &lt;/div&gt;
+&lt;/aside&gt;
+
+&lt;hr&gt;
+&lt;h2 id="overview"&gt;Overview
+&lt;/h2&gt;&lt;p&gt;Understanding how changes in DNA impact genomic activity and affect the complex machinery of gene regulation has been a grand challenge in genomics. Google DeepMind&amp;rsquo;s &lt;a class="link" href="https://www.nature.com/articles/s41586-025-10014-0" target="_blank" rel="noopener"
+ &gt;AlphaGenome&lt;/a&gt; represents a major step forward: by taking in DNA sequences of up to one million base pairs, it predicts at single base-pair resolution hundreds of genomic tracks across diverse cell types and conditions. With both the &lt;a class="link" href="https://github.com/google-deepmind/alphagenome_research" target="_blank" rel="noopener"
+ &gt;model code&lt;/a&gt; and &lt;a class="link" href="https://www.kaggle.com/models/google/alphagenome" target="_blank" rel="noopener"
+ &gt;pretrained weights&lt;/a&gt; publicly released, the genomics community now has a powerful foundation to build on.&lt;/p&gt;
+&lt;p&gt;The original AlphaGenome model is implemented in &lt;a class="link" href="https://github.com/jax-ml/jax" target="_blank" rel="noopener"
+ &gt;JAX&lt;/a&gt;, a high-performance framework for numerical computing and deep learning. Here we present a port of AlphaGenome to PyTorch. We strived to make our implementation an accessible, readable, and hackable port of the model for the wider community to build on and adapt for their unique use cases. We also enable workflows to finetune the model on new datasets and cell types using custom data, and offer an early version of finetuning functionality in this release.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="getting-started"&gt;Getting Started
+&lt;/h2&gt;&lt;p&gt;Using AlphaGenome in PyTorch is straightforward. The package can be installed from PyPI as:&lt;/p&gt;
+&lt;div class="code-block" data-lang="bash"&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;pip install alphagenome-pytorch&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Here we show how to load the model from weights hosted on &lt;a class="link" href="https://huggingface.co/gtca/alphagenome_pytorch" target="_blank" rel="noopener"
+ &gt;Hugging Face&lt;/a&gt;, and then run inference on a DNA sequence:&lt;/p&gt;
+&lt;div class="code-block" data-lang="python"&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;alphagenome_pytorch&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;AlphaGenome&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;alphagenome_pytorch.utils.sequence&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;sequence_to_onehot_tensor&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;huggingface_hub&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;hf_hub_download&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;pyfaidx&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;hf_hub_download&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="s2"&gt;&amp;#34;gtca/alphagenome_pytorch&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="s2"&gt;&amp;#34;model_all_folds.safetensors&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;local_dir&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;.&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;model&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;AlphaGenome&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;from_pretrained&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;model_all_folds.safetensors&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="n"&gt;pyfaidx&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Fasta&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;hg38.fa&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;genome&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;sequence&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;genome&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;chr1&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;][&lt;/span&gt;&lt;span class="mi"&gt;1_000_000&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;1_131_072&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;dna_onehot&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;sequence_to_onehot_tensor&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sequence&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;unsqueeze&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;preds&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;predict&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;dna_onehot&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;organism_index&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# 0=human, 1=mouse&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# Access predictions (batch, sequence, tracks) by head name and resolution:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# - preds[&amp;#39;atac&amp;#39;][1]: 1bp resolution, shape (1, 131072, 256)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# - preds[&amp;#39;atac&amp;#39;][128]: 128bp resolution, shape (1, 1024, 256)&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;The model accepts sequences of up to 1,048,576 base pairs (1 Mb) and returns predictions at single nucleotide and 128 bp resolutions for the genomic tracks it was trained on.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="numerical-equivalence-with-jax"&gt;Numerical Equivalence with JAX
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;Our PyTorch port is numerically on par with the original implementation in JAX.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Small implementation differences can silently change scientific conclusions. Hence we strived to ensure our implementation has close numerical equivalence with the JAX model. We added tests for numerical equivalence of the outputs of individual model heads and full forward and backward passes through the model, gradients, and loss values.&lt;/p&gt;
+&lt;p&gt;We verified equivalence at multiple levels:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Layer-by-layer outputs: Each convolutional block, attention mechanism, and transformer layer produces outputs within numerical precision (less than &lt;code&gt;1e-5&lt;/code&gt; relative error) of the JAX implementation&lt;/li&gt;
+&lt;li&gt;Full forward pass: End-to-end predictions across all genomic tracks match within floating-point precision&lt;/li&gt;
+&lt;li&gt;Gradient computations: Backpropagation yields equivalent gradients, ensuring training dynamics remain faithful to the original implementation&lt;/li&gt;
+&lt;li&gt;Loss values: Multinomial loss computes identically on the same inputs&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;We converted the pretrained weights directly from the &lt;a class="link" href="https://www.kaggle.com/models/google/alphagenome" target="_blank" rel="noopener"
+ &gt;released checkpoints&lt;/a&gt; so that it is easy to start working with the model with a single &lt;code&gt;from_pretrained()&lt;/code&gt; call.&lt;/p&gt;
+&lt;p&gt;To demonstrate parity of our implementation with DeepMind&amp;rsquo;s model, we show predicted tracks in the HepG2 cell line from a 1 Mb held-out region of chromosome 19, examined in Figure 2a of the original &lt;a class="link" href="https://www.nature.com/articles/s41586-025-10014-0" target="_blank" rel="noopener"
+ &gt;paper&lt;/a&gt;:&lt;/p&gt;
+&lt;figure&gt;&lt;a href="https://genomicsxai.github.io/blogs/2026-004/hepg2_pred_tracks.png" class="image-link" data-pswp-width="2076" data-pswp-height="1680"&gt;
+		&lt;img src="https://genomicsxai.github.io/blogs/2026-004/hepg2_pred_tracks.png" width="600px" height="485"loading="lazy"
+			alt="Predicted tracks for HepG2 in chr19 (Figure 2a)"
+			title="alphagenome-pytorch predictions show high concordance with JAX predictions across RNA-seq, ATAC, DNase, H3K27ac, and CTCF tracks in the HepG2 cell line." data-title-escaped="alphagenome-pytorch predictions show high concordance with JAX predictions across RNA-seq, ATAC, DNase, H3K27ac, and CTCF tracks in the HepG2 cell line."&gt;
+		&lt;/a&gt;&lt;/figure&gt;&lt;p&gt;Predicted contact maps for this region also show high concordance when comparing the two implementations (Pearson r = 0.9999):&lt;/p&gt;
+&lt;figure&gt;&lt;a href="https://genomicsxai.github.io/blogs/2026-004/hepg2_pred_cmaps.png" class="image-link" data-pswp-width="2024" data-pswp-height="917"&gt;
+		&lt;img src="https://genomicsxai.github.io/blogs/2026-004/hepg2_pred_cmaps.png" width="600px" height="271"loading="lazy"
+			alt="Predicted contact maps for HepG2 in chr19 (Figure 2a)"
+			title="alphagenome-pytorch predictions show high concordance with JAX predictions for contact maps in the HepG2 cell line." data-title-escaped="alphagenome-pytorch predictions show high concordance with JAX predictions for contact maps in the HepG2 cell line."&gt;
+		&lt;/a&gt;&lt;/figure&gt;&lt;h2 id="what-can-you-do-with-this"&gt;What Can You Do With This?
+&lt;/h2&gt;&lt;p&gt;Beyond drop-in replacement for the JAX implementation, our PyTorch version opens up several possibilities:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Integration with PyTorch Ecosystems: Seamlessly combine AlphaGenome with other PyTorch-based tools and frameworks.&lt;/li&gt;
+&lt;li&gt;Variant Effect Prediction: Compute the impact of genetic variants by running inference on reference and alternate sequences, and then compare the predicted genomic tracks. This is particularly powerful for understanding disease-associated variants.&lt;/li&gt;
+&lt;li&gt;In Silico Mutagenesis (ISM): Systematically mutate sequences to identify important regulatory elements and understand sequence grammar.&lt;/li&gt;
+&lt;li&gt;Finetuning on Custom Data: Perhaps most excitingly, you can adapt the model to your specific cell types, conditions, and even different species. We provide utilities for finetuning with your own genomic assay data.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;In an upcoming post, we&amp;rsquo;ll dive deeper into different finetuning strategies implemented in the package, including data preparation, training best practices, and evaluation metrics to ensure that your adapted model performs well for specific use cases.&lt;/p&gt;
+&lt;h2 id="predicting-variant-effects-and-in-silico-mutagenesis"&gt;Predicting Variant Effects and In Silico Mutagenesis
+&lt;/h2&gt;&lt;p&gt;Variant effect prediction is a key utility of AlphaGenome that enables interrogation of variants and their impact on disease states. We expose a simple API for predicting variant effects:&lt;/p&gt;
+&lt;div class="code-block" data-lang="python"&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;alphagenome_pytorch.variant_scoring&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;VariantScoringModel&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# Using previously defined AlphaGenome object&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;scoring_model&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;VariantScoringModel&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;fasta_path&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;FASTA_PATH&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;gtf_path&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;GTF_PATH&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;polya_path&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;POLYA_PATH&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;default_organism&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;human&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;ref_outputs&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;alt_outputs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;scoring_model&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;predict_variant&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;interval&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;variant&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;to_cpu&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;To demonstrate functionality around variant analysis, we give an example of variant effect prediction and ISM for a variant impacting the TAL1 gene, examined in Figure 6 of the original paper. This variant is an oncogenic insertion impacting CD34+ common myeloid progenitors (the closest cell line in the model&amp;rsquo;s training set to the T-ALL cell of origin). We show that alphagenome-pytorch recapitulates the difference between predicted tracks of the alternate and reference sequences for the variant with high accuracy:&lt;/p&gt;
+&lt;figure&gt;&lt;a href="https://genomicsxai.github.io/blogs/2026-004/cmp_pred_tracks.png" class="image-link" data-pswp-width="2173" data-pswp-height="2206"&gt;
+		&lt;img src="https://genomicsxai.github.io/blogs/2026-004/cmp_pred_tracks.png" width="600px" height="609"loading="lazy"
+			alt="Predicted alternate versus reference sequence for CD34&amp;#43; common myeloid progenitors (CMPs) in chr1 (Figure 6b)"
+			title="alphagenome-pytorch predictions show high concordance with JAX predictions when computing the difference in alt and ref sequences in CD34&amp;#43; CMPs." data-title-escaped="alphagenome-pytorch predictions show high concordance with JAX predictions when computing the difference in alt and ref sequences in CD34&amp;#43; CMPs."&gt;
+		&lt;/a&gt;&lt;/figure&gt;&lt;p&gt;Our port also correctly reproduces in silico mutagenesis (ISM). We implement a simple API for running ISM:&lt;/p&gt;
+&lt;div class="code-block" data-lang="python"&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;alphagenome_pytorch.variant_scoring&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;CenterMaskScorer&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;AggregationType&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;GeneMaskLFCScorer&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# Using previously defined AlphaGenome and VariantScoringModel objects&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;ism_scorers&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;CenterMaskScorer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;OutputType&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;DNASE&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;501&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;AggregationType&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;DIFF_LOG2_SUM&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;CenterMaskScorer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;OutputType&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;CHIP_HISTONE&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;2001&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;AggregationType&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;DIFF_LOG2_SUM&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;GeneMaskLFCScorer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;OutputType&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;RNA_SEQ&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;Running ISM...&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;ism_result&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;scoring_model&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;score_ism_variants&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;interval&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;interval&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;center_position&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;variant&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;position&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;scorers&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;ism_scorers&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;window_size&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;WINDOW_SIZE&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;to_cpu&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;progress&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Results from running ISM at this locus show close agreement when compared against ISM computed using the original JAX checkpoint:&lt;/p&gt;
+&lt;figure&gt;&lt;a href="https://genomicsxai.github.io/blogs/2026-004/cmp_ism_torch.png" class="image-link" data-pswp-width="1413" data-pswp-height="1055"&gt;
+		&lt;img src="https://genomicsxai.github.io/blogs/2026-004/cmp_ism_torch.png" width="600px" height="447"loading="lazy"
+			alt="In silico mutagenesis for chr1:47239296:C&amp;gt;ACG in PyTorch (Figure 6e)"
+			&gt;
+		&lt;/a&gt;&lt;/figure&gt;&lt;figure&gt;&lt;a href="https://genomicsxai.github.io/blogs/2026-004/cmp_ism_jax.png" class="image-link" data-pswp-width="1413" data-pswp-height="1055"&gt;
+		&lt;img src="https://genomicsxai.github.io/blogs/2026-004/cmp_ism_jax.png" width="600px" height="447"loading="lazy"
+			alt="In silico mutagenesis for chr1:47239296:C&amp;gt;ACG in JAX (Figure 6e)"
+			&gt;
+		&lt;/a&gt;&lt;/figure&gt;&lt;hr&gt;
+&lt;h2 id="code-and-tutorials"&gt;Code and Tutorials
+&lt;/h2&gt;&lt;p&gt;The code is available on &lt;a class="link" href="https://github.com/genomicsxai/alphagenome-pytorch" target="_blank" rel="noopener"
+ &gt;GitHub&lt;/a&gt; with detailed &lt;a class="link" href="https://alphagenome-pytorch.readthedocs.io/en/latest/index.html" target="_blank" rel="noopener"
+ &gt;documentation&lt;/a&gt; and &lt;a class="link" href="https://github.com/genomicsxai/alphagenome-pytorch/tree/main/examples/notebooks" target="_blank" rel="noopener"
+ &gt;example notebooks&lt;/a&gt; to help you get started with this implementation. This is naturally a work in progress: we&amp;rsquo;re actively developing new features, improving code and performance, and working on new examples. We welcome contributions, feedback, bug reports, and stories of how this implementation has helped your research!&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/genomicsxai/alphagenome-pytorch" target="_blank" rel="noopener"
+ &gt;Source Code &amp;amp; Utilities&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/genomicsxai/alphagenome-pytorch/tree/main/examples/notebooks" target="_blank" rel="noopener"
+ &gt;Tutorial Notebooks&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://alphagenome-pytorch.readthedocs.io/en/latest/index.html" target="_blank" rel="noopener"
+ &gt;Documentation&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="license"&gt;License
+&lt;/h2&gt;&lt;p&gt;This project is a port of the &lt;a class="link" href="https://github.com/google-deepmind/alphagenome_research" target="_blank" rel="noopener"
+ &gt;google-deepmind/alphagenome_research&lt;/a&gt; repository licensed under the Apache License, Version 2.0:&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;Copyright 2026 Google LLC&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;The model parameters, output, and any derivatives thereof remain subject to &lt;a class="link" href="https://deepmind.google.com/science/alphagenome/model-terms" target="_blank" rel="noopener"
+ &gt;Google DeepMind’s AlphaGenome Model Terms&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;This port is licensed under the Apache License, Version 2.0 (Apache 2.0):&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;Copyright 2026 Danila Bredikhin, Martin Kjellberg, Christopher Zou, Alejandro Buendia, Xinming Tu, Anshul Kundaje&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;Licensed under the Apache License, Version 2.0 (the &amp;ldquo;License&amp;rdquo;); you may not use this except in compliance with the License.
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an &amp;ldquo;AS IS&amp;rdquo; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="acknowledgements"&gt;Acknowledgements
+&lt;/h2&gt;&lt;p&gt;We thank Peter Koo, Alan Murphy, Masayuki Nagai, and other members of the &lt;a class="link" href="https://koolab.cshl.edu/" target="_blank" rel="noopener"
+ &gt;Koo Lab&lt;/a&gt; for helping initiate the GenomicsxAI organization and reviewing this post. We acknowledge Phil Wang, Miquel Anglada-Girotto, and Xinming Tu as developers of an older AlphaGenome PyTorch implementation unrelated to this port.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="references"&gt;References
+&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;Avsec, Ž. et al. Advancing regulatory variant effect prediction with AlphaGenome. &lt;em&gt;Nature&lt;/em&gt; &lt;strong&gt;649&lt;/strong&gt; (2026).&lt;/li&gt;
+&lt;/ol&gt;</description></item><item><title>Fine-tuning AlphaGenome in native JAX/Haiku</title><link>https://genomicsxai.github.io/blogs/2026-003/</link><pubDate>Wed, 25 Feb 2026 00:00:00 +0000</pubDate><guid>https://genomicsxai.github.io/blogs/2026-003/</guid><description>&lt;img src="https://genomicsxai.github.io/" alt="Featured image of post Fine-tuning AlphaGenome in native JAX/Haiku" /&gt;&lt;aside class="summary-box"&gt;
+ &lt;h2 class="summary-box__title"&gt;Summary&lt;/h2&gt;
+ &lt;div class="summary-box__body"&gt;
+ &lt;p&gt;This post introduces &lt;a class="link" href="https://github.com/genomicsxai/alphagenome_ft" target="_blank" rel="noopener"
+ &gt;alphagenome-ft&lt;/a&gt;, a lightweight Python package for fine-tuning &lt;a class="link" href="https://www.nature.com/articles/s41586-025-10014-0" target="_blank" rel="noopener"
+ &gt;AlphaGenome&lt;/a&gt; using native JAX/Haiku.&lt;/p&gt;
+&lt;p&gt;We highlight workflows for&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;adding custom prediction heads&lt;/li&gt;
+&lt;li&gt;differing fine-tuning strategies&lt;/li&gt;
+&lt;li&gt;freezing/unfreezing parameters&lt;/li&gt;
+&lt;li&gt;attribution approaches&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Here we focus on general workflows applicable to genome-scale assays and custom heads. For fine-tuning the encoder for short sequences such as MPRA, see this &lt;a class="link" href="https://genomicsxai.github.io/blogs/2026-002/" target="_blank" rel="noopener"
+ &gt;post&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Code&lt;/strong&gt;:
+&lt;a class="link" href="https://github.com/genomicsxai/alphagenome_ft" target="_blank" rel="noopener"
+ &gt;AlphaGenome fine-tuning utilities&lt;/a&gt;&lt;/p&gt;
+
+ &lt;/div&gt;
+&lt;/aside&gt;
+
+&lt;hr&gt;
+&lt;h2 id="motivation"&gt;Motivation
+&lt;/h2&gt;&lt;p&gt;&lt;a class="link" href="https://www.nature.com/articles/s41586-025-10014-0" target="_blank" rel="noopener"
+ &gt;AlphaGenome&lt;/a&gt; is a foundation sequence-to-function model trained on genome-scale data. Its native JAX/Haiku implementation is powerful but can be cumbersome to modify for custom tasks (we learned this the hard way!). Researchers often want to:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Train a new head on a novel assay&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Apply low-rank adapters for efficient backbone updates&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Fine-tune the full model progressively&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Freeze certain components for stability&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Perform attribution analyses to gain insight into learned &lt;strong&gt;cis&lt;/strong&gt;-regulatory logic&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;To help with this, we developed &lt;a class="link" href="https://github.com/genomicsxai/alphagenome_ft" target="_blank" rel="noopener"
+ &gt;alphagenome-ft&lt;/a&gt; which provides a lightweight wrapper that achieves all these asks without modifying the original AlphaGenome codebase.&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;&lt;em&gt;Side note:&lt;/em&gt; AlphaGenome is a deep learning model that predicts functional genomic signals (e.g., accessibility, transcription, binding) directly from DNA sequence. We call such models sequence-to-function (seq2func) models.&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;&lt;em&gt;Side note 2:&lt;/em&gt; JAX/Haiku are DeepMind&amp;rsquo;s frameworks which are similar to using PyTorch but optimized for large-scale accelerator workloads.&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;h2 id="but-wait-why-fine-tune-alphagenome"&gt;But wait, why fine-tune AlphaGenome?
+&lt;/h2&gt;&lt;p&gt;Foundation sequence models like AlphaGenome are trained on diverse genome-scale assays, allowing them to learn general regulatory sequence features. However, most research questions involve &lt;strong&gt;specific cell types, assays, perturbations, or organisms&lt;/strong&gt; that differ from the original training distribution.&lt;/p&gt;
+&lt;p&gt;You should first check if the foundation model alphagenome has an ouput track that&amp;rsquo;s the same/similar to your cell type of interest, that might be enough! Otherwise, fine-tuning on your cell type/assay of interest is an option.&lt;/p&gt;
+&lt;p&gt;Fine-tuning adapts the pretrained model to these new contexts while preserving the regulatory knowledge already encoded in the backbone.&lt;/p&gt;
+&lt;p&gt;Benefits of fine-tuning include:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Improved performance with limited data&lt;/strong&gt; - Leverages pretrained regulatory features instead of learning from scratch.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Stability and efficiency via frozen parameters&lt;/strong&gt; - Freezing the backbone while training a new head reduces overfitting, lowers compute cost (this is important AlphaGenome is a BIG model -450m parameters), and prevents catastrophic forgetting.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Parameter-efficient adaptation&lt;/strong&gt; - Methods such as adapters or partial unfreezing allow targeted updates without retraining the full model.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Faster experimentation cycles&lt;/strong&gt; - New assays or prediction targets can be incorporated with minimal engineering effort.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Preservation of biological priors&lt;/strong&gt; - Retains learned sequence motifs and regulatory grammar that remain relevant across assays and cell types.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;In practice, many workflows begin by training a task-specific head with the backbone frozen, then progressively unfreezing components if additional capacity is needed.&lt;/p&gt;
+&lt;h2 id="fine-tuning-with-shorter-sequence-windows"&gt;Fine-tuning with shorter sequence windows
+&lt;/h2&gt;&lt;p&gt;By default, AlphaGenome is trained on ~1 million base-pair (1 Mb) input sequences, allowing the model to capture long-range regulatory interactions. However, during fine-tuning you are not required to use the full 1 Mb context.&lt;/p&gt;
+&lt;p&gt;If your downstream task does not depend strongly on ultra-long-range interactions, you can fine-tune using shorter input windows (e.g., 32 kb). This reduces memory usage, increases batch size flexibility, and can substantially speed up training.&lt;/p&gt;
+&lt;p&gt;This is particularly useful when:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;The signal of interest is predominantly local (functional outputs like chromatin accessibility are)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;You are adapting to assays with shorter effective regulatory range&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;You want faster experimentation cycles&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Importantly, this is different from encoder-only fine-tuning used for very short sequences (e.g., ~200–300 bp MPRA constructs). In that setting, only the convolutional encoder is used, bypassing the transformer and decoder entirely. This is covered in &lt;a class="link" href="https://genomicsxai.github.io/blogs/2026-002/" target="_blank" rel="noopener"
+ &gt;another post&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Here, we are still using the full model stack (encoder → transformer → decoder), but operating on a reduced genomic window.&lt;/p&gt;
+&lt;p&gt;In practice, reducing input length is a pragmatic trade-off between computational efficiency and long-range regulatory context (i.e. performance).&lt;/p&gt;
+&lt;h2 id="package-key-features"&gt;Package key features
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Custom prediction heads – easily register predefined, template, or fully custom heads&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Flexible parameter freezing – freeze backbone, individual modules, or heads&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Seamless integration – works with pretrained AlphaGenome weights&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Parameter inspection – explore and count model parameters&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Attribution analysis – gradient-based or in silico mutagenesis (ISM) methods&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Native JAX/Haiku – fully compatible with original AlphaGenome pipelines&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;AlphaGenome fine-tuning workflows schematic&lt;/p&gt;
+&lt;figure&gt;&lt;a href="https://genomicsxai.github.io/blogs/2026-003/alphagenome_ft.png" class="image-link" data-pswp-width="5209" data-pswp-height="3125"&gt;
+		&lt;img src="https://genomicsxai.github.io/blogs/2026-003/alphagenome_ft.png" width="600px" height="359"loading="lazy"
+			alt="alphagenome_ft schematic"
+			title="Schematic of alphagenome-ft. alphagenome-ft enables fine-tuning of AlphaGenome (architecture shown) from different, modular stages of the model (the encoder - for short sequences, the transformer - for 128 base-pair resolution, and the decoder - 1 base-pair resolution). You can control what parts of the model are frozen or free to update and you can calculate attributions, all in native JAX/Haiku." data-title-escaped="Schematic of alphagenome-ft. alphagenome-ft enables fine-tuning of AlphaGenome (architecture shown) from different, modular stages of the model (the encoder - for short sequences, the transformer - for 128 base-pair resolution, and the decoder - 1 base-pair resolution). You can control what parts of the model are frozen or free to update and you can calculate attributions, all in native JAX/Haiku."&gt;
+		&lt;/a&gt;&lt;/figure&gt;&lt;hr&gt;
+&lt;h2 id="usage"&gt;Usage
+&lt;/h2&gt;&lt;p&gt;If these features don&amp;rsquo;t win you over, let&amp;rsquo;s walk through how easy it is to use:&lt;/p&gt;
+&lt;h3 id="installation"&gt;Installation
+&lt;/h3&gt;&lt;p&gt;alphagenome-ft wraps AlphaGenome and AlphaGenome Research and is available through &lt;a class="link" href="https://pypi.org/project/alphagenome/" target="_blank" rel="noopener"
+ &gt;pip&lt;/a&gt; . Installation requires three steps:&lt;/p&gt;
+&lt;div class="code-block" data-lang="python"&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# Step 1: Install AlphaGenome and Research&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;pip&lt;/span&gt; &lt;span class="n"&gt;install&lt;/span&gt; &lt;span class="n"&gt;git&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="n"&gt;https&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;github&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;com&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;google&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;deepmind&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;alphagenome&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;git&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;pip&lt;/span&gt; &lt;span class="n"&gt;install&lt;/span&gt; &lt;span class="n"&gt;git&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="n"&gt;https&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;github&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;com&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;google&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;deepmind&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;alphagenome_research&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;git&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# Step 2: Install alphagenome-ft&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;pip&lt;/span&gt; &lt;span class="n"&gt;install&lt;/span&gt; &lt;span class="n"&gt;alphagenome&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;ft&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Python ≥ 3.11 is required. All other dependencies (JAX, Haiku, optax, etc.) are handled automatically.&lt;/p&gt;
+&lt;h3 id="quick-start-adding-new-heads"&gt;Quick Start: Adding new heads
+&lt;/h3&gt;&lt;p&gt;There are two main ways to add heads to AlphaGenome with the package (see the figure above for architecture references):&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Predefined heads&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Use existing AlphaGenome head types, e.g., rna_seq, atac, chip_tf:&lt;/p&gt;
+&lt;div class="code-block" data-lang="python"&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;alphagenome_ft&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;get_predefined_head_config&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;register_predefined_head&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;create_model_with_heads&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;rna_config&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;get_predefined_head_config&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;rna_seq&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;num_tracks&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;register_predefined_head&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;K562_rna_seq&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;rna_config&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;model&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;create_model_with_heads&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;all_folds&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;heads&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;K562_rna_seq&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;freeze_except_head&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;K562_rna_seq&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;#Now ready to train!&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;ol start="2"&gt;
+&lt;li&gt;&lt;strong&gt;Custom heads and reference templates&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Our template heads give guidance on accessing different embeddings, which correspond to different biological resolutions - base-pair (bp) precision, regional regulatory context, and short-sequence feature extraction:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;StandardHead – 1bp embeddings (decoder output)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;TransformerHead – 128bp embeddings (transformer output)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;EncoderOnlyHead – CNN encoder output, &amp;lt;1 kb sequences (encoder output)&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; Template heads are there as a guide for to how to set up your own custom head rather than a definitive &amp;lsquo;best&amp;rsquo;/&amp;lsquo;standard&amp;rsquo; option. You should update these with your own layer and loss function choices to fit your data needs.&lt;/p&gt;
+&lt;div class="code-block" data-lang="python"&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;alphagenome_ft&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;templates&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;CustomHeadConfig&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;CustomHeadType&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;register_custom_head&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;register_custom_head&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="s1"&gt;&amp;#39;my_head&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;templates&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;StandardHead&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;CustomHeadConfig&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;type&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;CustomHeadType&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;GENOME_TRACKS&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;output_type&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;rna_seq&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;num_tracks&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h3 id="workflows"&gt;Workflows
+&lt;/h3&gt;&lt;p&gt;A full selection of four workflows are given in our &lt;a class="link" href="https://github.com/genomicsxai/alphagenome_ft" target="_blank" rel="noopener"
+ &gt;github repository&lt;/a&gt;, covering:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Heads-only fine-tuning (frozen backbone)&lt;/li&gt;
+&lt;li&gt;LoRA-style adapters (parameter-efficient fine-tuning)&lt;/li&gt;
+&lt;li&gt;Full-model fine-tuning&lt;/li&gt;
+&lt;li&gt;Encoder-only (MPRA / short sequences)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;See the dedicated &lt;a class="link" href="https://genomicsxai.github.io/blogs/2026-002/" target="_blank" rel="noopener"
+ &gt;MPRA post&lt;/a&gt; for full post dedicated to Encoder-only fine-tuning (it&amp;rsquo;s great, even though I may be slightly biased as the one who wrote it &amp;hellip;).&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;&lt;em&gt;Side note:&lt;/em&gt; &lt;a class="link" href="https://arxiv.org/abs/2106.09685" target="_blank" rel="noopener"
+ &gt;Low-rank adapters (LoRA)&lt;/a&gt; enable parameter-efficient fine-tuning by learning small update matrices instead of modifying the full backbone.&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;If unsure where to start, we recommend training a task-specific head with the backbone frozen, then progressively unfreezing components if additional capacity is needed.&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;Some extra functionality you might be interested in:&lt;/p&gt;
+&lt;h3 id="parameter-management-and-checkpoints"&gt;Parameter management and checkpoints
+&lt;/h3&gt;&lt;p&gt;alphagenome-ft allows:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Modular freezing: encoder, transformer, decoder&lt;/li&gt;
+&lt;li&gt;Freezing all heads except one: &lt;code&gt;model.freeze_except_head('my_head')&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Saving checkpoints (heads-only or full model)&lt;/li&gt;
+&lt;li&gt;Loading with custom head registration&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="attribution-analysis"&gt;Attribution analysis
+&lt;/h2&gt;&lt;p&gt;After training, alphagenome-ft also supports:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;DeepSHAP-like attributions - using dinucleotide shuffled reference sequences&lt;/li&gt;
+&lt;li&gt;Gradient × Input&lt;/li&gt;
+&lt;li&gt;Gradient&lt;/li&gt;
+&lt;li&gt;In silico mutagenesis (ISM)&lt;/li&gt;
+&lt;/ul&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;&lt;em&gt;Side note:&lt;/em&gt; Attribution methods highlight which nucleotides drive predictions in these models, helping reveal regulatory motifs and sequence grammar learned by the model.&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;You can also visualise contributions with &lt;code&gt;plot_attribution_map&lt;/code&gt; or &lt;code&gt;plot_sequence_logo&lt;/code&gt; functions! See below for an example attribution map when we fine-tuned AlphaGenome&amp;rsquo;s encoder on &lt;a class="link" href="https://www.nature.com/articles/s41588-022-01048-5" target="_blank" rel="noopener"
+ &gt;fly STARR-seq data&lt;/a&gt; - See our &lt;a class="link" href="https://genomicsxai.github.io/blogs/2026-002/" target="_blank" rel="noopener"
+ &gt;MPRA post&lt;/a&gt; for more details.&lt;/p&gt;
+&lt;figure&gt;&lt;a href="https://genomicsxai.github.io/blogs/2026-003/sequence_logo_gradient_x_input.png" class="image-link" data-pswp-width="2982" data-pswp-height="430"&gt;
+		&lt;img src="https://genomicsxai.github.io/blogs/2026-003/sequence_logo_gradient_x_input.png" width="900px" height="129"loading="lazy"
+			alt="attribution map"
+			title="Gradient x Input attribution map for AlphaGenome encoder only fine-tuning on [fly STARR-seq data](https://www.nature.com/articles/s41588-022-01048-5) - See our [MPRA post](https://genomicsxai.github.io/blogs/2026-002/) for more details on this fine-tuning. We can see the model highlights an AP-1 motif around position ~230, consistent with known enhancer regulatory logic." data-title-escaped="Gradient x Input attribution map for AlphaGenome encoder only fine-tuning on [fly STARR-seq data](https://www.nature.com/articles/s41588-022-01048-5) - See our [MPRA post](https://genomicsxai.github.io/blogs/2026-002/) for more details on this fine-tuning. We can see the model highlights an AP-1 motif around position ~230, consistent with known enhancer regulatory logic."&gt;
+		&lt;/a&gt;&lt;/figure&gt;&lt;p&gt;You can see we recover the AP-1 motif (&lt;code&gt;TGAsTCA&lt;/code&gt;) comes up at roughly position 230 which is a known regulator for &lt;a class="link" href="https://www.nature.com/articles/s41588-022-01048-5/figures/2" target="_blank" rel="noopener"
+ &gt;developmental genes in flies&lt;/a&gt;.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="implications"&gt;Implications
+&lt;/h2&gt;&lt;p&gt;To take a step back, what do we get with alphagenome-ft? AlphaGenome becomes flexible to:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Rapid adaptation to new tasks&lt;/li&gt;
+&lt;li&gt;Modular freezing/unfreezing for stability&lt;/li&gt;
+&lt;li&gt;Supports genome-scale or perturbation assays&lt;/li&gt;
+&lt;li&gt;Enables downstream interpretability&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;AlphaGenome can now be adapted as easily as modern vision and language foundation models — opening the door to rapid regulatory genomics experimentation. So if you think AlphaGenome could be useful if applied to your research, take a look at our package!&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;alphagenome-ft brings foundation-model-style transfer learning workflows to regulatory genomics.&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2 id="compute-requirements"&gt;Compute requirements
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Fine-tuning with a frozen backbone typically fits on a single, high VRAM GPU (e.g., H100).&lt;/li&gt;
+&lt;li&gt;Full-model fine-tuning or large batch training will essentially require multi-GPU or TPU setups.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="code-and-tutorials"&gt;Code and tutorials
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/genomicsxai/alphagenome_ft" target="_blank" rel="noopener"
+ &gt;Source code &amp;amp; utilities&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Colab notebooks: &lt;a class="link" href="https://colab.research.google.com/github/genomicsxai/alphagenome_ft/blob/main/notebooks/finetune_encoder_only_mpra.ipynb" target="_blank" rel="noopener"
+ &gt;Encoder Fine-tuning (MPRA)&lt;/a&gt; | &lt;a class="link" href="https://colab.research.google.com/github/genomicsxai/alphagenome_ft/blob/main/notebooks/finetune_rna_head_only.ipynb" target="_blank" rel="noopener"
+ &gt;Heads-only Fine-tuning&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="tldr"&gt;TL;DR
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;AlphaGenome&lt;/strong&gt; is a powerful sequence-to-function foundation model, but adapting it natively in JAX/Haiku can be cumbersome.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;alphagenome-ft&lt;/strong&gt; provides a lightweight wrapper for:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;adding custom or predefined prediction heads&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;freezing and unfreezing specific modules&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;parameter-efficient fine-tuning (e.g., adapters)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;running attribution analyses&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Most workflows can start by training a task-specific head with the backbone frozen, then progressively unfreezing if needed.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;This enables rapid adaptation to new assays while preserving pretrained regulatory knowledge.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;If you want to fine-tune AlphaGenome without modifying its core codebase, alphagenome-ft is designed to make that process modular, efficient, and reproducible!&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="references"&gt;References
+&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;Avsec, Ž. et al. Advancing regulatory variant effect prediction with AlphaGenome., 649, Nature (2026).&lt;/li&gt;
+&lt;li&gt;Alan Murphy, Peter Koo. &amp;ldquo;Adapting AlphaGenome to MPRA data.&amp;rdquo; Genomics × AI Blog, 20 February 2026. &lt;a class="link" href="https://genomicsxai.github.io/blogs/2026-002/" target="_blank" rel="noopener"
+ &gt;https://genomicsxai.github.io/blogs/2026-002/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Hu, E. J. et al. Lora: Low-rank adaptation of large language models (2021), &lt;a class="link" href="https://arxiv.org/abs/2106.09685" target="_blank" rel="noopener"
+ &gt;https://arxiv.org/abs/2106.09685&lt;/a&gt;. 2106.09685.&lt;/li&gt;
+&lt;li&gt;de Almeida, B. P., Reiter, F., Pagani, M. &amp;amp; Stark, A. Deepstarr predicts enhancer activity from dna sequence and enables the de novo design of synthetic enhancers., 54, Nat. genetics (2022).&lt;/li&gt;
+&lt;/ol&gt;</description></item></channel></rss>
